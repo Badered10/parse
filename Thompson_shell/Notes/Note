@@ -1,0 +1,49 @@
+-:*User : baouragh*
+
+*0* - 
+*1* - 
+*2* - 
+*3* - 
+*4* - 
+*5* - 
+*6* - 
+*7* - 
+*8* - 
+*9* - 
+*10* - 
+*11* - 
+*12* - 
+*13* - 
+*14* - 
+*15* - 
+*16* - 
+*17* - 
+*18* - 
+*19* - 
+*20* - 
+
+----------------------------------------------------------------
+
+-:*User : alassiqu*
+
+*0* - We need to use an algo for parsing called : "Recursive Descent Parsing Tree".
+*1* - Need to know about BNF Grammars "Backus-Naur Form".
+*2* - Programming Language Syntax.
+*3* - What is lexure, token or something like that ? (Tokenizer, Parser)
+*4* - Function to set environment variables in our struct.
+*5* - Function to get a value from the environment variable.
+*6* - Function to set a var from the environment variable.
+*7* - cd : all whitespaces in split, relative paths, ~/.
+*8* - 
+*9* - 
+*10* - 
+*11* - 
+*12* - 
+*13* - 
+*14* - 
+*15* - 
+*16* - 
+*17* - 
+*18* - 
+*19* - 
+*20* - 

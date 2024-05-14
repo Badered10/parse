@@ -1,0 +1,38 @@
+SEQ :       PIPE ,
+            PIPE "&&" SEQ ,
+            PIPE "||" SEQ
+
+BLOCK :     "(" SEQ ")"
+
+PIPE :      CMD ,
+            CMD "|" PIPE ,
+            CMD "|" BLOCK ,
+
+WORD :      ALPHA ,
+            ALPHA WILD
+
+REDIR :     > WORD ,
+            < WORD ,
+            << PIPE ,
+            >> PIPE
+            <> be aware of this.
+
+CMD :       WORD ,
+            WORD ARG ,
+            WORD ARG REDIR ,
+            WORD REDIR ARG ,
+            REDIR WORD ARG ,
+            WORD CMD REDIR ,
+            WORD REDIR CMD ,
+            REDIR WORD CMD ,
+            BLOCK
+
+ARG :       ALPHA NUMERIC
+
+ALPHA :     [A-Z][a-z]
+
+NUMERIC :   [0-9]
+
+WILD :      "*" ,
+            ALPHA "*" ,
+            ALPHA "*" ALPHA

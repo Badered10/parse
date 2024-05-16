@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+         #
+#    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/05/12 09:39:20 by alassiqu         ###   ########.fr        #
+#    Updated: 2024/05/15 16:53:05 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,10 @@ NAME			:= minishell
 
 LIBFT_PATH		:= libft/
 LIBFT			:= libft/libft.a
-READLINE		:= /Users/alassiqu/readline/lib
+READLINE		:= /Users/baouragh/readline/lib
 
 CC				:= cc
-CFLAGS			:= -Wall -Werror -Wextra #-fsanitize=address -g3
+CFLAGS			:= -Wall -Werror -Wextra -fsanitize=address -g3
 RM				:= rm -f
 
 # BUILTINS		:=	builtins/ft_cd.c			\
@@ -32,7 +32,7 @@ RM				:= rm -f
 ENVIRONMENT		:=	environment/env_utils.c		\
 					environment/free.c
 
-# PARSING			:= 
+PARSING			:= parsing/parse.c
 
 SIGNALS			:=	signals/handle_signals.c
 
@@ -41,15 +41,20 @@ CLEAN			:=	clean/clean.c
 TOKENIZATION	:=	tokenization/tokenizer.c			\
 					tokenization/tokenizer_utils.c		\
 					tokenization/tokenizer_helpers.c	\
-					tokenization/tokenizer_free.c
+					tokenization/tokenizer_free.c		\
+					tokenization/consume_token.c
+
+NODES			:=  nodes/node.c
 
 SRCS			:=	$(BUILTINS)		\
 					$(ENVIRONMENT)	\
 					$(TOKENIZATION)	\
 					$(SIGNALS)		\
 					$(CLEAN)		\
+					$(PARSING)		\
+					$(NODES)		\
 					minishell.c
-
+					
 OBJS			:=	$(SRCS:.c=.o)
 
 all:	$(NAME)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenization.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:04:32 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/11 15:35:15 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:35:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,18 @@
 
 typedef enum e_type
 {
-	WORD,
-	PIPE,
-	AND,
-	OR,
-	LL_REDIR,
-	RR_REDIR,
-	L_REDIR,
-	R_REDIR,
-	L_PAREN,
-	R_PAREN,
-	WHITESPACE
+	WORD, // "word haha"
+	PIPE,// '|' one
+	AND, // && 
+	OR, // || tow
+	LL_REDIR, // <<
+	RR_REDIR, // >>
+	L_REDIR, // <
+	R_REDIR, // >
+	L_PAREN, // (
+	R_PAREN,// )
+	WHITESPACE, // spaces
+	END
 }					t_type;
 
 typedef struct s_token
@@ -66,5 +67,7 @@ int					append_space(t_token **tokens, char **line);
 
 /* Free */
 void				clear_token(t_token **tokens);
+
+t_token				consume_token(t_token **tokens);
 
 #endif /* TOKENIZATION_H */

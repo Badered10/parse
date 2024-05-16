@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "tokenization.h": "c",
+        "charitr.h": "c",
+        "libft.h": "c",
+        "__config": "c"
+    }
+}

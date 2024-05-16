@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/12 09:56:16 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/05/16 09:21:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,15 @@ int	main(int ac, char **av, char **env)
 		if (g_minishell->line[0])
 			add_history(g_minishell->line);
 		g_minishell->tokens = tokenizer();
-		g_minishell->ast = parser();
-		system("leaks minishell");
+		// while (g_minishell->tokens)
+        // {
+        //     printf("value +> %s\n", g_minishell->tokens->value);
+        //     printf("type +> %u\n", g_minishell->tokens->type);
+        //     g_minishell->tokens = g_minishell->tokens->next;
+        // }
+		g_minishell->ast = parsing(g_minishell->tokens);
+		if (g_minishell->ast->type == CHAR_NODE)
+			printf("in main : %s\n",g_minishell->ast->data.string);
 	}
 	return (0);
 }

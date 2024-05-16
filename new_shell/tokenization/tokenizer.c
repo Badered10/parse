@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:41:22 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/11 11:15:42 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:42:25 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ t_token	*tokenizer_handler(char *line)
 		else
 			error = (!append_identifier(&tokens, &line) && 1);
 	}
+	add_token_back(&tokens, new_token(NULL, END));
 	return (tokens);
 }
 

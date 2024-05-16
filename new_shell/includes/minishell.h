@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/13 10:45:09 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/15 16:28:50 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "parsing.h"
 # include "builtins.h"
 # include "tokenization.h"
+# include "charitr.h"
 # include "../libft/libft.h"
 # include "/Users/baouragh/readline/include/readline/history.h"
 # include "/Users/baouragh/readline/include/readline/readline.h"
@@ -41,7 +42,7 @@ typedef struct s_minishell
 	char			*line;
 	t_token			*tokens;
 	t_env			**our_env;
-	t_ast			*ast;
+	t_node			*ast;
 	int				exit_status;
 }					t_minishell;
 
@@ -90,4 +91,4 @@ void				cleanup_minishell(void);
 // Function that clean the environment.
 void				clear_env(void);
 
-#endif /* MINISHELL_H */
+#endif

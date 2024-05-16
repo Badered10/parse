@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:04:32 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/15 17:35:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/16 16:06:55 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,6 @@ int					append_space(t_token **tokens, char **line);
 /* Free */
 void				clear_token(t_token **tokens);
 
-t_token				consume_token(t_token **tokens);
+t_token				*consume_token(t_token ***tokens);
 
 #endif /* TOKENIZATION_H */

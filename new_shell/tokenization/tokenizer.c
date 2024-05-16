@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:41:22 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/15 17:42:25 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/15 17:16:17 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_token	*tokenizer_handler(char *line)
 		if (error)
 			return (clear_token(&tokens), NULL);
 		if (ft_isspace(*line))
-			append_space(&tokens, &line);
+			skip_spaces(&line);
 		else if (!ft_strncmp(line, "<", 1) || !ft_strncmp(line, ">", 1)
 			|| !ft_strncmp(line, "|", 1) || !ft_strncmp(line, "&&", 2)
 			|| !ft_strncmp(line, "(", 1) || !ft_strncmp(line, ")", 1))
@@ -63,6 +63,7 @@ t_token	*tokenizer(void)
 	t_token	*tokens;
 	char	*line;
 
+	g_minishell->nb_tokens = 0;
 	line = g_minishell->line;
 	tokens = tokenizer_handler(line);
 	free(line);

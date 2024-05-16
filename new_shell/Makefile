@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/05/15 16:53:05 by baouragh         ###   ########.fr        #
+#    Updated: 2024/05/16 16:44:39 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ LIBFT			:= libft/libft.a
 READLINE		:= /Users/baouragh/readline/lib
 
 CC				:= cc
-CFLAGS			:= -Wall -Werror -Wextra -fsanitize=address -g3
+CFLAGS			:= -Wall -Werror -Wextra #-fsanitize=address -g3
 RM				:= rm -f
 
 # BUILTINS		:=	builtins/ft_cd.c			\

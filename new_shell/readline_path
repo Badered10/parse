@@ -1,0 +1,7 @@
+MAC PATH:
+# include "/Users/baouragh/readline/include/readline/history.h"
+# include "/Users/baouragh/readline/include/readline/readline.h"
+
+LINUX PATH:
+# include "/nfs/homes/baouragh/readline/include/readline/history.h"
+# include "/nfs/homes/baouragh/readline/include/readline/readline.h"

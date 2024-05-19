@@ -6,15 +6,15 @@
 /*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:38:55 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/11 10:13:26 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/05/16 11:29:58 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	is_quote(char c)
+int	is_special(char c)
 {
-	return (c == '\'' || c == '"');
+	return (c == '\'' || c == '"' || c == '*' || c == '&' || c == '$');
 }
 
 int	is_separator(char *s)

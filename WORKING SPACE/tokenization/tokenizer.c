@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:41:22 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/16 16:51:22 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/17 16:27:57 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,8 @@ t_token	*tokenizer(void)
 	char	*line;
 
 	g_minishell->nb_tokens = 0;
-	line = g_minishell->line;
+	line = ft_strtrim(g_minishell->line, " \t\n\v\f\r");
 	tokens = tokenizer_handler(line);
 	free(line);
-	g_minishell->line = NULL;
 	return (tokens);
 }

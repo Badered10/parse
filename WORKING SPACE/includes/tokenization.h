@@ -17,56 +17,62 @@
 
 typedef enum e_type
 {
-	WORD, // "word haha"
-	PIPE,// '|' one
-	AND, // && 
-	OR, // || tow
-	LL_REDIR, // <<
-	RR_REDIR, // >>
-	L_REDIR, // <
-	R_REDIR, // >
-	L_PAREN, // (
-	R_PAREN,// )
-	WHITESPACE, // spaces
-	END
-}					t_type;
+    WORD,
+    PIPE,
+    AND,
+    OR,
+    LL_REDIR,
+    RR_REDIR,
+    L_REDIR,
+    R_REDIR,
+    END,
+    L_PAREN,
+    R_PAREN,
+    S_QUOTE,
+    D_QUOTE,
+    ASTERISK,
+    DOLLAR,
+    AMPERSAND,
+    WHITESPACE,
+    ERROR
+}                    t_type;
 
 typedef struct s_token
 {
-	char			*value;
-	t_type			type;
-	struct s_token	*prev;
-	struct s_token	*next;
-}					t_token;
+    char            *value;
+    t_type            type;
+    struct s_token    *prev;
+    struct s_token    *next;
+}                    t_token;
 
 /* Utils */
-/* Function that checks if the character is either 
+/* Function that checks if the character is either
 a single quote or a double quote. */
-int					is_quote(char c);
+int                    is_special(char c);
 // Function that checks if the character is a separator.
-int					is_separator(char *s);
+int                    is_separator(char *s);
 // Function that skips the whitespaces.
-void				skip_spaces(char **line);
+void                skip_spaces(char **line);
 // Function that skips the quotes.
-bool				skip_quotes(char *line, size_t *i);
+bool                skip_quotes(char *line, size_t *i);
 // Function that prints in case of error.
-void				print_quote_err(char c);
+void                print_quote_err(char c);
 
 /* Helpers */
 // Function that create and return a new token node.
-t_token				*new_token(char *value, t_type type);
+t_token                *new_token(char *value, t_type type);
 // Function that add a new token to the list of tokens.
-void				add_token_back(t_token **tokens, t_token *new_token);
+void                add_token_back(t_token **tokens, t_token *new_token);
 // Function that append the separator to the list of tokens.
-int					append_separator(t_token **tokens, char **line,
-						t_type type);
+int                    append_separator(t_token **tokens, char **line,
+                        t_type type);
 // Function that append other tokens to the list of tokens.
-int					append_identifier(t_token **tokens, char **line);
+int                    append_identifier(t_token **tokens, char **line);
 // Function that append the spaces.
-int					append_space(t_token **tokens, char **line);
+int                    append_space(t_token **tokens, char **line);
 
 /* Free */
-void				clear_token(t_token **tokens);
+void                clear_token(t_token **tokens);
 
 t_token				*consume_token(t_token ***tokens);
 

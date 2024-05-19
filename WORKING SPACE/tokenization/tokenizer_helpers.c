@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_helpers.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:01:30 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/16 16:52:45 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/16 12:07:42 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	append_separator(t_token **tokens, char **line, t_type type)
 		value = ft_substr(*line, 0, 1);
 	token = new_token(value, type);
 	if (!token)
-		return (0);
+		return (free(value), 0);
 	add_token_back(tokens, token);
 	(*line)++;
 	if (type == RR_REDIR || type == LL_REDIR || type == AND || type == OR)
@@ -70,16 +70,15 @@ int	append_identifier(t_token **tokens, char **line)
 
 	tmp = *line;
 	i = 0;
-	while (tmp[i] && !is_separator(tmp + i))
+	if (is_special(*tmp))
 	{
-		if (is_quote(tmp[i]))
-		{
-			if (!skip_quotes(tmp, &i))
-				return (print_quote_err(tmp[i]), 0);
-		}
-		else
-			i++;
+		value = ft_substr(tmp, 0, 1);
+		new = choose_token(value, *tmp);
+		*line += 1;
+		return (add_token_back(tokens, new), 1);
 	}
+	while (tmp[i] && !is_separator(tmp + i) && !is_special(*(tmp + i)))
+		i++;
 	value = ft_substr(tmp, 0, i);
 	if (!value)
 		return (0);

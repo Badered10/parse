@@ -34,63 +34,63 @@
 
 typedef struct s_env
 {
-	char			*key;
-	char			*value;
-}					t_env;
+    char            *key;
+    char            *value;
+}                    t_env;
 
 typedef struct s_minishell
 {
-	char			*line;
-	t_token			*tokens;
-	t_env			**our_env;
-	t_node			*ast;
-	int				exit_status;
-	int				nb_tokens;
-}					t_minishell;
+    char            *line;
+    t_token            *tokens;
+    t_env            **our_env;
+    t_ast            *ast;
+    int                exit_status;
+    int                nb_tokens;
+}                    t_minishell;
 
-extern t_minishell	*g_minishell;
+extern t_minishell    *g_minishell;
 
 /* Environments */
 // Function that allocate in a safe way.
-void				*safe_malloc(size_t size, void **data, int i);
+void                *safe_malloc(size_t size, void **data, int i);
 // Function that set environment variable.
-void				set_env_var(t_env **env, char *var, char *new);
+void                set_env_var(t_env **env, char *var, char *new);
 // Function that get the value of an environment variable.
-char				*get_env_var(t_env **env, char *var);
+char                *get_env_var(t_env **env, char *var);
 // Function that duplicate env variable.
-t_env				**dup_env(char **env);
+t_env                **dup_env(char **env);
 
 // The main function that tokenizes the input string.
-t_token				*tokenizer(void);
+t_token                *tokenizer(void);
 
 /* Builtins */
 // Function that prints the input with/without newline.
-void				ft_echo(char **args);
+void                ft_echo(char **args);
 // Function that change current working directory.
-void				ft_cd(t_minishell *mini, char *path);
+void                ft_cd(t_minishell *mini, char *path);
 // Function that prints current working directory.
-void				ft_pwd(t_env **env);
+void                ft_pwd(t_env **env);
 // Function that export variable to the environment.
-void				ft_export(void);
+void                ft_export(void);
 // Function that unset environment variable.
-void				ft_unset(void);
+void                ft_unset(void);
 // Function that prints the env.
-void				ft_env(t_env **env);
+void                ft_env(t_env **env);
 // Function that exit shell.
-void				ft_exit(void);
+void                ft_exit(void);
 
 /* Builtins utils */
 // Function that execute the builtins.
-int					execute_builtins(t_minishell *mini, char **args);
+int                    execute_builtins(t_minishell *mini, char **args);
 // Function that checks if the command is a builtin or not.
-bool				ft_is_builtin(char *arg);
+bool                ft_is_builtin(char *arg);
 
 // Function that handle signals.
-void				signals(void);
+void                signals(void);
 
 // Function that cleanup minishell.
-void				cleanup_minishell(void);
+void                cleanup_minishell(void);
 // Function that clean the environment.
-void				clear_env(void);;
+void                clear_env(void);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/05/17 10:42:11 by baouragh         ###   ########.fr        #
+#    Updated: 2024/05/23 19:02:53 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,6 +68,7 @@ all:	$(NAME)
 
 $(LIBFT):
 	make -C $(LIBFT_PATH)
+	make -C $(LIBFT_PATH) bonus
 
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft -lreadline -L $(READLINE) -o $(NAME) 

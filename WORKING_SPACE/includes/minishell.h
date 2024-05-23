@@ -28,9 +28,8 @@
 # include "tokenization.h"
 # include "charitr.h"
 # include "../libft/libft.h"
-# include "/Users/baouragh/readline/include/readline/history.h"
-# include "/Users/baouragh/readline/include/readline/readline.h"
-
+# include "/nfs/homes/baouragh/readline/include/readline/history.h"
+# include "/nfs/homes/baouragh/readline/include/readline/readline.h"
 
 typedef struct s_env
 {

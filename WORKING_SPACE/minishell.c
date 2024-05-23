@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/22 15:22:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/23 20:18:46 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,15 @@ t_minishell	*g_minishell;
 void printAST(t_node* node) 
 {
     if (!node) return;
-    if (node->type == STRING_NODE) 
-        printf("%s\n", node->data.string);
+    if (node->type == STRING_NODE)
+    {
+        while (node->data.list)
+        {
+            printf("'%s' ", (char*)node->data.list->content);
+            node->data.list = node->data.list->next;
+        }
+        printf("\n");
+    }
 	else if(node->type == PAIR_NODE)
 	{
 		// printf("(\n");
@@ -58,6 +65,7 @@ int    main(int ac, char **av, char **env)
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
+        printAST(g_minishell->ast);
         // execution();
         clear_token(&g_minishell->tokens);
         free(g_minishell->line);

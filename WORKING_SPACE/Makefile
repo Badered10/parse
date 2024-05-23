@@ -34,6 +34,12 @@ ENVIRONMENT		:=	environment/env_utils.c		\
 
 PARSING			:= parsing/parse.c
 
+SYNTAXING		:=	syntax//syntax.c					\
+					syntax/pipe_or_and.c				\
+					syntax/redirection.c				\
+					syntax/parenthesis_utils.c			\
+					syntax/parenthesis.c
+
 SIGNALS			:=	signals/handle_signals.c
 
 CLEAN			:=	clean/clean.c
@@ -53,6 +59,7 @@ SRCS			:=	$(BUILTINS)		\
 					$(CLEAN)		\
 					$(PARSING)		\
 					$(NODES)		\
+					$(SYNTAXING)		\
 					minishell.c
 					
 OBJS			:=	$(SRCS:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/17 09:54:06 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/19 15:34:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_minishell
     char            *line;
     t_token            *tokens;
     t_env            **our_env;
-    t_ast            *ast;
+    t_node           *ast;
     int                exit_status;
     int                nb_tokens;
 }                    t_minishell;
@@ -92,5 +92,39 @@ void                signals(void);
 void                cleanup_minishell(void);
 // Function that clean the environment.
 void                clear_env(void);
+
+// Until here !
+
+// The main function for parsing the input and return our AST structure.
+t_ast                *parser(void);
+
+// Function that specifie the the type of the token.
+t_token                *choose_token(char *value, char c);
+
+// The function is the second phase of the detection of syntax error.
+int                    syntax_second_phase(t_token *token);
+
+// The function is the third phase of the detection of syntax error.
+int                    syntax_third_phase(t_token *token);
+
+// Function that check if the left expression is valid or not.
+int                    first_checker_left(t_token *token);
+
+// Function that check if the right expression is valid or not.
+int                    first_checker_right(t_token *token);
+
+// Function that checks if the current expression is a (PIPE || OR || AND).
+int                    is_pipe_or_and(t_type type);
+
+void                print_tokens(t_token *token);
+
+int                    is_left_valid3(t_type type);
+int                    is_right_valid3(t_type type);
+
+int                    check_right_parenthesis(t_token *token);
+
+int                    nb_paren(void);
+int                    nb_quotes(void);
+
 
 #endif

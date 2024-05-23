@@ -16,6 +16,14 @@
 # define LEFT 0
 # define RIGHT 1
 #include "tokenization.h"
+
+typedef struct s_ast
+{
+    char            *value;
+    struct s_ast    *left;
+    struct s_ast    *right;
+}                    t_ast;
+
 typedef struct t_tree
 {
     char *value;
@@ -63,5 +71,8 @@ t_node *string_node_new(char *string);
 t_node *error_node_new(const char *msg);
 t_node *parsing(t_token *tokens);
 t_node *parse(t_token **tokens);
+
+// Function that checks the syntax.
+int                    syntax(void);
 
 #endif

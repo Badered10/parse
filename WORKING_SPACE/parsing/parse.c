@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/05/17 16:10:55 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/22 15:22:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,14 +56,21 @@ t_node *parse(t_token **tokens) // input :  (a (b c))
 
 t_node *parsing(t_token *tokens)
 {
+    t_node *tmp;
     t_node *res;
+    int x;
 
-    res = NULL;
+    x = 0;
+    if (syntax() == -1)
+        return (NULL);
     while(tokens)
     {
-        res = parse(&tokens);
+        tmp = parse(&tokens);
         // printf("from while-> '%s'\n",res->data.string);
-        printf("from while-> '%s'\n",res->data.string);
+        printf("from while-> '%s'\n",tmp->data.string);
+        if (x == 0)
+            res = tmp;
+        x++;
         tokens = tokens->next;
     }
     // res = parse_pair(&tokens); // (a b)

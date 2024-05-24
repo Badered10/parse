@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/05/23 20:45:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/24 16:29:18 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static t_node *parse_cmd(t_token **tokens) // "ls -a file"
         (*tokens) = (*tokens)->next;
         x++;
     }
-        return(printf("%d\n",x),string_node_new(list));
+        return(string_node_new(list));
 }
 
 static t_node *parse_pipe(t_token **tokens) // 
@@ -66,6 +66,7 @@ static t_node *parse_pipe(t_token **tokens) //
 
     left = NULL;
     right = NULL;
+    type = -99;
     if((*tokens)->type == L_PAREN)
             (*tokens) = (*tokens)->next;
     if(*tokens && (*tokens)->type == WORD)
@@ -78,7 +79,7 @@ static t_node *parse_pipe(t_token **tokens) //
         (*tokens) = (*tokens)->next;
         if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
             (*tokens) = (*tokens)->next;
-        return (printf("PAIR, L:%p, R:%p\n",left, right),pair_node_new(left, parse_pipe(tokens)));
+        return (printf("PAIR, L:%p, R:%p, T: %u\n",left, right, type),pair_node_new(left, parse_pipe(tokens), type));
     }
     else
         return (printf("LEFT , %p\n",left),left);

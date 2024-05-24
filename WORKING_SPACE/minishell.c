@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/23 20:18:46 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/24 16:32:39 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,15 @@
 #include <errno.h>
 t_minishell	*g_minishell;
 
-void printAST(t_node* node) 
+void printAST(t_node* node , int x) 
 {
     if (!node) return;
     if (node->type == STRING_NODE)
     {
+        if (x == 1)
+            printf("LEFT ----> ");
+            else if (x == 0)
+                printf("RIGHT ----> ");      
         while (node->data.list)
         {
             printf("'%s' ", (char*)node->data.list->content);
@@ -29,8 +33,9 @@ void printAST(t_node* node)
 	else if(node->type == PAIR_NODE)
 	{
 		// printf("(\n");
-        printAST(node->data.pair.left);
-        printAST(node->data.pair.right);
+        printf("TYPE %u\n",node->data.pair.type);
+        printAST(node->data.pair.left, 1);
+        printAST(node->data.pair.right, 0);
         // printf(")\n");
     }
 }
@@ -65,7 +70,7 @@ int    main(int ac, char **av, char **env)
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
-        printAST(g_minishell->ast);
+        printAST(g_minishell->ast, -1);
         // execution();
         clear_token(&g_minishell->tokens);
         free(g_minishell->line);

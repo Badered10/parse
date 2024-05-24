@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/19 15:34:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/05/24 19:58:26 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 # include "tokenization.h"
 # include "charitr.h"
 # include "../libft/libft.h"
-# include "/nfs/homes/baouragh/readline/include/readline/history.h"
-# include "/nfs/homes/baouragh/readline/include/readline/readline.h"
+# include "/Users/baouragh/readline/include/readline/history.h"
+# include "/Users/baouragh/readline/include/readline/readline.h"
 
 typedef struct s_env
 {

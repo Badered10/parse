@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/24 16:18:41 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/04 22:33:34 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,6 @@
 #include "tokenization.h"
 #include "../libft/libft.h"
 
-typedef struct s_ast
-{
-    char            *value;
-    struct s_ast    *left;
-    struct s_ast    *right;
-}                    t_ast;
-
-// typedef struct s_cmd
-// {
-// 	char *arg;
-// 	struct s_cmd *next;
-// }				t_cmd;
-
-typedef struct t_tree
-{
-    char *value;
-    struct t_tree *left;
-    struct t_tree *right;
-}               t_tree;
 
 typedef char CHAR_VALUE; // char
 typedef const char * ERROR_VALUE;
@@ -46,11 +27,21 @@ typedef enum e_node // enum define two types of nodes.
     ERROR_NODE = -1,
 	PAIR_NODE,
 	CHAR_NODE,
+	REDIR_NODE,
 	STRING_NODE
 }			e_node_type;
 
 typedef struct t_node t_node;
 
+
+typedef struct s_redir
+{
+	t_type type;
+    int mode;
+    int fd;
+    char *file;
+    t_list *cmd;
+}              t_redir;
 
 typedef struct s_pair_value
 {
@@ -64,6 +55,7 @@ typedef union u_node_value
 	t_pair_value	pair;
 	CHAR_VALUE		char_value;
 	t_list			*list;
+	t_redir			redir;
     ERROR_VALUE 	error;
 }				u_node_value;
 
@@ -78,8 +70,9 @@ t_node *char_node_new(char c);
 t_node *pair_node_new(t_node *left, t_node *right, t_type type);
 t_node *string_node_new(t_list *list);
 t_node *error_node_new(const char *msg);
+t_node *redir_node_new(t_type type , char *file, t_list *cmd);
 t_node *parsing(t_token *tokens);
-t_node *parse(t_token **tokens);
+// t_node *parse(t_token **tokens);
 
 // Function that checks the syntax.
 int                    syntax(void);

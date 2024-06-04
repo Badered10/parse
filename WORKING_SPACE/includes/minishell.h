@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/24 19:58:26 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/04 21:36:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@
 # include "tokenization.h"
 # include "charitr.h"
 # include "../libft/libft.h"
-# include "/Users/baouragh/readline/include/readline/history.h"
-# include "/Users/baouragh/readline/include/readline/readline.h"
+#include <readline/readline.h>
+#include <readline/history.h>
+
 
 typedef struct s_env
 {
@@ -95,7 +96,7 @@ void                clear_env(void);
 // Until here !
 
 // The main function for parsing the input and return our AST structure.
-t_ast                *parser(void);
+// t_ast                *parser(void);
 
 // Function that specifie the the type of the token.
 t_token                *choose_token(char *value, char c);

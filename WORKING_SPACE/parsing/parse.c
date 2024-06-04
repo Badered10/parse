@@ -6,59 +6,59 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/05/24 16:29:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/04 22:45:35 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../includes/minishell.h"
 
-// static t_cmd *new_cmd(char *arg)
-// {
-//     t_cmd *new;
+static t_node *do_red(t_token **tokens)
+{
+    t_type type;
+    type = (*tokens)->type;
+    (*tokens) = (*tokens)->next;
+    if((*tokens)->type == WHITESPACE)
+        (*tokens) = (*tokens)->next;
+    return (redir_node_new(type, (*tokens)->value, NULL));
+}
 
-//     if (!arg)
-//         return(NULL);
-//     new = malloc(sizeof(t_cmd));
-//     if (!new)
-//         return(NULL);
-//     new->arg = ft_strdup(arg);
-//     if (!new->arg)
-//         return(NULL);
-//     new->next = NULL;
-// }
-
-// static void add_arg_back(t_cmd **list, t_cmd *new)
-// {
-    
-// }
-
-static t_node *parse_cmd(t_token **tokens) // "ls -a file"
+static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
 {
     t_list *list;
     t_list *new;
+    t_node *red;
     int x;
 
     x = 0;
+    red = NULL;
     list = NULL;
     list = ft_lstnew((*tokens)->value);
     if (!list)
         return(NULL);
-    while( *tokens && ((*tokens)->type == WORD || (*tokens)->type == WHITESPACE || (*tokens)->type == R_PAREN))
+    while( *tokens && ((*tokens)->type == WORD || (*tokens)->type == WHITESPACE || (*tokens)->type == R_PAREN || ((*tokens)->type >= 4 && (*tokens)->type <= 7)))
     {
-        if(x && (*tokens)->type != WHITESPACE && (*tokens)->type != R_PAREN)
+        if(x && (*tokens)->type != WHITESPACE && (*tokens)->type != R_PAREN && ((*tokens)->type < 4 || (*tokens)->type > 7))
         {
             new = ft_lstnew((*tokens)->value);
             if (!new)
                 return(NULL);
             ft_lstadd_back(&list,new);
         }
+        else if((*tokens)->type >= 4 && (*tokens)->type <= 7)
+            red = do_red(tokens);
         (*tokens) = (*tokens)->next;
         x++;
     }
+    if(!red)
         return(string_node_new(list));
+    else
+    {
+        red->data.redir.cmd = list;
+        return(red);
+    }
 }
 
-static t_node *parse_pipe(t_token **tokens) // 
+static t_node *parse_pipe(t_token **tokens) // ls < file -la | cat 
 {
     t_node *left;
     t_node *right;
@@ -66,7 +66,6 @@ static t_node *parse_pipe(t_token **tokens) //
 
     left = NULL;
     right = NULL;
-    type = -99;
     if((*tokens)->type == L_PAREN)
             (*tokens) = (*tokens)->next;
     if(*tokens && (*tokens)->type == WORD)
@@ -79,10 +78,10 @@ static t_node *parse_pipe(t_token **tokens) //
         (*tokens) = (*tokens)->next;
         if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
             (*tokens) = (*tokens)->next;
-        return (printf("PAIR, L:%p, R:%p, T: %u\n",left, right, type),pair_node_new(left, parse_pipe(tokens), type));
+        return (pair_node_new(left, parse_pipe(tokens), type));
     }
     else
-        return (printf("LEFT , %p\n",left),left);
+        return (left);
 }
 
 t_node *parse_seq(t_token **tokens) // input :  "ls -a" | "cat -e file" | cat || ls && cat
@@ -102,21 +101,11 @@ t_node *parsing(t_token *tokens)
     while(tokens)
     {
         tmp = parse_seq(&tokens);
-            // printf("from while-> '%s'\n",res->data.string);
-        // if(tmp->type == STRING_NODE)
-        //     printf("from while-> '%s'\n",tmp->data.string);
-        // if (tmp && tmp->type == PAIR_NODE)
-        // {
-        //     printf("L from while -> '%s'\n",tmp->data.pair.left->data.string);
-        //     printf("R from while -> '%s'\n",tmp->data.pair.right->data.string);
-        // }
         if (x == 0)
             res = tmp;
         x++;
         if(tokens)
             tokens = tokens->next;
     }
-    // res = parse_pair(&tokens); // (a b)
-    // printf("type is %s\n",tokens->value);
     return(res);
 }

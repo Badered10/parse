@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/24 16:32:39 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/04 22:41:18 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,28 @@ void printAST(t_node* node , int x)
 	else if(node->type == PAIR_NODE)
 	{
 		// printf("(\n");
-        printf("TYPE %u\n",node->data.pair.type);
+        if (x == 1)
+            printf("LEFT ----> ");
+            else if (x == 0)
+                printf("RIGHT ----> ");  
+        printf("------------------->PIPE<----------------------\n");
         printAST(node->data.pair.left, 1);
         printAST(node->data.pair.right, 0);
         // printf(")\n");
+    }
+    else if (node->type == REDIR_NODE)
+    {
+         if (x == 1)
+            printf("LEFT ----> ");
+            else if (x == 0)
+                printf("RIGHT ----> ");
+        printf("REDIR NODE , file %s\n",node->data.redir.file);
+        while (node->data.redir.cmd)
+        {
+            printf("'%s' ", (char*)node->data.redir.cmd->content);
+            node->data.redir.cmd = node->data.redir.cmd->next;
+        }
+        printf("\n");
     }
 }
 

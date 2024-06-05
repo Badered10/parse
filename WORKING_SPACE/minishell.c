@@ -36,7 +36,7 @@ void printAST(t_node* node , int x)
         if (x == 1)
             printf("LEFT ----> ");
             else if (x == 0)
-                printf("RIGHT ----> ");  
+                printf("RIGHT ----> ");
         printf("------------------->PIPE<----------------------\n");
         printAST(node->data.pair.left, 1);
         printAST(node->data.pair.right, 0);
@@ -48,7 +48,7 @@ void printAST(t_node* node , int x)
             printf("LEFT ----> ");
             else if (x == 0)
                 printf("RIGHT ----> ");
-        printf("REDIR NODE , file %s\n",node->data.redir.file);
+        printf("REDIR NODE , name: '%s'\n",node->data.redir.file);
         while (node->data.redir.cmd)
         {
             printf("'%s' ", (char*)node->data.redir.cmd->content);

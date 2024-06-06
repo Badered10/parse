@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/06 17:51:49 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 19:29:34 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ void   print_tokens(t_token *tokens)
     token = tokens;
     while (token)
     {
-        // printf("value => '%s'\n", token->value);
-        // printf("type ==> '%u'\n", token->type);
+        printf("value => '%s'\n", token->value);
+        printf("type ==> '%u'\n", token->type);
         token = token->next;
     }
 }
@@ -105,10 +105,16 @@ int    main(int ac, char **av, char **env)
 		g_minishell->tokens = tokenizer();
 		if (!g_minishell->tokens)
 			continue ;
+        if (syntax() == -1)
+        {
+            set_env_var(g_minishell->our_env, "?", ft_itoa(130));
+            clear_token(&g_minishell->tokens);
+            continue ;
+        }
+        expander();
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
-        expander();
         printAST(g_minishell->ast, -1);
         // execution();
         clear_token(&g_minishell->tokens);

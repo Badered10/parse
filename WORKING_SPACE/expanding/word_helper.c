@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   word_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 22:12:44 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/05 17:30:09 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/06 19:34:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*get_var(char *s, int *i)
 	if (!ft_strncmp(&expand[j], "?", 1) || !ft_strncmp(&expand[j], "_", 1))
 		j++;
 	else
-		while (expand[j] && ft_isalnum(expand[j]))
+		while (expand[j] && (ft_isalnum(expand[j]) || !ft_strncmp(&expand[j], "_", 1)))
 			j++;
 	*i += j;
 	var = ft_substr(expand, 0, j);

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/06 17:28:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 19:26:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
                 return(NULL);
             ft_lstadd_back(&red_list, new);
         }
-        if (*tokens)
+        // if (*tokens)
             (*tokens) = (*tokens)->next;
     }
     if(!red_list)
@@ -69,11 +69,9 @@ static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
 static t_node *parse_pipe(t_token **tokens) // ls < file -la | cat 
 {
     t_node *left;
-    t_node *right;
     t_type type;
 
     left = NULL;
-    right = NULL;
     if((*tokens)->type == L_PAREN)
             (*tokens) = (*tokens)->next;
     if(*tokens && (*tokens)->type == WORD)

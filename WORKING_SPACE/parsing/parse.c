@@ -6,17 +6,16 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/04 22:45:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 10:03:02 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../includes/minishell.h"
 
-static t_node *do_red(t_token **tokens, t_list *list)
+static t_node *do_red(t_token **tokens) // take file and type
 {
     t_type type;
     char *file;
-    // t_list  *new;
 
     printf("CALLED\n");
     type = (*tokens)->type;
@@ -24,34 +23,23 @@ static t_node *do_red(t_token **tokens, t_list *list)
     if((*tokens)->type == WHITESPACE)
         (*tokens) = (*tokens)->next;
     file = (*tokens)->value;
-    // (*tokens) = (*tokens)->next;
-    // while (*tokens && (*tokens)->type != END)
-    // {
-    //     if((*tokens)->type != WHITESPACE && (*tokens)->type != R_PAREN)
-    //     {
-    //         new = ft_lstnew((*tokens)->value);
-    //         if (!new)
-    //             return(NULL);
-    //         ft_lstadd_back(&list,new);
-    //     }
-    //     (*tokens) = (*tokens)->next;
-    // }
-    return (redir_node_new(type, file, list));
+    return (redir_node_new(type, file));
 }
 
 static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
 {
-    t_list *list;
+    t_list *cmd_list;
+    t_list *red_list;
     t_list *new;
     t_node *red;
     int x;
 
     x = 0;
-    red = NULL;
-    list = NULL;
-    list = ft_lstnew((*tokens)->value);
-    if (!list)
-        return(NULL);
+    cmd_list = NULL;
+    red_list = NULL;
+    // cmd_list = ft_lstnew((*tokens)->value);
+    // if (!cmd_list)
+    //     return(NULL);
     while(*tokens && ((*tokens)->type == WORD || (*tokens)->type == WHITESPACE || (*tokens)->type == R_PAREN || ((*tokens)->type >= 4 && (*tokens)->type <= 7)))
     {
         if(x && (*tokens)->type != WHITESPACE && (*tokens)->type != R_PAREN && ((*tokens)->type < 4 || (*tokens)->type > 7))
@@ -59,20 +47,25 @@ static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
             new = ft_lstnew((*tokens)->value);
             if (!new)
                 return(NULL);
-            ft_lstadd_back(&list,new);
+            ft_lstadd_back(&cmd_list,new);
         }
-        else if((*tokens)->type >= 4 && (*tokens)->type <= 7)
-            red = do_red(tokens, list);
+        else if((*tokens)->type >= 4 && (*tokens)->type <= 7) // > file -a
+        {
+            red = do_red(tokens);
+            new = ft_lstnew(red);
+            if (!new)
+                return(NULL);
+            ft_lstadd_back(&red_list, new);
+        }
         if (*tokens)
             (*tokens) = (*tokens)->next;
         x++;
     }
-    if(!red)
-        return(string_node_new(list));
+    if(!red_list)
+        return(string_node_new(cmd_list));
     else
     {
-        red->data.redir.cmd = list;
-        return(red);
+        //return (redir_node_new());
     }
 }
 

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/04 22:33:34 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 10:04:23 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ typedef union u_node_value
 {
 	t_pair_value	pair;
 	CHAR_VALUE		char_value;
-	t_list			*list;
-	t_redir			redir;
+	t_list			*cmd;
+	t_list			*redir;
     ERROR_VALUE 	error;
 }				u_node_value;
 
@@ -70,7 +70,7 @@ t_node *char_node_new(char c);
 t_node *pair_node_new(t_node *left, t_node *right, t_type type);
 t_node *string_node_new(t_list *list);
 t_node *error_node_new(const char *msg);
-t_node *redir_node_new(t_type type , char *file, t_list *cmd);
+t_node *redir_node_new(t_list *red_list ,t_type type ,char *file);
 t_node *parsing(t_token *tokens);
 // t_node *parse(t_token **tokens);
 

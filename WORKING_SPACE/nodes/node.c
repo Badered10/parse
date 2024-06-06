@@ -6,23 +6,23 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 14:02:16 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/04 22:34:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 10:05:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_node *redir_node_new(t_type type , char *file, t_list *cmd) // ls < file -la
+t_node *redir_node_new(t_list *red_list) // ls < file -la
 {
     t_node *new;
-    (void)type;
     new = malloc(sizeof(t_node));
     if(!new)
         return(NULL);
     new->type = REDIR_NODE;
-    new->data.redir.type = type;
-    new->data.redir.file = file;
-    new->data.redir.cmd = cmd;
+    new->data.redir = red_list;
+    // new->data.redir.type = type;
+    // new->data.redir.file = file;
+    // new->data.redir.cmd = cmd;
     return (new);
 }
 
@@ -43,7 +43,7 @@ t_node *string_node_new(t_list *list)
     if(!new)
         return(NULL);
     new->type = STRING_NODE;
-    new->data.list = list;
+    new->data.cmd = list;
     return (new);
 }
 t_node *pair_node_new(t_node *left, t_node *right, t_type type)

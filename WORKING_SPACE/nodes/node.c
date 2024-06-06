@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 14:02:16 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/06 10:05:41 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 10:45:39 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ t_node *redir_node_new(t_list *red_list) // ls < file -la
         return(NULL);
     new->type = REDIR_NODE;
     new->data.redir = red_list;
-    // new->data.redir.type = type;
-    // new->data.redir.file = file;
-    // new->data.redir.cmd = cmd;
     return (new);
 }
 

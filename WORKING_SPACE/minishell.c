@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/04 22:41:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 10:55:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@ void printAST(t_node* node , int x)
             printf("LEFT ----> ");
             else if (x == 0)
                 printf("RIGHT ----> ");      
-        while (node->data.list)
+        while (node->data.cmd)
         {
-            printf("'%s' ", (char*)node->data.list->content);
-            node->data.list = node->data.list->next;
+            printf("'%s' ", (char*)node->data.cmd->content);
+            node->data.cmd = node->data.cmd->next;
         }
         printf("\n");
     }
@@ -48,13 +48,18 @@ void printAST(t_node* node , int x)
             printf("LEFT ----> ");
             else if (x == 0)
                 printf("RIGHT ----> ");
-        printf("REDIR NODE , name: '%s'\n",node->data.redir.file);
-        while (node->data.redir.cmd)
+        while(node->data.redir)
         {
-            printf("'%s' ", (char*)node->data.redir.cmd->content);
-            node->data.redir.cmd = node->data.redir.cmd->next;
+            t_redir *new = node->data.redir->content;
+            printf("REDIR NODE , name: '%s'\n",new->file);
+            while (new->cmd)
+            {
+                printf("'%s' ", (char*)new->cmd->content);
+                new->cmd = new->cmd->next;
+            }
+            printf("\n");
+            node->data.redir = node->data.redir->next;
         }
-        printf("\n");
     }
 }
 

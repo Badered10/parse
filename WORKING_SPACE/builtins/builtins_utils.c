@@ -32,13 +32,9 @@ bool	ft_is_builtin(char *arg)
 {
 	if (!arg)
 		return (false);
-	if (!ft_strcmp(arg, "echo")
-		|| !ft_strcmp(arg, "cd")
-		|| !ft_strcmp(arg, "exit")
-		|| !ft_strcmp(arg, "pwd")
-		|| !ft_strcmp(arg, "export")
-		|| !ft_strcmp(arg, "unset")
-		|| !ft_strcmp(arg, "env"))
+	if (!ft_strcmp(arg, "echo") || !ft_strcmp(arg, "cd") || !ft_strcmp(arg,
+			"exit") || !ft_strcmp(arg, "pwd") || !ft_strcmp(arg, "export")
+		|| !ft_strcmp(arg, "unset") || !ft_strcmp(arg, "env"))
 		return (true);
 	return (false);
 }

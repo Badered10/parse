@@ -6,7 +6,7 @@
 /*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:40:46 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/21 17:13:32 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/06 16:33:16 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,17 @@ int	check_right_parenthesis(t_token *token)
 {
 	if (!token->prev || !is_left_valid3(token->prev->type))
 	{
-		printf(RED "minishell: syntax error near unexpected token `)'\n" RESET);
+		print_errors("syntax error near unexpected token `)'");
 		return (-1);
 	}
 	else if (!token->next || !is_right_valid3(token->next->type))
 	{
 		if (!is_right_valid3(token->next->type))
 		{
-			printf(RED "minishell: syntax error near unexpected token `%s'\n" RESET,
-				token->next->value);
+			ft_putstr_fd(RED "badashell$ : ", 2);
+			ft_putstr_fd("syntax error near unexpected token `", 2);
+			ft_putstr_fd(token->next->value, 2);
+			ft_putstr_fd("`\n" RESET, 2);
 			return (-1);
 		}
 	}

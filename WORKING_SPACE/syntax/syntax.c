@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:13:52 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/21 14:35:56 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/06 17:53:40 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ t_token	*custome_tokens(void)
 	{
 		if (curr->type != WHITESPACE)
 		{
-			new = new_token(curr->value, curr->type);
+			new = new_token(ft_strdup(curr->value), curr->type);
 			add_token_back(&new_list, new);
 		}
 		curr = curr->next;
@@ -42,15 +42,11 @@ int	syntax_first_phase(t_token *token)
 	return (0);
 }
 
-int	general_check()
+int	general_check(void)
 {
-	int	count;
-
-	count = nb_paren();
-	if (count == -1)
-        return (-1);
-	count = nb_quotes();
-	if (count == -1)
+	if (nb_paren())
+		return (-1);
+	if (nb_quotes())
 		return (-1);
 	return (0);
 }
@@ -58,20 +54,26 @@ int	general_check()
 int	syntax(void)
 {
 	t_token	*token;
+	t_token	*temp;
 
 	token = custome_tokens();
+	temp = token;
 	while (token)
 	{
-		if (syntax_first_phase(token) == -1)  // PIPE OR AND.
-			return (clear_token(&token), -1);
-		if (syntax_second_phase(token) == -1) // REDIRECTION.
-			return (clear_token(&token), -1);
-		if (syntax_third_phase(token) == -1)  // PARENTHESIS.
-			return (clear_token(&token), -1);
+		if (syntax_first_phase(token) || syntax_second_phase(token)
+			|| syntax_third_phase(token))
+			return (clear_token(&temp), -1);
 		token = token->next;
 	}
 	if (general_check() == -1)
-		return (clear_token(&token), -1);
-	clear_token(&token);
+		return (clear_token(&temp), -1);
+	clear_token(&temp);
 	return (0);
 }
+
+// if (syntax_first_phase(token) == -1) // PIPE OR AND.
+// 			return (clear_token(&token), -1);
+// 		if (syntax_second_phase(token) == -1) // REDIRECTION.
+// 			return (clear_token(&token), -1);
+// 		if (syntax_third_phase(token) == -1) // PARENTHESIS.
+// 			return (clear_token(&token), -1);

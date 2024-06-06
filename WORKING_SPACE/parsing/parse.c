@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/06 11:01:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 17:28:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ static t_redir *do_red(t_token **tokens) // take file and type
     if((*tokens)->type == WHITESPACE)
         (*tokens) = (*tokens)->next;
     new->file = (*tokens)->value;
-    
     return (new);
 }
 
@@ -105,8 +104,6 @@ t_node *parsing(t_token *tokens)
     int x;
 
     x = 0;
-    if (syntax() == -1)
-        return (NULL);
     while(tokens)
     {
         tmp = parse_seq(&tokens);

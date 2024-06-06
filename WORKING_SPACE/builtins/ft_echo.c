@@ -6,30 +6,11 @@
 /*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:25:01 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/13 16:17:44 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/04 17:01:51 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	ft_exit_status(char *s)
-{
-	if (!ft_strncmp(s, "$?", 2))
-	{
-		printf("%d\n", g_minishell->exit_status);
-		return (1);
-	}
-	return (0);
-}
-
-int	ft_check_var(char *s)
-{
-	if (!ft_strncmp(s, "$", 1))
-	{
-		s++;
-	}
-	return (0);
-}
 
 int	ft_check_option(char *s)
 {
@@ -39,13 +20,11 @@ int	ft_check_option(char *s)
 	if (s[0] != '-')
 		return (0);
 	i++;
-	while (s[i])
-	{
-		if (s[i] != 'n')
-			return (0);
+	while (s[i] && s[i] == 'n')
 		i++;
-	}
-	return (1);
+	if (!s[i])
+		return (1);
+	return (0);
 }
 
 void	ft_echo(char **args)

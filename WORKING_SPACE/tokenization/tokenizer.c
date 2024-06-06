@@ -6,7 +6,7 @@
 /*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:41:22 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/17 16:27:57 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/06 15:53:18 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ t_token	*tokenizer_handler(char *line)
 			|| !ft_strncmp(line, "|", 1) || !ft_strncmp(line, "&&", 2)
 			|| !ft_strncmp(line, "(", 1) || !ft_strncmp(line, ")", 1))
 			error = (!handle_separator(&tokens, &line) && 1);
+		else if (is_quote(*line))
+			error = (!add_quote(&tokens, &line) && 1);
 		else
 			error = (!append_identifier(&tokens, &line) && 1);
 	}
@@ -67,5 +69,11 @@ t_token	*tokenizer(void)
 	line = ft_strtrim(g_minishell->line, " \t\n\v\f\r");
 	tokens = tokenizer_handler(line);
 	free(line);
+	if (syntax() == -1)
+	{
+		set_env_var(g_minishell->our_env, "?", ft_itoa(130));
+		clear_token(&g_minishell->tokens);
+		return (NULL);
+	}
 	return (tokens);
 }

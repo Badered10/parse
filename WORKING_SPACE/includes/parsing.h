@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/06 10:35:56 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/06 17:07:53 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,13 +66,11 @@ struct t_node // strcut define a node
 };
 
 t_node *char_node_new(char c);
-// t_node *pair_node_new(t_node *left, t_node *right);
 t_node *pair_node_new(t_node *left, t_node *right, t_type type);
 t_node *string_node_new(t_list *list);
 t_node *error_node_new(const char *msg);
 t_node *redir_node_new(t_list *red_list);
 t_node *parsing(t_token *tokens);
-// t_node *parse(t_token **tokens);
 
 // Function that checks the syntax.
 int                    syntax(void);

@@ -6,27 +6,33 @@
 /*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:46:08 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/11 15:34:04 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/06 11:12:08 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	*safe_malloc(size_t size, void **data, int i)
+void	add_env_var(t_env *env, char *key, char *value, bool visible)
 {
-	void	*ptr;
-	int		j;
+	t_env	*new_node;
+	t_env	*current;
 
-	j = -1;
-	ptr = malloc(size);
-	if (!ptr)
+	new_node = (t_env *)malloc(sizeof(t_env));
+	if (!new_node)
+		return ;
+	new_node->key = ft_strdup(key);
+	new_node->value = ft_strdup(value);
+	new_node->visible = visible;
+	new_node->next = NULL;
+	if (!env)
+		env = new_node;
+	else
 	{
-		while (++j < i)
-			free(data[j]);
-		free(data);
-		return (NULL);
+		current = env;
+		while (current->next)
+			current = current->next;
+		current->next = new_node;
 	}
-	return (ptr);
 }
 
 int	ft_key_length(char *str)
@@ -39,53 +45,53 @@ int	ft_key_length(char *str)
 	return (i);
 }
 
-void	set_env_var(t_env **env, char *var, char *new)
+void	set_env_var(t_env *env, char *var, char *new)
 {
-	int	i;
-
-	i = 0;
-	if (!env || !*env || !var || !new || var[0] == '\0')
+	while (env && ft_strncmp(env->key, var, ft_strlen(env->key)))
+		env = env->next;
+	if (!env)
 		return ;
-	while (env[i] && ft_strncmp(env[i]->key, var, ft_strlen(env[i]->key)))
-		i++;
-	if (!env[i])
-		return ;
-	free(env[i]->value);
-	env[i]->value = ft_strdup(new);
+	free(env->value);
+	env->value = ft_strdup(new);
 }
 
-char	*get_env_var(t_env **env, char *var)
+char	*get_env_var(t_env *env, char *var)
 {
-	int	i;
-
-	i = 0;
-	while (env[i] && ft_strncmp(env[i]->key, var, ft_strlen(env[i]->key)))
-		i++;
-	if (!env[i])
+	if (!ft_strncmp(var, "\0", 1))
 		return (NULL);
-	return (env[i]->value);
+	while (env && ft_strncmp(env->key, var, ft_strlen(env->key)))
+		env = env->next;
+	if (env && ft_strlen(env->key) == ft_strlen(var))
+		return (env->value);
+	else
+		return (NULL);
 }
 
-t_env	**dup_env(char **env)
+t_env	*dup_env(char **env)
 {
-	t_env	**var;
+	t_env	*head;
+	t_env	*current;
+	t_env	*new_node;
 	int		i;
 
+	head = NULL;
+	current = NULL;
 	i = 0;
 	while (env[i])
-		i++;
-	var = malloc((sizeof(t_env *) * (i + 1)));
-	if (!var)
-		return (NULL);
-	i = -1;
-	while (env[++i])
 	{
-		var[i] = safe_malloc(sizeof(t_env), (void **)var, i);
-		if (!var[i])
-			return (NULL);
-		var[i]->key = ft_substr(env[i], 0, ft_key_length(env[i]));
-		var[i]->value = ft_strdup(getenv(var[i]->key));
+		new_node = (t_env *)malloc(sizeof(t_env));
+		if (!new_node)
+			return (clear_env(), NULL);
+		new_node->key = ft_substr(env[i], 0, ft_key_length(env[i]));
+		new_node->value = ft_strdup(getenv(new_node->key));
+		new_node->visible = true;
+		new_node->next = NULL;
+		if (!head)
+			head = new_node;
+		else
+			current->next = new_node;
+		current = new_node;
+		i++;
 	}
-	var[i] = 0;
-	return ((var));
+	return (head);
 }

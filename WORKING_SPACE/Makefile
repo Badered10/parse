@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/05/23 19:02:53 by baouragh         ###   ########.fr        #
+#    Updated: 2024/06/06 17:23:33 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,6 @@ NAME			:= minishell
 
 LIBFT_PATH		:= libft/
 LIBFT			:= libft/libft.a
-READLINE		:= /Users/baouragh/readline/lib
 
 CC				:= cc
 CFLAGS			:= -Wall -Werror -Wextra -fsanitize=address -g3
@@ -34,7 +33,8 @@ ENVIRONMENT		:=	environment/env_utils.c		\
 
 PARSING			:= parsing/parse.c
 
-SYNTAXING		:=	syntax//syntax.c					\
+SYNTAXING		:=	syntax/syntax.c						\
+					syntax/syntax_utils.c				\
 					syntax/pipe_or_and.c				\
 					syntax/redirection.c				\
 					syntax/parenthesis_utils.c			\
@@ -50,6 +50,9 @@ TOKENIZATION	:=	tokenization/tokenizer.c			\
 					tokenization/tokenizer_free.c		\
 					tokenization/consume_token.c
 
+EXPANDING		:=	expanding/expander.c				\
+					expanding/word_helper.c
+
 NODES			:=  nodes/node.c
 
 SRCS			:=	$(BUILTINS)		\
@@ -59,7 +62,8 @@ SRCS			:=	$(BUILTINS)		\
 					$(CLEAN)		\
 					$(PARSING)		\
 					$(NODES)		\
-					$(SYNTAXING)		\
+					$(SYNTAXING)	\
+					$(EXPANDING)	\
 					minishell.c
 					
 OBJS			:=	$(SRCS:.c=.o)
@@ -71,7 +75,7 @@ $(LIBFT):
 	make -C $(LIBFT_PATH) bonus
 
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft -lreadline -L $(READLINE) -o $(NAME) 
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft -lreadline -o $(NAME) 
 
 clean:
 	@make clean -C $(LIBFT_PATH)

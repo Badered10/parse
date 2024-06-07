@@ -6,13 +6,13 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/06 19:26:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/07 15:51:53 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../includes/minishell.h"
 
-static t_redir *do_red(t_token **tokens) // take file and type
+static t_redir *do_red(t_token **tokens) // "< file -la | cat" --> "file -la | cat"
 {
     t_redir *new;
 
@@ -28,7 +28,7 @@ static t_redir *do_red(t_token **tokens) // take file and type
     return (new);
 }
 
-static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
+static t_node *parse_cmd(t_token **tokens) // 
 {
     t_list *cmd_list;
     t_list *red_list;
@@ -37,16 +37,9 @@ static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
 
     cmd_list = NULL;
     red_list = NULL;
-    while(*tokens && ((*tokens)->type == WORD || (*tokens)->type == WHITESPACE || (*tokens)->type == R_PAREN || ((*tokens)->type >= 4 && (*tokens)->type <= 7)))
+    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND ))
     {
-        if((*tokens)->type != WHITESPACE && (*tokens)->type != R_PAREN && ((*tokens)->type < 4 || (*tokens)->type > 7))
-        {
-            new = ft_lstnew((*tokens)->value);
-            if (!new)
-                return(NULL);
-            ft_lstadd_back(&cmd_list,new);
-        }
-        else if((*tokens)->type >= 4 && (*tokens)->type <= 7) // > file -a
+        if((*tokens)->type >= 4 && (*tokens)->type <= 7) // "ls < file -la | cat " -----> "< file -la | cat" 
         {
             red = do_red(tokens);
             new = ft_lstnew(red);
@@ -54,7 +47,13 @@ static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
                 return(NULL);
             ft_lstadd_back(&red_list, new);
         }
-        // if (*tokens)
+        else if((*tokens)->type == WORD)
+        {
+            new = ft_lstnew((*tokens)->value);
+            if (!new)
+                return(NULL);
+            ft_lstadd_back(&cmd_list,new);
+        }
             (*tokens) = (*tokens)->next;
     }
     if(!red_list)
@@ -66,7 +65,7 @@ static t_node *parse_cmd(t_token **tokens) // "ls < file -a"
     }
 }
 
-static t_node *parse_pipe(t_token **tokens) // ls < file -la | cat 
+static t_node *parse_pipe(t_token **tokens) // "ls < file -la | cat" 
 {
     t_node *left;
     t_type type;
@@ -74,11 +73,11 @@ static t_node *parse_pipe(t_token **tokens) // ls < file -la | cat
     left = NULL;
     if((*tokens)->type == L_PAREN)
             (*tokens) = (*tokens)->next;
-    if(*tokens && (*tokens)->type == WORD)
+    if(*tokens && ((*tokens)->type == WORD || ((*tokens)->type >= 4 && (*tokens)->type <= 7)) )
         left = parse_cmd(tokens);
     if(*tokens && (*tokens)->type == WHITESPACE)
         (*tokens) = (*tokens)->next;
-    if(*tokens && ((*tokens)->type == PIPE || (*tokens)->type == AND || (*tokens)->type == OR) )
+    if(*tokens && ((*tokens)->type == PIPE))
     {
         type = (*tokens)->type;
         (*tokens) = (*tokens)->next;
@@ -92,24 +91,23 @@ static t_node *parse_pipe(t_token **tokens) // ls < file -la | cat
 
 t_node *parse_seq(t_token **tokens) // input :  "ls -a" | "cat -e file" | cat || ls && cat
 {
-    return(parse_pipe(tokens));
+    t_node *left;
+    // t_type type;
+
+    left = parse_pipe(tokens);
+    // if(*tokens && ((*tokens)->type == AND || (*tokens)->type == OR))
+    // {
+    //     type = (*tokens)->type;
+    //     (*tokens) = (*tokens)->next;
+    //     if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+    //         (*tokens) = (*tokens)->next;
+    //     return (pair_node_new(left, parse_seq(tokens), type));
+    // }
+    // else
+        return(left);
 }
 
 t_node *parsing(t_token *tokens)
 {
-    t_node *tmp;
-    t_node *res;
-    int x;
-
-    x = 0;
-    while(tokens)
-    {
-        tmp = parse_seq(&tokens);
-        if (x == 0)
-            res = tmp;
-        x++;
-        if(tokens)
-            tokens = tokens->next;
-    }
-    return(res);
+    return(parse_seq(&tokens));
 }

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/08 11:32:25 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/08 11:59:23 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static t_node *parse_cmd(t_token **tokens) //
 
     cmd_list = NULL;
     red_list = NULL;
-    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND ))
+    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND  && (*tokens)->type != L_PAREN))
     {
         if((*tokens)->type >= 4 && (*tokens)->type <= 7) // "ls < file -la | cat " -----> "< file -la | cat" 
         {
@@ -71,8 +71,8 @@ static t_node *parse_pipe(t_token **tokens) // "ls < file -la | cat"
     t_type type;
 
     left = NULL;
-    if((*tokens)->type == L_PAREN)
-            (*tokens) = (*tokens)->next;
+    // if((*tokens)->type == L_PAREN)
+    //         (*tokens) = (*tokens)->next;
     if(*tokens && ((*tokens)->type == WORD || ((*tokens)->type >= 4 && (*tokens)->type <= 7)) )
         left = parse_cmd(tokens);
     if(*tokens && (*tokens)->type == WHITESPACE)
@@ -89,14 +89,31 @@ static t_node *parse_pipe(t_token **tokens) // "ls < file -la | cat"
         return (left);
 }
 
-t_node *parse_seq(t_token **tokens) // input :  "ls -a" | "cat -e file" | cat || ls && cat
+t_node *parse_or(t_token **tokens)
 {
     t_node *left;
     t_type type;
 
     left = parse_pipe(tokens);
-    // printf("cur token value :'%s'\n",(*tokens)->value);
-    if(*tokens && ((*tokens)->type == AND || (*tokens)->type == OR))
+    if(*tokens && (*tokens)->type == OR)
+    {
+        type = (*tokens)->type;
+        (*tokens) = (*tokens)->next;
+        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+            (*tokens) = (*tokens)->next;
+        return (pair_node_new(left, parse_or(tokens), type));
+    }
+    else
+        return(left);
+}
+
+t_node *parse_seq(t_token **tokens) // input : (ls | cat && ls) || ls
+{
+    t_node *left;
+    t_type type;
+
+    left = parse_or(tokens);
+    if(*tokens && (*tokens)->type == AND)
     {
         type = (*tokens)->type;
         (*tokens) = (*tokens)->next;
@@ -108,7 +125,30 @@ t_node *parse_seq(t_token **tokens) // input :  "ls -a" | "cat -e file" | cat ||
         return(left);
 }
 
+t_node *parse_block(t_token **tokens) //  (ls | cat && ls) || ls
+{
+    t_node *left;
+    t_type type;
+
+    left = parse_seq(tokens);
+    if(*tokens && (*tokens)->type == L_PAREN)
+    {
+        printf("hello\n");
+        type = (*tokens)->type;
+        (*tokens) = (*tokens)->next;
+        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+            (*tokens) = (*tokens)->next;
+        return (pair_node_new(left, parse_block(tokens), type));
+    }
+    else
+        return(left);
+}
+
 t_node *parsing(t_token *tokens)
 {
-    return(parse_seq(&tokens));
+    t_node *res;
+
+    res = parse_seq(&tokens);
+    printf("cur token value :'%s'\n",tokens->value);
+    return(res);
 }

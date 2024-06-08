@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/08 11:31:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/08 16:11:21 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void print_root(t_type type, int x)
             else if (x == 0)
                 printf("RIGHT OF || ----> ");
         }
-        else
+        else if (type == AND)
         {
             if (x == 1)
             printf("LEFT OF &&----> ");
@@ -42,8 +42,10 @@ void print_root(t_type type, int x)
 void printAST(t_node* node , int x , t_type type) 
 {
     t_type tmp;
+
     if (!node) return;
 
+    tmp  = ERROR;
     if (node->type == STRING_NODE)
     {
         print_root(type, x);
@@ -67,11 +69,14 @@ void printAST(t_node* node , int x , t_type type)
             printf("------------------->OR<----------------------\n");
             tmp = OR;
         } 
-        else
+        else if (node->data.pair.type == AND)
         {
             printf("------------------->AND<----------------------\n");
             tmp = AND;
         }
+        // else
+        //     printf("NULL PAIR\n");
+
         printAST(node->data.pair.left, 1 , tmp);
         printAST(node->data.pair.right, 0 , tmp);
     }
@@ -90,6 +95,10 @@ void printAST(t_node* node , int x , t_type type)
             printf("\n");
             node->data.redir = node->data.redir->next;
         }
+    }
+    else if(node->type == ERROR_NODE)
+    {
+        printf("ERROR -------> '%s",node->data.error);
     }
 }
 

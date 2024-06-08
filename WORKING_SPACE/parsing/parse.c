@@ -6,13 +6,13 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/08 11:59:23 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/08 16:10:08 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../includes/minishell.h"
 
-static t_redir *do_red(t_token **tokens) // "< file -la | cat" --> "file -la | cat"
+static t_redir *do_red(t_token **tokens) // 
 {
     t_redir *new;
 
@@ -39,7 +39,7 @@ static t_node *parse_cmd(t_token **tokens) //
     red_list = NULL;
     while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND  && (*tokens)->type != L_PAREN))
     {
-        if((*tokens)->type >= 4 && (*tokens)->type <= 7) // "ls < file -la | cat " -----> "< file -la | cat" 
+        if((*tokens)->type >= 4 && (*tokens)->type <= 7)
         {
             red = do_red(tokens);
             new = ft_lstnew(red);
@@ -65,7 +65,7 @@ static t_node *parse_cmd(t_token **tokens) //
     }
 }
 
-static t_node *parse_pipe(t_token **tokens) // "ls < file -la | cat" 
+static t_node *parse_pipe(t_token **tokens) // (1 && 2) || 3
 {
     t_node *left;
     t_type type;
@@ -81,10 +81,12 @@ static t_node *parse_pipe(t_token **tokens) // "ls < file -la | cat"
     {
         type = (*tokens)->type;
         (*tokens) = (*tokens)->next;
-        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+        if((*tokens)->type == WHITESPACE)
             (*tokens) = (*tokens)->next;
         return (pair_node_new(left, parse_pipe(tokens), type));
     }
+    // else if(!left)
+    //     return(error_node_new("invalid pair node from pipe func\n"));
     else
         return (left);
 }
@@ -107,7 +109,7 @@ t_node *parse_or(t_token **tokens)
         return(left);
 }
 
-t_node *parse_seq(t_token **tokens) // input : (ls | cat && ls) || ls
+t_node *parse_seq(t_token **tokens) // 
 {
     t_node *left;
     t_type type;
@@ -125,18 +127,19 @@ t_node *parse_seq(t_token **tokens) // input : (ls | cat && ls) || ls
         return(left);
 }
 
-t_node *parse_block(t_token **tokens) //  (ls | cat && ls) || ls
+t_node *parse_block(t_token **tokens) // (ls)
 {
     t_node *left;
     t_type type;
 
-    left = parse_seq(tokens);
+    if((*tokens)->type != L_PAREN)
+        left = parse_seq(tokens);
     if(*tokens && (*tokens)->type == L_PAREN)
     {
-        printf("hello\n");
         type = (*tokens)->type;
         (*tokens) = (*tokens)->next;
-        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+        left = parse_seq(tokens);
+        if((*tokens)->type == WHITESPACE)
             (*tokens) = (*tokens)->next;
         return (pair_node_new(left, parse_block(tokens), type));
     }
@@ -144,11 +147,14 @@ t_node *parse_block(t_token **tokens) //  (ls | cat && ls) || ls
         return(left);
 }
 
-t_node *parsing(t_token *tokens)
+t_node *parsing(t_token *tokens) // (1 && 2) || 3
 {
     t_node *res;
 
-    res = parse_seq(&tokens);
-    printf("cur token value :'%s'\n",tokens->value);
+    printf("first cur token value :'%u'\n",tokens->type);
+    res = parse_block(&tokens);
+    printf("last cur token value :'%u'\n",tokens->type);
+    printf("( ,cur token value :'%u'\n",L_PAREN);
+
     return(res);
 }

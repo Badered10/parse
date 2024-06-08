@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/06 19:29:34 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/08 11:31:52 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,39 @@
 
 t_minishell	*g_minishell;
 
-void printAST(t_node* node , int x) 
+void print_root(t_type type, int x)
 {
+       if(type == PIPE)
+        {
+            if (x == 1)
+            printf("LEFT OF | ----> ");
+            else if (x == 0)
+                printf("RIGHT OF | ----> ");  
+        }
+        else if (type == OR)
+        {
+            if (x == 1)
+            printf("LEFT OF || ----> ");
+            else if (x == 0)
+                printf("RIGHT OF || ----> ");
+        }
+        else
+        {
+            if (x == 1)
+            printf("LEFT OF &&----> ");
+            else if (x == 0)
+                printf("RIGHT OF && ----> ");
+        }
+}
+
+void printAST(t_node* node , int x , t_type type) 
+{
+    t_type tmp;
     if (!node) return;
+
     if (node->type == STRING_NODE)
     {
-        if (x == 1)
-            printf("LEFT ----> ");
-            else if (x == 0)
-                printf("RIGHT ----> ");      
+        print_root(type, x);
         while (node->data.cmd)
         {
             printf("'%s' ", (char*)node->data.cmd->content);
@@ -32,27 +56,28 @@ void printAST(t_node* node , int x)
     }
 	else if(node->type == PAIR_NODE)
 	{
-		// printf("(\n");
-        if (x == 1)
-            printf("LEFT ----> ");
-            else if (x == 0)
-                printf("RIGHT ----> ");
+		print_root(type, x);
         if(node->data.pair.type == PIPE)
+        {
             printf("------------------->PIPE<----------------------\n");
+            tmp = PIPE;
+        }
         else if (node->data.pair.type == OR)
+        {
             printf("------------------->OR<----------------------\n");
+            tmp = OR;
+        } 
         else
+        {
             printf("------------------->AND<----------------------\n");
-        printAST(node->data.pair.left, 1);
-        printAST(node->data.pair.right, 0);
-        // printf(")\n");
+            tmp = AND;
+        }
+        printAST(node->data.pair.left, 1 , tmp);
+        printAST(node->data.pair.right, 0 , tmp);
     }
     else if (node->type == REDIR_NODE)
     {
-         if (x == 1)
-            printf("LEFT ----> ");
-            else if (x == 0)
-                printf("RIGHT ----> ");
+        print_root(type, x);
         while(node->data.redir)
         {
             t_redir *new = node->data.redir->content;
@@ -115,7 +140,7 @@ int    main(int ac, char **av, char **env)
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
-        printAST(g_minishell->ast, -1);
+        printAST(g_minishell->ast, -1 , 99);
         // execution();
         clear_token(&g_minishell->tokens);
         free(g_minishell->line);

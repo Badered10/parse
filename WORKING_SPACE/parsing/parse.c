@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/07 15:51:53 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/08 11:32:25 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,18 +92,19 @@ static t_node *parse_pipe(t_token **tokens) // "ls < file -la | cat"
 t_node *parse_seq(t_token **tokens) // input :  "ls -a" | "cat -e file" | cat || ls && cat
 {
     t_node *left;
-    // t_type type;
+    t_type type;
 
     left = parse_pipe(tokens);
-    // if(*tokens && ((*tokens)->type == AND || (*tokens)->type == OR))
-    // {
-    //     type = (*tokens)->type;
-    //     (*tokens) = (*tokens)->next;
-    //     if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
-    //         (*tokens) = (*tokens)->next;
-    //     return (pair_node_new(left, parse_seq(tokens), type));
-    // }
-    // else
+    // printf("cur token value :'%s'\n",(*tokens)->value);
+    if(*tokens && ((*tokens)->type == AND || (*tokens)->type == OR))
+    {
+        type = (*tokens)->type;
+        (*tokens) = (*tokens)->next;
+        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+            (*tokens) = (*tokens)->next;
+        return (pair_node_new(left, parse_seq(tokens), type));
+    }
+    else
         return(left);
 }
 

@@ -6,11 +6,27 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/08 16:10:08 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/09 15:04:43 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../includes/minishell.h"
+
+t_node *parse_block(t_token **tokens) // cat || (ls && ps)
+{
+    t_node *left;
+
+    if((*tokens)->type == L_PAREN)
+        (*tokens) = (*tokens)->next;
+    else
+    {
+        printf("false call token is not ( \n");
+    }
+    left = parse_cmd(tokens);
+        if((*tokens)->type == WHITESPACE)
+            (*tokens) = (*tokens)->next;
+    return(left);
+}
 
 static t_redir *do_red(t_token **tokens) // 
 {
@@ -28,7 +44,7 @@ static t_redir *do_red(t_token **tokens) //
     return (new);
 }
 
-static t_node *parse_cmd(t_token **tokens) // 
+t_node *parse_cmd(t_token **tokens) // 
 {
     t_list *cmd_list;
     t_list *red_list;
@@ -65,16 +81,16 @@ static t_node *parse_cmd(t_token **tokens) //
     }
 }
 
-static t_node *parse_pipe(t_token **tokens) // (1 && 2) || 3
+static t_node *parse_pipe(t_token **tokens) // (ls && ps)
 {
     t_node *left;
     t_type type;
 
     left = NULL;
     // if((*tokens)->type == L_PAREN)
-    //         (*tokens) = (*tokens)->next;
+    //         left = parse_block(tokens);
     if(*tokens && ((*tokens)->type == WORD || ((*tokens)->type >= 4 && (*tokens)->type <= 7)) )
-        left = parse_cmd(tokens);
+        left = parse_cmd(tokens); // left = cat
     if(*tokens && (*tokens)->type == WHITESPACE)
         (*tokens) = (*tokens)->next;
     if(*tokens && ((*tokens)->type == PIPE))
@@ -88,20 +104,20 @@ static t_node *parse_pipe(t_token **tokens) // (1 && 2) || 3
     // else if(!left)
     //     return(error_node_new("invalid pair node from pipe func\n"));
     else
-        return (left);
+        return (left); // 1- cat // 
 }
 
-t_node *parse_or(t_token **tokens)
+t_node *parse_or(t_token **tokens) // cat || (ls && ps)
 {
     t_node *left;
     t_type type;
 
-    left = parse_pipe(tokens);
+    left = parse_pipe(tokens); // left = cat
     if(*tokens && (*tokens)->type == OR)
     {
         type = (*tokens)->type;
         (*tokens) = (*tokens)->next;
-        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
+        if((*tokens)->type == WHITESPACE)
             (*tokens) = (*tokens)->next;
         return (pair_node_new(left, parse_or(tokens), type));
     }
@@ -109,52 +125,32 @@ t_node *parse_or(t_token **tokens)
         return(left);
 }
 
-t_node *parse_seq(t_token **tokens) // 
+t_node *parse_and(t_token **tokens) // cat || (ls && ps)
 {
     t_node *left;
     t_type type;
 
-    left = parse_or(tokens);
+    left = parse_or(tokens); // left = 
     if(*tokens && (*tokens)->type == AND)
     {
         type = (*tokens)->type;
         (*tokens) = (*tokens)->next;
-        if((*tokens)->type == WHITESPACE || (*tokens)->type == L_PAREN)
-            (*tokens) = (*tokens)->next;
-        return (pair_node_new(left, parse_seq(tokens), type));
-    }
-    else
-        return(left);
-}
-
-t_node *parse_block(t_token **tokens) // (ls)
-{
-    t_node *left;
-    t_type type;
-
-    if((*tokens)->type != L_PAREN)
-        left = parse_seq(tokens);
-    if(*tokens && (*tokens)->type == L_PAREN)
-    {
-        type = (*tokens)->type;
-        (*tokens) = (*tokens)->next;
-        left = parse_seq(tokens);
         if((*tokens)->type == WHITESPACE)
             (*tokens) = (*tokens)->next;
-        return (pair_node_new(left, parse_block(tokens), type));
+        return (pair_node_new(left, parse_and(tokens), type));
     }
     else
         return(left);
 }
 
-t_node *parsing(t_token *tokens) // (1 && 2) || 3
+t_node *parsing(t_token *tokens) // cat || (ls && ps)
 {
     t_node *res;
 
-    printf("first cur token value :'%u'\n",tokens->type);
-    res = parse_block(&tokens);
-    printf("last cur token value :'%u'\n",tokens->type);
-    printf("( ,cur token value :'%u'\n",L_PAREN);
+    // printf("first cur token value :'%u'\n",tokens->type);
+    res = parse_and(&tokens);
+    // printf("last cur token value :'%u'\n",tokens->type);
+    // printf("( ,cur token value :'%u'\n",L_PAREN);
 
     return(res);
 }

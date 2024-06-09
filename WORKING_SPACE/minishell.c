@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/08 16:11:21 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/08 17:41:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,30 @@ void print_root(t_type type, int x)
        if(type == PIPE)
         {
             if (x == 1)
-            printf("LEFT OF | ----> ");
+            printf("LEFT OF '|' ----> ");
             else if (x == 0)
-                printf("RIGHT OF | ----> ");  
+                printf("RIGHT OF '|' ----> ");  
         }
         else if (type == OR)
         {
             if (x == 1)
-            printf("LEFT OF || ----> ");
+            printf("LEFT OF '||' ----> ");
             else if (x == 0)
-                printf("RIGHT OF || ----> ");
+                printf("RIGHT OF '||' ----> ");
         }
         else if (type == AND)
         {
             if (x == 1)
-            printf("LEFT OF &&----> ");
+            printf("LEFT OF '&&' ----> ");
             else if (x == 0)
-                printf("RIGHT OF && ----> ");
+                printf("RIGHT OF '&&' ----> ");
+        }
+        else if (type == L_PAREN)
+        {
+            if (x == 1)
+            printf("LEFT OF '(' ----> ");
+            else if (x == 0)
+                printf("RIGHT OF '(' ----> ");
         }
 }
 
@@ -74,11 +81,21 @@ void printAST(t_node* node , int x , t_type type)
             printf("------------------->AND<----------------------\n");
             tmp = AND;
         }
+        else if (node->data.pair.type == L_PAREN)
+        {
+            printf("L_PAREN\n");
+            tmp = L_PAREN;
+        }
+        // if(node->data.pair.type <= 3)
+        // {
+            printAST(node->data.pair.left, 1 , tmp);
+            printAST(node->data.pair.right, 0 , tmp);
+        // }
         // else
-        //     printf("NULL PAIR\n");
-
-        printAST(node->data.pair.left, 1 , tmp);
-        printAST(node->data.pair.right, 0 , tmp);
+        // {
+        //     printAST(node->data.pair.left, 1 , tmp);
+        //     printAST(node->data.pair.right, 0 , tmp);
+        // }
     }
     else if (node->type == REDIR_NODE)
     {
@@ -98,7 +115,7 @@ void printAST(t_node* node , int x , t_type type)
     }
     else if(node->type == ERROR_NODE)
     {
-        printf("ERROR -------> '%s",node->data.error);
+        printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
     }
 }
 
@@ -149,7 +166,7 @@ int    main(int ac, char **av, char **env)
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
-        printAST(g_minishell->ast, -1 , 99);
+        printAST(g_minishell->ast, 1000 , 99);
         // execution();
         clear_token(&g_minishell->tokens);
         free(g_minishell->line);

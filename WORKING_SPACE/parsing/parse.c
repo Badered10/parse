@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/09 15:04:43 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/10 12:12:28 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ t_node *parsing(t_token *tokens) // cat || (ls && ps)
 
     // printf("first cur token value :'%u'\n",tokens->type);
     res = parse_and(&tokens);
+    // if((*tokens))
     // printf("last cur token value :'%u'\n",tokens->type);
     // printf("( ,cur token value :'%u'\n",L_PAREN);
 

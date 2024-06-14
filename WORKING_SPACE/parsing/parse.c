@@ -3,30 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/10 12:12:28 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/14 18:03:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include"../includes/minishell.h"
 
-t_node *parse_block(t_token **tokens) // cat || (ls && ps)
-{
-    t_node *left;
-
-    if((*tokens)->type == L_PAREN)
-        (*tokens) = (*tokens)->next;
-    else
-    {
-        printf("false call token is not ( \n");
-    }
-    left = parse_cmd(tokens);
-        if((*tokens)->type == WHITESPACE)
-            (*tokens) = (*tokens)->next;
-    return(left);
-}
 
 static t_redir *do_red(t_token **tokens) // 
 {
@@ -143,12 +128,27 @@ t_node *parse_and(t_token **tokens) // cat || (ls && ps)
         return(left);
 }
 
+t_node *parse_block(t_token **tokens) // cat || (ls && ps)
+{
+    t_node *left;
+
+    left = parse_and(tokens);
+    if((*tokens)->type == L_PAREN)
+    {
+        (*tokens) = (*tokens)->next;
+        if((*tokens)->type == WHITESPACE)
+            (*tokens) = (*tokens)->next;
+        left->data.pair.right = parse_block(tokens);
+    }
+        return(left);
+}
+
 t_node *parsing(t_token *tokens) // cat || (ls && ps)
 {
     t_node *res;
 
     // printf("first cur token value :'%u'\n",tokens->type);
-    res = parse_and(&tokens);
+    res = parse_block(&tokens);
     // if((*tokens))
     // printf("last cur token value :'%u'\n",tokens->type);
     // printf("( ,cur token value :'%u'\n",L_PAREN);

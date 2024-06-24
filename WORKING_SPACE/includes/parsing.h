@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/24 14:19:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/24 16:44:33 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef enum e_node // enum define two types of nodes.
 	CHAR_NODE,
 	REDIR_NODE,
 	STRING_NODE
-}			e_node_type;
+}			t_node_type;
 
 typedef struct t_node t_node;
 
@@ -57,12 +57,12 @@ typedef union u_node_value
 	t_list			*cmd;
 	t_list			*redir;
     ERROR_VALUE 	error;
-}				u_node_value;
+}				t_node_value;
 
 struct t_node // strcut define a node
 {
-	e_node_type type;
-	u_node_value data;
+	t_node_type type;
+	t_node_value data;
 };
 
 t_node *char_node_new(char c);

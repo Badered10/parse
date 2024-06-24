@@ -6,13 +6,52 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/24 14:14:15 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/24 18:02:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 
 t_minishell	*g_minishell;
+
+void free_ast(t_node *tree)
+{
+    t_redir *new;
+    t_list *tmp;
+
+    new = NULL;
+    if (!tree) return;
+    if (tree->type == STRING_NODE)
+    {
+        ft_lstclear(&tree->data.cmd, free);
+        free(tree);
+    }
+	else if(tree->type == PAIR_NODE)
+	{
+        free_ast(tree->data.pair.left);
+        free_ast(tree->data.pair.right);
+    }
+    else if (tree->type == REDIR_NODE)
+    {
+        while(tree->data.redir)
+        {
+            new = tree->data.redir->content;
+            tmp = tree->data.redir->next;
+            if(new->cmd)
+            {
+                ft_lstclear(&new->cmd, free);
+                free(new->cmd);    
+            }
+            free(new->file);
+            free(tree->data.redir);
+            free(new);
+            tree->data.redir = tmp;
+        }
+        free(tree);
+    }
+    else if(tree->type == ERROR_NODE)
+        free(tree);
+}
 
 void print_root(t_type type, int x)
 {
@@ -74,16 +113,8 @@ void printAST(t_node* node , int x , t_type type)
             printf("------------------->AND<----------------------\n");
             tmp = AND;
         }
-        // if(node->data.pair.type <= 3)
-        // {
             printAST(node->data.pair.left, 1 , tmp);
             printAST(node->data.pair.right, 0 , tmp);
-        // }
-        // else
-        // {
-        //     printAST(node->data.pair.left, 1 , tmp);
-        //     printAST(node->data.pair.right, 0 , tmp);
-        // }
     }
     else if (node->type == REDIR_NODE)
     {
@@ -154,10 +185,12 @@ int    main(int ac, char **av, char **env)
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
-        printAST(g_minishell->ast, 1000 , 99);
+        free_ast(g_minishell->ast);
+        // printAST(g_minishell->ast, 1000 , 99);
         // execution();
         clear_token(&g_minishell->tokens);
         free(g_minishell->line);
+        // exit(0);
         // system("leaks minishell");
     }
     clear_env();

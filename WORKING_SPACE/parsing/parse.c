@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/24 15:31:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/24 16:59:07 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static t_redir *do_red(t_token **tokens) //
     (*tokens) = (*tokens)->next;
     if((*tokens)->type == WHITESPACE)
         (*tokens) = (*tokens)->next;
-    new->file = (*tokens)->value;
+    new->file = ft_strdup((*tokens)->value);
     return (new);
 }
 
@@ -50,7 +50,7 @@ t_node *parse_cmd(t_token **tokens) //
         }
         else if((*tokens)->type == WORD)
         {
-            new = ft_lstnew((*tokens)->value);
+            new = ft_lstnew(ft_strdup((*tokens)->value));
             if (!new)
                 return(NULL);
             ft_lstadd_back(&cmd_list,new);

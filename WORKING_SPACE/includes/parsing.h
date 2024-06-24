@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/09 14:49:23 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:19:52 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,8 @@ t_node *redir_node_new(t_list *red_list);
 t_node *parse_block(t_token **tokens);
 t_node *parsing(t_token *tokens);
 t_node *parse_cmd(t_token **tokens);
-
+void 	printAST(t_node* node , int x , t_type type);
+void 	print_root(t_type type, int x);
 // Function that checks the syntax.
 int                    syntax(void);
 

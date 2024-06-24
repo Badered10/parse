@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/14 18:03:57 by marvin           ###   ########.fr       */
+/*   Updated: 2024/06/24 15:31:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_node *parse_cmd(t_token **tokens) //
 
     cmd_list = NULL;
     red_list = NULL;
-    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND  && (*tokens)->type != L_PAREN))
+    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND ))
     {
         if((*tokens)->type >= 4 && (*tokens)->type <= 7)
         {
@@ -128,7 +128,7 @@ t_node *parse_and(t_token **tokens) // cat || (ls && ps)
         return(left);
 }
 
-t_node *parse_block(t_token **tokens) // cat || (ls && ps)
+t_node *parse_block(t_token **tokens) // ( ls || (cat) ) && ps
 {
     t_node *left;
 
@@ -138,20 +138,30 @@ t_node *parse_block(t_token **tokens) // cat || (ls && ps)
         (*tokens) = (*tokens)->next;
         if((*tokens)->type == WHITESPACE)
             (*tokens) = (*tokens)->next;
-        left->data.pair.right = parse_block(tokens);
+        if(!left)
+        {
+            printf("hello left is empty\n");
+            left = parse_block(tokens);
+            // printAST(left, 1000 , 99);
+            // exit(0);
+        }
+        // else
+        // {
+        //     printf("hello left is empty\n");
+            left->data.pair.right = parse_block(tokens);
+        // }
     }
         return(left);
 }
 
-t_node *parsing(t_token *tokens) // cat || (ls && ps)
+t_node *parsing(t_token *tokens) //  ( ls || (cat) ) && ps
 {
     t_node *res;
 
     // printf("first cur token value :'%u'\n",tokens->type);
     res = parse_block(&tokens);
-    // if((*tokens))
-    // printf("last cur token value :'%u'\n",tokens->type);
+    printf("last cur token value :'%u'\n",tokens->type);
     // printf("( ,cur token value :'%u'\n",L_PAREN);
 
-    return(res);
+    return(printf("%p\n",res), res);
 }

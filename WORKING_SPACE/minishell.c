@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/08 17:41:16 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/24 14:14:15 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,6 @@ void print_root(t_type type, int x)
             printf("LEFT OF '&&' ----> ");
             else if (x == 0)
                 printf("RIGHT OF '&&' ----> ");
-        }
-        else if (type == L_PAREN)
-        {
-            if (x == 1)
-            printf("LEFT OF '(' ----> ");
-            else if (x == 0)
-                printf("RIGHT OF '(' ----> ");
         }
 }
 
@@ -80,11 +73,6 @@ void printAST(t_node* node , int x , t_type type)
         {
             printf("------------------->AND<----------------------\n");
             tmp = AND;
-        }
-        else if (node->data.pair.type == L_PAREN)
-        {
-            printf("L_PAREN\n");
-            tmp = L_PAREN;
         }
         // if(node->data.pair.type <= 3)
         // {

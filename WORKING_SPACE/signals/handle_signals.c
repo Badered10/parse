@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_signals.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 21:05:29 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/11 21:21:13 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/23 22:01:50 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,5 +31,5 @@ void	signals(void)
 {
 	rl_catch_signals = 0;
 	signal(SIGINT, ft_sigint_handler);
-	signal(SIGQUIT, ft_sigquit_handler);
+	signal(SIGQUIT, SIG_IGN);
 }

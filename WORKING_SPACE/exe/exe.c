@@ -6,12 +6,25 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/25 16:40:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:50:47 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+int	ft_malloc_error(char **tab, size_t i)
+{
+	size_t	j;
+
+	j = 0;
+	while (j <= i)
+	{
+		free(tab[j]);
+		j++;
+	}
+	free(tab);
+	return (1);
+}
 
 int  env_size(t_env *env)
 {
@@ -47,11 +60,13 @@ char **env_to_envp(t_env *env)
     i = 0;
     size = env_size(env);
     argv = malloc(sizeof(char *) * (size + 1));
+    if(!argv)
+        return(NULL);
     while(i < size)
     {
-        len = ft_strlen(env->key) + ft_strlen(env->value) + 2; // +2 one for \0 , and one for = symbol
-        argv[i] = malloc(sizeof(char) * len);
         argv[i] = ft_strjoin(ft_strjoin(env->key, "="),env->value);
+        if(!argv[i])
+            return(ft_malloc_error(argv,i), NULL);
         env = env->next;
         i++;
     }
@@ -69,10 +84,14 @@ char **list_to_argv(t_list *list)
     i = 0;
     size = ft_lstsize(list);
     argv = malloc(sizeof(char *) * (size + 1));
+    if(!argv)
+        return(NULL);
     while(i < size)
     {
         len = ft_strlen(list->content) + 1;
         argv[i] = malloc(sizeof(char) * len);
+        if(!argv[i])
+            return(ft_malloc_error(argv,i), NULL);
         ft_memmove(argv[i], list->content, len);
         list = list->next;
         i++;

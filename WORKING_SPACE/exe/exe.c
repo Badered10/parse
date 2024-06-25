@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/25 16:50:47 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/25 20:06:19 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ int  env_size(t_env *env)
     size = 0;
     while(env)
     {
-        size++;
+        if(env->visible)
+            size++;
         env = env->next;
     }
     return(size);
@@ -55,7 +56,6 @@ char **env_to_envp(t_env *env)
     char **argv;
     int size;
     int i;
-    int len;
 
     i = 0;
     size = env_size(env);
@@ -106,7 +106,7 @@ void do_cmd(void)
     id = fork();
     if (!id)
     {
-        execve("/bin/ls", list_to_argv(g_minishell->ast->data.cmd), list_to_argv(g_minishell->ast->data.cmd));
+        execve("/usr/bin/env", list_to_argv(g_minishell->ast->data.cmd), env_to_envp(g_minishell->our_env));
     }
     else
     {

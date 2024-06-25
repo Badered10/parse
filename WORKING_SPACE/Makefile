@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/06/06 19:27:44 by baouragh         ###   ########.fr        #
+#    Updated: 2024/06/25 16:08:25 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,8 @@ RM				:= rm -f
 # 					builtins/ft_export.c 		\
 # 					builtins/ft_pwd.c 			\
 # 					builtins/ft_unset.c
+
+EXE 			:= exe/exe.c
 
 ENVIRONMENT		:=	environment/env_utils.c		\
 					environment/free.c
@@ -64,6 +66,7 @@ SRCS			:=	$(BUILTINS)		\
 					$(NODES)		\
 					$(SYNTAXING)	\
 					$(EXPANDING)	\
+					$(EXE)			\
 					minishell.c
 					
 OBJS			:=	$(SRCS:.c=.o)

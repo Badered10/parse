@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/06 17:54:49 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:38:38 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include "builtins.h"
 # include "parsing.h"
 # include "tokenization.h"
+# include "exe.h"
 #include <readline/readline.h>
 #include <readline/history.h>
 # include <signal.h>
@@ -30,6 +31,7 @@
 # include <string.h>
 # include "charitr.h"
 # include <unistd.h>
+# include <sys/wait.h>
 
 
 typedef struct s_env

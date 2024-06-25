@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/24 16:59:07 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:10:27 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,11 @@ t_node *parse_cmd(t_token **tokens) //
     t_list *red_list;
     t_list *new;
     t_redir *red;
+    // t_node *cmd;
 
     cmd_list = NULL;
     red_list = NULL;
-    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND ))
+    while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND && (*tokens)->type != R_PAREN ))
     {
         if((*tokens)->type >= 4 && (*tokens)->type <= 7)
         {
@@ -142,14 +143,7 @@ t_node *parse_block(t_token **tokens) // ( ls || (cat) ) && ps
         {
             printf("hello left is empty\n");
             left = parse_block(tokens);
-            // printAST(left, 1000 , 99);
-            // exit(0);
         }
-        // else
-        // {
-        //     printf("hello left is empty\n");
-            left->data.pair.right = parse_block(tokens);
-        // }
     }
         return(left);
 }
@@ -162,6 +156,6 @@ t_node *parsing(t_token *tokens) //  ( ls || (cat) ) && ps
     res = parse_block(&tokens);
     printf("last cur token value :'%u'\n",tokens->type);
     // printf("( ,cur token value :'%u'\n",L_PAREN);
-
+    // exit(0);
     return(printf("%p\n",res), res);
 }

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/24 18:02:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/25 16:25:08 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,9 +185,9 @@ int    main(int ac, char **av, char **env)
         g_minishell->ast = parsing(g_minishell->tokens);
         if (!g_minishell->ast)
             continue ;
-        free_ast(g_minishell->ast);
+        // free_ast(g_minishell->ast);
         // printAST(g_minishell->ast, 1000 , 99);
-        // execution();
+        execution(g_minishell->ast);
         clear_token(&g_minishell->tokens);
         free(g_minishell->line);
         // exit(0);

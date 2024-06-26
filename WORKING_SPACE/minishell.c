@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 15:38:21 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:53:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,9 +165,10 @@ void	ft_readline()
 	gc_add(g_minishell, g_minishell->line);
 	// printf("**gc** :: line => '%p'\n", g_minishell->line);
 	set_env_var(g_minishell->our_env, "?", "0");
+	
 	if (!g_minishell->line)
 	{
-		ft_putstr_fd("exit\n", 1);
+		ft_putstr_fd("exit123\n", 1);
 		clear_env();
 		gc_free_all(g_minishell);
 		free(g_minishell);
@@ -194,7 +195,7 @@ int	main(int ac, char **av, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		// printAST(g_minishell->ast, 3212, 23123);
-		executer();
+		executer(g_minishell->ast);
 		gc_free_all(g_minishell);
 	}
 	gc_free_all(g_minishell);

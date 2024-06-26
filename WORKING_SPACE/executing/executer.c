@@ -6,12 +6,45 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/26 15:21:15 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:50:26 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+void	open_pipe(int *pfd)
+{
+	if (pipe(pfd))
+	{
+		perror("pipe:");
+		return;
+	}
+}
+
+int	dup_2(int old_fd, int new_fd)
+{
+	if (dup2(old_fd, new_fd) < 0)
+		return (-1);
+	close(old_fd);
+	return (0);
+}
+
+void	fd_duper( int *pfd , int mode)
+{
+	if (mode == 1)
+	{
+		close(pfd[1]);
+		close(pfd[0]);
+		// if (dup_2(1, 1))
+		// 	exit(EXIT_FAILURE);
+	}
+	else
+	{
+		close(pfd[0]);
+		if (dup_2(pfd[1], 1))
+			exit(EXIT_FAILURE);
+	}
+}
 
 char	*get_command(char *argv)
 {
@@ -60,7 +93,7 @@ void	check_split(char **cmd, char *word)
 		print_err("malloc failed in ft_split !!", word);
 		if (!word)
 			ft_putstr_fd("NULL\n", 2);
-		exit (EXIT_FAILURE);
+		return;
 	}
 }
 
@@ -100,7 +133,7 @@ static char	*founded_cmd(char *argv, char **paths, char **cmd)
 	{
 		free_double(paths);
 		free_double(cmd);
-		exit(EXIT_FAILURE);
+		return(NULL);
 	}
 	return (free_double(paths), free_double(cmd), fullpath);
 }
@@ -179,7 +212,7 @@ void	call_execev(char **env, char *argv , char **cmd)
 	if (!founded_path)
 	{
 		free_double(cmd);
-		exit(EXIT_FAILURE);
+		return;
 	}
 	cat[0] = "cat";
 	cat[1] = NULL;
@@ -192,7 +225,6 @@ void	call_execev(char **env, char *argv , char **cmd)
 	else
 		execve(founded_path, cmd, env);
 	print_err("badashell: command not found: ", "cat");
-	exit(EXIT_FAILURE);
 }
 
 int	ft_malloc_error(char **tab, size_t i)
@@ -290,49 +322,77 @@ char **list_to_argv(t_list *list)
     return(argv);
 }
 
-static void	increment_shlvl()
-{
-	char	*shlvl;
-	char	*new_shlvl;
-	int		tmp;
+// static void	increment_shlvl()
+// {
+// 	char	*shlvl;
+// 	char	*new_shlvl;
+// 	int		tmp;
 
-	shlvl = get_env_var(g_minishell->our_env, "SHLVL");
-	tmp = ft_atoi(shlvl) + 1;
-	new_shlvl = ft_itoa(tmp);
-	gc_add(g_minishell, new_shlvl);
-	printf("tmp :: shlvl => '%d'\n", tmp);
-	set_env_var(g_minishell->our_env, "SHLVL", new_shlvl);
-}
-void do_cmd(void)
+// 	shlvl = get_env_var(g_minishell->our_env, "SHLVL");
+// 	tmp = ft_atoi(shlvl) + 1;
+// 	new_shlvl = ft_itoa(tmp);
+// 	gc_add(g_minishell, new_shlvl);
+// 	printf("tmp :: shlvl => '%d'\n", tmp);
+// 	set_env_var(g_minishell->our_env, "SHLVL", new_shlvl);
+// }
+void do_cmd(t_node *ast, int flag)
 {
     int id;
     char **cmd;
     char **env;
 
-    cmd = list_to_argv(g_minishell->ast->data.cmd);
+    cmd = list_to_argv(ast->data.cmd);
     if(!cmd)
         return;
     env = env_to_envp(g_minishell->our_env);
-    if(!env)
+    if (!env)
+	{
         return;
-    if (*cmd && !ft_strncmp(*cmd, "./minishell", ft_strlen(*cmd)))
-		increment_shlvl();
-    id = check_cmd(*cmd, env);
-    if(id)
-    {
-        id = fork();
-        if (!id)
-            call_execev(env, *cmd , cmd);
-        else
-            wait(NULL);
-    }
+	}
+	id = check_cmd(*cmd, env);
+	if (flag)
+	{
+		if(id)
+		{
+			id = fork();
+			if (!id)
+				call_execev(env, *cmd , cmd);
+			else
+				wait(NULL);
+		}
+	}
+	else
+		call_execev(env, *cmd , cmd);
 }
 
-void    executer(void) // execve( char *path, char **argv, char **envp);
+void do_pipe(t_node *cmd , int mode)
 {
-    t_node *node;
+	int	id;
+	int	pfd[2];
+	open_pipe(pfd);
+	id = fork();
+	if (id < 0)
+	{
+		print_err("pipex: error occuerd with fork!", NULL);
+		return;
+	}
+	if (id == 0)
+	{
+		fd_duper(pfd, mode);
+		do_cmd(cmd, 0);
+	}
+	else
+	{
+		if(mode)
+		{
+			close(pfd[1]);
+			dup_2(pfd[0], 0);
+		}
+	}
+}
 
-    node = g_minishell->ast;
+void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
+{
     if (node->type == STRING_NODE)
     {
         if (ft_is_builtin(node->data.cmd->content))
@@ -341,13 +401,21 @@ void    executer(void) // execve( char *path, char **argv, char **envp);
             execute_builtins(g_minishell, list_to_argv(g_minishell->ast->data.cmd));
         }
         else
-            do_cmd();
+            do_cmd(g_minishell->ast, 1);
     }
-	// else if(node->type == PAIR_NODE)
-	// {
-    //         printAST(node->data.pair.left, 1 , tmp);
-    //         printAST(node->data.pair.right, 0 , tmp);
-    // }
+	else if(node->type == PAIR_NODE)
+	{
+		if(node->data.pair.type == PIPE) // ls | ps | os | batata
+		{
+			do_pipe(node->data.pair.left , 0);
+			if(node->data.pair.right->type == PAIR_NODE)
+				executer(node->data.pair.right);
+			else
+				do_pipe(node->data.pair.right, 1);
+		}
+            // printAST(node->data.pair.left, 1 , tmp);
+            // printAST(node->data.pair.right, 0 , tmp);
+    }
 //     else if (node->type == REDIR_NODE)
 //     {
 //         while(node->data.redir)

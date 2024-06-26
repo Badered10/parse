@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 15:10:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 16:39:50 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include "builtins.h"
 # include "memory.h"
 # include "parsing.h"
+# include <errno.h>
 # include "tokenization.h"
 # include <dirent.h>
 # include <readline/history.h>
@@ -123,7 +124,7 @@ void				delete_env_var(t_env **env, char *key);
 /* Executing */
 
 // Main function that execute the user input.
-void				executer(void);
+void				executer(t_node *node);
 
 
 /* Expanding */

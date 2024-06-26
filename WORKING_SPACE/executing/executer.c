@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/26 14:33:42 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 15:21:15 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,19 +152,21 @@ char	*get_fullpath(char *argv, char **env)
 int	check_cmd(char *argv, char **env)
 {
 	char	*cmd;
+    int     check;
 
+    check = 1;
 	cmd = get_fullpath(argv, env);
 	if (!cmd && *argv == '.')
 		cmd = get_command(argv);
 	if (*argv != '\0' && (*argv == '/' || *argv == '.')
 		&& access(cmd, F_OK))
-		return (print_err("badashell: no such file or directory:", argv));
+		check = print_err("badashell: no such file or directory:", argv);
 	else if (*argv != '\0' && access(cmd, F_OK))
-		return (print_err("badashell: command not found: ", argv));
+		check = print_err("badashell: command not found: ", argv);
 	else if (*argv != '\0' && access(cmd, X_OK))
-		return(print_err("badashell: permission denied: ", argv));
+		check = print_err("badashell: permission denied: ", argv);
 	free(cmd);
-    return (1);
+    return (check);
 }
 
 void	call_execev(char **env, char *argv , char **cmd)
@@ -287,6 +289,20 @@ char **list_to_argv(t_list *list)
     argv[i] = NULL;
     return(argv);
 }
+
+static void	increment_shlvl()
+{
+	char	*shlvl;
+	char	*new_shlvl;
+	int		tmp;
+
+	shlvl = get_env_var(g_minishell->our_env, "SHLVL");
+	tmp = ft_atoi(shlvl) + 1;
+	new_shlvl = ft_itoa(tmp);
+	gc_add(g_minishell, new_shlvl);
+	printf("tmp :: shlvl => '%d'\n", tmp);
+	set_env_var(g_minishell->our_env, "SHLVL", new_shlvl);
+}
 void do_cmd(void)
 {
     int id;
@@ -299,6 +315,8 @@ void do_cmd(void)
     env = env_to_envp(g_minishell->our_env);
     if(!env)
         return;
+    if (*cmd && !ft_strncmp(*cmd, "./minishell", ft_strlen(*cmd)))
+		increment_shlvl();
     id = check_cmd(*cmd, env);
     if(id)
     {

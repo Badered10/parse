@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 10:17:45 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/06/26 14:19:47 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,8 +225,8 @@ int	main(int ac, char **av, char **env)
 		g_minishell->ast = parsing();
 		if (!g_minishell->ast)
 			continue ;
-		printAST(g_minishell->ast, 3212, 23123);
-		// executer();
+		// printAST(g_minishell->ast, 3212, 23123);
+		executer();
 		gc_free_all(g_minishell);
 	}
 	gc_free_all(g_minishell);

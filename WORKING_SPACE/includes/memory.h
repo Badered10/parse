@@ -1,20 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exe.h                                              :+:      :+:    :+:   */
+/*   memory.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/25 16:08:40 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/25 16:09:54 by baouragh         ###   ########.fr       */
+/*   Created: 2024/06/26 10:38:21 by baouragh          #+#    #+#             */
+/*   Updated: 2024/06/26 10:38:22 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXE_H
-# define EXE_H
 
-#include "parsing.h"
+#ifndef MEMORY_H
+# define MEMORY_H
 
-void execution(t_node *node);
+typedef struct s_gc
+{
+	void		*ptr;
+	struct s_gc	*next;
+}				t_gc;
 
-#endif
+#endif /* MEMORY_H */

@@ -6,25 +6,20 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 21:05:29 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/23 22:01:50 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 10:43:31 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_sigint_handler(int num)
+void	ft_sigint_handler(int sig)
 {
-	(void)num;
-	printf("\n");
-	rl_replace_line("", 0);
+	(void)sig;
+	ft_putstr_fd("^C\n", 1);
 	rl_on_new_line();
+	rl_replace_line("", 0);
 	rl_redisplay();
-}
-
-void	ft_sigquit_handler(int num)
-{
-	(void)num;
-	// Idk what should I done here? =_=
+	set_env_var(g_minishell->our_env, "?", "130");
 }
 
 void	signals(void)

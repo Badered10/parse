@@ -6,33 +6,34 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/25 16:38:38 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 10:33:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# define MAX_FILES_PER_LINE 6
+
 # define READLINE_LIBRARY
-# define RED	"\033[1;31m"
+# define RED "\033[1;31m"
 # define ORANGE "\033[1;33m"
-# define RESET	"\033[0m"
-# define PROMPT	"$minishell >> "
+# define RESET "\033[0m"
+# define PROMPT "✨ badashell$> "
 
 # include "../libft/libft.h"
 # include "builtins.h"
+# include "memory.h"
 # include "parsing.h"
 # include "tokenization.h"
-# include "exe.h"
-#include <readline/readline.h>
-#include <readline/history.h>
+# include <dirent.h>
+# include <readline/history.h>
+# include <readline/readline.h>
 # include <signal.h>
 # include <stdio.h>
 # include <string.h>
-# include "charitr.h"
 # include <unistd.h>
 # include <sys/wait.h>
-
 
 typedef struct s_env
 {
@@ -48,10 +49,13 @@ typedef struct s_minishell
 	t_token			*tokens;
 	t_env			*our_env;
 	t_node			*ast;
+	t_gc			*gc;
 	int				nb_tokens;
+	int				dq_flag;
 }					t_minishell;
 
 extern t_minishell	*g_minishell;
+
 
 /* Builtins */
 
@@ -79,15 +83,21 @@ void				ft_unset(void);
 /* Builtins utils */
 
 // Function that execute the builtins.
-int					execute_builtins(t_minishell *mini, char **args);
+void				execute_builtins(t_minishell *mini, char **args);
 
 // Function that checks if the command is a builtin or not.
 bool				ft_is_builtin(char *arg);
 
 /* Cleaning */
 
+// Function that cleanup minishell for each prompt.
+void				cleanup(void);
+
 // Function that cleanup minishell.
 void				cleanup_minishell(void);
+
+// 
+void	clear_ast(t_node *tree);
 
 /* Environments */
 
@@ -110,13 +120,16 @@ void				clear_env(void);
 // Function that remove an element from the env.
 void				delete_env_var(t_env **env, char *key);
 
+/* Executing */
+
+// Main function that execute the user input.
+void				executer(void);
+
+
 /* Expanding */
 
 // Main function to do expand.
 void				expander(void);
-
-// Function that skip single quote.
-int					skip_quote(char *s, int *i);
 
 // Function that get the variable and search for it in the environment.
 char				*get_var(char *s, int *i);
@@ -124,16 +137,76 @@ char				*get_var(char *s, int *i);
 // Function that return the length of the variable after expanding.
 int					check_env(char *var);
 
-// Function that process special cases while filling the new value.
-void				process_special_cases(char *s, char *value, int *i, int *j);
+// Function that remove the whitespaces tokens from the list of tokens.
+void				remove_whitespace(t_token **tokens);
 
-// Function that allocate and fill the new value.
-char				*fill_value(char *s, int size);
+// Funtion that prepare the commands "tokens" to be executed.
+void				post_expander(void);
+
+// Function that count the length of the whole command after expanding.
+void				handle_dollar(char *s, int *i, int *len);
+
+// Function that expand the asterisk.
+void				asterisk_expand(t_token *token);
+
+// Function that help processing the files from directory stream.
+void				process_files(DIR *dir, char **result, const char *pattern);
+
+// Function that help processing the directories.
+void				process_dirs(DIR *dir, char **result, const char *pattern);
+
+// Function that sort the files or the directories.
+void				sort_strings(char **strings, size_t count);
+
+// Function that match the pattern.
+int					match_pattern(const char *pattern, const char *filename);
+
+// Function that append result to the value.
+void				append_to_result(char **result, const char *str, int newline);
+
+
+/* Memory */
+
+// Function to allocate and put the address on a garbage collector.
+char				*ft_malloc(t_minishell *mini, size_t size);
+
+// Function that add an adress to the garbage collector.
+void				gc_add(t_minishell *mini, void *ptr);
+
+// Function that free all addresses in the garbage collector.
+void				gc_free_all(t_minishell *mini);
+
+/* Nodes */
+
+/* Nodes functions */
+
+// Function that create a new character node.
+t_node				*char_node_new(char c);
+
+// Function that create a pair of nodes.
+t_node				*pair_node_new(t_node *left, t_node *right, t_type type);
+
+// Function that create a new string node.
+t_node				*string_node_new(t_list *list);
+
+// Function that create a new error node.
+t_node				*error_node_new(const char *msg);
+
+// Function that create a new redirection node.
+t_node				*redir_node_new(t_list *red_list);
 
 /* Parsing */
 
 // The main function for parsing the input and return our AST structure.
-// t_node				*parsing(void);
+t_node				*parsing(void);
+
+// Function that parse a block or a sequence.
+t_node				*parse_block(t_token **tokens);
+
+// Function that parse a command.
+t_node				*parse_cmd(t_token **tokens);
+
+void				remove_token(t_token **head, t_token *token);
 
 /* Signals */
 
@@ -141,6 +214,9 @@ char				*fill_value(char *s, int size);
 void				signals(void);
 
 /* Syntax */
+
+// The main  function that checks syntax errors.
+int					syntax(void);
 
 // The function is the second phase of the detection of syntax error.
 int					syntax_second_phase(t_token *token);

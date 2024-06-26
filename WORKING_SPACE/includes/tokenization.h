@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:04:32 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/24 14:14:04 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 10:34:53 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,33 +17,33 @@
 
 typedef enum e_type
 {
-    WORD,
-    PIPE,
-    AND,
-    OR,
-    LL_REDIR,
-    RR_REDIR,
-    L_REDIR,
-    R_REDIR,
-    END,
-    L_PAREN,
-    R_PAREN,
-    S_QUOTE,
-    D_QUOTE,
-    ASTERISK,
-    DOLLAR,
-    AMPERSAND,
-    WHITESPACE,
-    ERROR
-}                    t_type;
+	WORD,
+	PIPE,
+	AND,
+	OR,
+	LL_REDIR,
+	RR_REDIR,
+	L_REDIR,
+	R_REDIR,
+	END,
+	L_PAREN,
+	R_PAREN,
+	S_QUOTE,
+	D_QUOTE,
+	ASTERISK,
+	DOLLAR,
+	AMPERSAND,
+	WHITESPACE,
+	ERROR
+}					t_type;
 
 typedef struct s_token
 {
-    char            *value;
-    t_type            type;
-    struct s_token    *prev;
-    struct s_token    *next;
-}                    t_token;
+	char			*value;
+	t_type			type;
+	struct s_token	*prev;
+	struct s_token	*next;
+}					t_token;
 
 /* Utils */
 /* Function that checks if the character is either 
@@ -53,6 +53,10 @@ int					is_special(char c);
 int					is_separator(char *s);
 // Function that skips the whitespaces.
 void				skip_spaces(char **line);
+// Function that skips the quotes.
+bool				skip_quotes(char *line, size_t *i);
+// Function that prints in case of error.
+void				print_quote_err(char c);
 
 /* Helpers */
 // Function that create and return a new token node.
@@ -69,7 +73,5 @@ int					append_space(t_token **tokens, char **line);
 
 /* Free */
 void				clear_token(t_token **tokens);
-
-// t_token				*consume_token(t_token ***tokens);
 
 #endif /* TOKENIZATION_H */

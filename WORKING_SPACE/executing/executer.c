@@ -6,11 +6,39 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/25 20:06:19 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/26 10:47:05 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+// void	call_execev(char **env, char *argv)
+// {
+// 	char	*cat[2];
+// 	char	*founded_path;
+// 	char	**cmd;
+
+// 	cmd = ft_split(argv, ' ');
+// 	check_split(cmd, argv);
+// 	founded_path = get_fullpath(argv, env);
+// 	if (!founded_path)
+// 	{
+// 		free_double(cmd);
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	cat[0] = "cat";
+// 	cat[1] = NULL;
+// 	if (*argv == '\0')
+// 	{
+// 		free(founded_path);
+// 		free_double(cmd);
+// 		execve(get_fullpath("cat", env), cat, env);
+// 	}
+// 	else
+// 		execve(founded_path, cmd, env);
+// 	print_err("pipex: command not found: ", "cat");
+// 	exit(EXIT_FAILURE);
+// }
 
 int	ft_malloc_error(char **tab, size_t i)
 {
@@ -54,6 +82,7 @@ void print_double(char ** argv)
 char **env_to_envp(t_env *env)
 {
     char **argv;
+    char    *tmp;
     int size;
     int i;
 
@@ -62,11 +91,15 @@ char **env_to_envp(t_env *env)
     argv = malloc(sizeof(char *) * (size + 1));
     if(!argv)
         return(NULL);
+    gc_add(g_minishell, argv);
     while(i < size)
     {
-        argv[i] = ft_strjoin(ft_strjoin(env->key, "="),env->value);
+        tmp = ft_strjoin(env->key, "=");
+        argv[i] = ft_strjoin(tmp ,env->value);
         if(!argv[i])
-            return(ft_malloc_error(argv,i), NULL);
+            return(gc_free_all(g_minishell), NULL);
+        gc_add(g_minishell, argv[i]);
+        free(tmp);
         env = env->next;
         i++;
     }
@@ -85,13 +118,15 @@ char **list_to_argv(t_list *list)
     size = ft_lstsize(list);
     argv = malloc(sizeof(char *) * (size + 1));
     if(!argv)
-        return(NULL);
+        return(gc_free_all(g_minishell), NULL);
+    gc_add(g_minishell, argv);
     while(i < size)
     {
         len = ft_strlen(list->content) + 1;
         argv[i] = malloc(sizeof(char) * len);
         if(!argv[i])
-            return(ft_malloc_error(argv,i), NULL);
+            return(gc_free_all(g_minishell), NULL);
+        gc_add(g_minishell, argv[i]);
         ft_memmove(argv[i], list->content, len);
         list = list->next;
         i++;
@@ -105,25 +140,27 @@ void do_cmd(void)
 
     id = fork();
     if (!id)
-    {
-        execve("/usr/bin/env", list_to_argv(g_minishell->ast->data.cmd), env_to_envp(g_minishell->our_env));
-    }
+        execve("/usr/bin/ls", list_to_argv(g_minishell->ast->data.cmd), env_to_envp(g_minishell->our_env));
     else
     {
         wait(NULL);
     }
 }
 
-void execution(t_node *node) // execve( char *path, char **argv, char **envp);
+void    executer(void) // execve( char *path, char **argv, char **envp);
 {
-    
-//     if (!node) return;
+    t_node *node;
 
+    node = g_minishell->ast;
     if (node->type == STRING_NODE)
     {
-        // print_double(list_to_argv(node->data.cmd));
-        // print_double(env_to_envp(g_minishell->our_env));
-        do_cmd();
+        if (ft_is_builtin(node->data.cmd->content))
+        {
+            printf("Yes its a builtin\n");
+            execute_builtins(g_minishell, list_to_argv(g_minishell->ast->data.cmd));
+        }
+        else
+            do_cmd();
     }
 	// else if(node->type == PAIR_NODE)
 	// {

@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean.c                                            :+:      :+:    :+:   */
+/*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/11 11:30:18 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/05/19 21:01:33 by alassiqu         ###   ########.fr       */
+/*   Created: 2024/06/26 10:57:05 by baouragh          #+#    #+#             */
+/*   Updated: 2024/06/26 10:57:09 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	cleanup_minishell(void)
+char	*ft_malloc(t_minishell *mini, size_t size)
 {
-	clear_token(&g_minishell->tokens);
-	clear_env();
-	free(g_minishell->line);
+	char	*memory;
+
+	memory = malloc(size);
+	if (!memory)
+		return (perror("malloc failed!"), NULL);
+	gc_add(mini, memory);
+	return (memory);
 }

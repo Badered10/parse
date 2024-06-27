@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 16:53:16 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/27 16:28:55 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,79 +46,64 @@ void	print_root(t_type type, int x)
 	}
 }
 
-void	printAST(t_node *node, int x, t_type type)
+void printAST(t_node* node , int x , t_type type) 
 {
-	t_type	tmp;
-	t_redir	*new;
-
-	if (!node)
-		return ;
-	tmp = ERROR;
-	if (node->type == STRING_NODE)
+    t_type tmp;
+    if (!node) return;
+    tmp  = ERROR;
+    if (node->type == STRING_NODE) // leaf
+    {
+        print_root(type, x);
+        while (node->data.cmd)
+        {
+            printf("'%s' ", (char*)node->data.cmd->content);
+            node->data.cmd = node->data.cmd->next;
+        }
+        printf("\n");
+    }
+	else if(node->type == PAIR_NODE) // root
 	{
 		print_root(type, x);
-		while (node->data.cmd)
-		{
-			printf("'%s' ", (char *)node->data.cmd->content);
-			node->data.cmd = node->data.cmd->next;
-		}
-		printf("\n");
-	}
-	else if (node->type == PAIR_NODE)
-	{
-		print_root(type, x);
-		if (node->data.pair.type == PIPE)
-		{
-			printf("\n*** PIPE ***\n");
-			tmp = PIPE;
-		}
-		else if (node->data.pair.type == OR)
-		{
-			printf("\n*** OR ***\n");
-			tmp = OR;
-		}
-		else if (node->data.pair.type == AND)
-		{
-			printf("\n*** AND ***\n");
-			tmp = AND;
-		}
-		else if (node->data.pair.type == L_PAREN)
-		{
-			printf("L_PAREN\n");
-			tmp = L_PAREN;
-		}
-		// if(node->data.pair.type <= 3)
-		// {
-		printAST(node->data.pair.left, 1, tmp);
-		printAST(node->data.pair.right, 0, tmp);
-		// }
-		// else
-		// {
-		//     printAST(node->data.pair.left, 1 , tmp);
-		//     printAST(node->data.pair.right, 0 , tmp);
-		// }
-	}
-	else if (node->type == REDIR_NODE)
-	{
-		print_root(type, x);
-		while (node->data.redir)
-		{
-			new = node->data.redir->content;
-			printf("REDIR NODE , name: '%s'\n", new->file);
-			while (new->cmd)
-			{
-				printf("'%s' ", (char *)new->cmd->content);
-				new->cmd = new->cmd->next;
-			}
-			printf("\n");
-			node->data.redir = node->data.redir->next;
-		}
-	}
-	else if (node->type == ERROR_NODE)
-	{
-		printf("add '%p', -ERROR -------> '%s", node, node->data.error);
-	}
+        if(node->data.pair.type == PIPE)
+        {
+            printf("------------------->PIPE<----------------------\n");
+            tmp = PIPE;
+        }
+        else if (node->data.pair.type == OR)
+        {
+            printf("------------------->OR<----------------------\n");
+            tmp = OR;
+        } 
+        else if (node->data.pair.type == AND)
+        {
+            printf("------------------->AND<----------------------\n");
+            tmp = AND;
+        }
+            printAST(node->data.pair.left, 1 , tmp);
+            printAST(node->data.pair.right, 0 , tmp);
+    }
+    else if (node->type == REDIR_NODE) // leaf
+    {
+        print_root(type, x);
+        while(node->data.redir)
+        {
+            t_redir *new = node->data.redir->content;
+            printf("REDIR NODE , name: '%s'\n",new->file);
+            while (new->cmd)
+            {
+                printf("'%s' ", (char*)new->cmd->content);
+                new->cmd = new->cmd->next;
+            }
+            printf("\n");
+            node->data.redir = node->data.redir->next;
+        }
+    }
+    else if(node->type == ERROR_NODE) // leaf
+    {
+        printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
+    }
 }
+
 
 void	print_tokens(t_token *tokens)
 {
@@ -194,8 +179,8 @@ int	main(int ac, char **av, char **env)
 		g_minishell->ast = parsing();
 		if (!g_minishell->ast)
 			continue ;
-		// printAST(g_minishell->ast, 3212, 23123);
-		executer(g_minishell->ast);
+		printAST(g_minishell->ast, 3212, 23123);
+		// executer(g_minishell->ast);
 		gc_free_all(g_minishell);
 	}
 	gc_free_all(g_minishell);

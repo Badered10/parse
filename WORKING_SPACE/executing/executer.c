@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/26 16:50:26 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/29 17:02:43 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,15 @@ int	dup_2(int old_fd, int new_fd)
 	return (0);
 }
 
+
 void	fd_duper( int *pfd , int mode)
 {
-	if (mode == 1)
+	if (mode == 1) // close pipe and leave stdout to 1 or to file
 	{
 		close(pfd[1]);
 		close(pfd[0]);
-		// if (dup_2(1, 1))
-		// 	exit(EXIT_FAILURE);
 	}
-	else
+	else // write to pipe[1]
 	{
 		close(pfd[0]);
 		if (dup_2(pfd[1], 1))
@@ -338,6 +337,7 @@ char **list_to_argv(t_list *list)
 void do_cmd(t_node *ast, int flag)
 {
     int id;
+	(void) flag;
     char **cmd;
     char **env;
 
@@ -350,25 +350,20 @@ void do_cmd(t_node *ast, int flag)
         return;
 	}
 	id = check_cmd(*cmd, env);
-	if (flag)
-	{
-		if(id)
-		{
-			id = fork();
-			if (!id)
-				call_execev(env, *cmd , cmd);
-			else
-				wait(NULL);
-		}
-	}
-	else
-		call_execev(env, *cmd , cmd);
+	call_execev(env, *cmd , cmd);
 }
+
+/*
+	if mode == 0 it means a reagular dup of stdout to pipe write end pfd[1]
+	else 
+		it means thats cmd its last comd and dup should be to stdout or fd.
+*/
 
 void do_pipe(t_node *cmd , int mode)
 {
 	int	id;
 	int	pfd[2];
+
 	open_pipe(pfd);
 	id = fork();
 	if (id < 0)
@@ -378,12 +373,12 @@ void do_pipe(t_node *cmd , int mode)
 	}
 	if (id == 0)
 	{
-		fd_duper(pfd, mode);
-		do_cmd(cmd, 0);
+		fd_duper(pfd, mode); // mode is 0 (ls)  
+		do_cmd(cmd, mode);
 	}
 	else
 	{
-		if(mode)
+		if(!mode)
 		{
 			close(pfd[1]);
 			dup_2(pfd[0], 0);
@@ -393,6 +388,8 @@ void do_pipe(t_node *cmd , int mode)
 
 void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
 {
+	int id;
+
     if (node->type == STRING_NODE)
     {
         if (ft_is_builtin(node->data.cmd->content))
@@ -401,15 +398,24 @@ void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
             execute_builtins(g_minishell, list_to_argv(g_minishell->ast->data.cmd));
         }
         else
-            do_cmd(g_minishell->ast, 1);
+		{
+			id = fork();
+			if(!id)
+            	do_cmd(g_minishell->ast, 1);
+			else
+				wait(NULL);
+		}
     }
 	else if(node->type == PAIR_NODE)
 	{
-		if(node->data.pair.type == PIPE) // ls | ps | os | batata
+		if(node->data.pair.type == PIPE) // ls | cat
 		{
 			do_pipe(node->data.pair.left , 0);
 			if(node->data.pair.right->type == PAIR_NODE)
+			{
+				printf("heey\n");
 				executer(node->data.pair.right);
+			}
 			else
 				do_pipe(node->data.pair.right, 1);
 		}

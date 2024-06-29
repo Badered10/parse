@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/29 17:02:43 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/29 20:55:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,25 +203,25 @@ int	check_cmd(char *argv, char **env)
 
 void	call_execev(char **env, char *argv , char **cmd)
 {
-	char	*cat[2];
+	// char	*cat[2];
 	char	*founded_path;
 
 	check_split(cmd, argv);
 	founded_path = get_fullpath(argv, env);
-	if (!founded_path)
-	{
-		free_double(cmd);
-		return;
-	}
-	cat[0] = "cat";
-	cat[1] = NULL;
-	if (*argv == '\0')
-	{
-		free(founded_path);
-		free_double(cmd);
-		execve(get_fullpath("cat", env), cat, env);
-	}
-	else
+	// if (!founded_path)
+	// {
+	// 	free_double(cmd);
+	// 	return;
+	// }
+	// cat[0] = "cat";
+	// cat[1] = NULL;
+	// if (*argv == '\0')
+	// {
+	// 	free(founded_path);
+	// 	free_double(cmd);
+	// 	execve(get_fullpath("cat", env), cat, env);
+	// }
+	// else
 		execve(founded_path, cmd, env);
 	print_err("badashell: command not found: ", "cat");
 }
@@ -359,7 +359,7 @@ void do_cmd(t_node *ast, int flag)
 		it means thats cmd its last comd and dup should be to stdout or fd.
 */
 
-void do_pipe(t_node *cmd , int mode)
+void do_pipe(t_node *cmd , int mode int *pfd)
 {
 	int	id;
 	int	pfd[2];
@@ -383,6 +383,7 @@ void do_pipe(t_node *cmd , int mode)
 			close(pfd[1]);
 			dup_2(pfd[0], 0);
 		}
+		wait(NULL);
 	}
 }
 
@@ -402,8 +403,6 @@ void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
 			id = fork();
 			if(!id)
             	do_cmd(g_minishell->ast, 1);
-			else
-				wait(NULL);
 		}
     }
 	else if(node->type == PAIR_NODE)

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/30 17:37:42 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/30 22:19:56 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,12 +184,8 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		// printAST(g_minishell->ast, 3212, 23123);
 		executer(g_minishell->ast);
+		while(waitpid(-1, NULL, 0)!= -1);
 		dup2(g_minishell->stdin,0);
-		// char buff[1024];
-		// read(0 , buff , 1024);
-		// printf(" here --> |%s| <----\n", buff);
-		while(wait(NULL)!= -1);
-		// exit(1);
 		gc_free_all(g_minishell);
 	}
 	gc_free_all(g_minishell);

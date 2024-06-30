@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/30 17:12:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/30 22:31:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,23 +322,9 @@ char **list_to_argv(t_list *list)
     return(argv);
 }
 
-// static void	increment_shlvl()
-// {
-// 	char	*shlvl;
-// 	char	*new_shlvl;
-// 	int		tmp;
-
-// 	shlvl = get_env_var(g_minishell->our_env, "SHLVL");
-// 	tmp = ft_atoi(shlvl) + 1;
-// 	new_shlvl = ft_itoa(tmp);
-// 	gc_add(g_minishell, new_shlvl);
-// 	printf("tmp :: shlvl => '%d'\n", tmp);
-// 	set_env_var(g_minishell->our_env, "SHLVL", new_shlvl);
-// }
-void do_cmd(t_node *ast, int flag)
+void do_cmd(t_node *ast)
 {
     int id;
-	(void) flag;
     char **cmd;
     char **env;
 
@@ -377,15 +363,13 @@ void do_pipe(t_node *cmd , int mode)
 	if (id == 0)
 	{
 		fd_duper(pfd, mode); // mode is 0 (ls)  
-		do_cmd(cmd, mode);
+		do_cmd(cmd);
 	}
 	else
 	{
-		if(!mode)
-		{
 			close(pfd[1]);
-			dup_2(pfd[0], 0); // 
-		}
+			dup_2(pfd[0], 0);
+			wait(&g_minishell->exit_s);
 	}
 }
 
@@ -405,7 +389,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
 		{
 			id = fork();
 			if(!id)
-            	do_cmd(g_minishell->ast, 1);
+            	do_cmd(g_minishell->ast);
 		}
     }
 	else if(node->type == PAIR_NODE) // pair
@@ -421,8 +405,12 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			else
 				do_pipe(node->data.pair.right, 1);
 		}
-            // printAST(node->data.pair.left, 1 , tmp);
-            // printAST(node->data.pair.right, 0 , tmp);
+		else if (node->data.pair.type == OR)
+		{
+			executer(node->data.pair.left);
+			if(g_minishell->exit_s)
+				executer(node->data.pair.right);
+		}
     }
 	while(wait(NULL)!= -1);
 //     else if (node->type == REDIR_NODE) // leaf

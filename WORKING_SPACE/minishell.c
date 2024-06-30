@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/29 20:21:19 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/30 17:37:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void printAST(t_node* node , int x , t_type type)
     }
 	else if(node->type == PAIR_NODE) // root
 	{
-		print_root(type, x);
+		print_root(type, x); // 4832948 , 234234
         if(node->data.pair.type == PIPE)
         {
             printf("------------------->PIPE<----------------------\n");
@@ -125,6 +125,9 @@ int	init_minishell(char **env)
 			return (0);
 		g_minishell->dq_flag = 0;
 		g_minishell->gc = NULL;
+		g_minishell->stdin = dup(0);
+		g_minishell->stdout = dup(1);
+		g_minishell->pipe = 0;
 		// increment_shlvl();
 		g_minishell->our_env = dup_env(env);
 		if (!g_minishell->our_env)
@@ -181,6 +184,10 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		// printAST(g_minishell->ast, 3212, 23123);
 		executer(g_minishell->ast);
+		dup2(g_minishell->stdin,0);
+		// char buff[1024];
+		// read(0 , buff , 1024);
+		// printf(" here --> |%s| <----\n", buff);
 		while(wait(NULL)!= -1);
 		// exit(1);
 		gc_free_all(g_minishell);

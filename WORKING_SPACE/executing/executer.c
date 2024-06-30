@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/29 20:55:42 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/06/30 17:12:52 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,8 @@ void	call_execev(char **env, char *argv , char **cmd)
 	// }
 	// else
 		execve(founded_path, cmd, env);
-	print_err("badashell: command not found: ", "cat");
+	// print_err("badashell: command not found: ", "cat");
+	print_err("execve failed !!\n", NULL);
 }
 
 int	ft_malloc_error(char **tab, size_t i)
@@ -350,7 +351,9 @@ void do_cmd(t_node *ast, int flag)
         return;
 	}
 	id = check_cmd(*cmd, env);
-	call_execev(env, *cmd , cmd);
+	if(id)
+		call_execev(env, *cmd , cmd);
+	exit(1);
 }
 
 /*
@@ -359,7 +362,7 @@ void do_cmd(t_node *ast, int flag)
 		it means thats cmd its last comd and dup should be to stdout or fd.
 */
 
-void do_pipe(t_node *cmd , int mode int *pfd)
+void do_pipe(t_node *cmd , int mode)
 {
 	int	id;
 	int	pfd[2];
@@ -381,17 +384,17 @@ void do_pipe(t_node *cmd , int mode int *pfd)
 		if(!mode)
 		{
 			close(pfd[1]);
-			dup_2(pfd[0], 0);
+			dup_2(pfd[0], 0); // 
 		}
-		wait(NULL);
 	}
 }
 
-void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
+void    executer(t_node *node) // ls | wc | cat && ps
 {
 	int id;
-
-    if (node->type == STRING_NODE)
+	if (!node) 
+		return;
+    if (node->type == STRING_NODE) // leaf 
     {
         if (ft_is_builtin(node->data.cmd->content))
         {
@@ -405,7 +408,7 @@ void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
             	do_cmd(g_minishell->ast, 1);
 		}
     }
-	else if(node->type == PAIR_NODE)
+	else if(node->type == PAIR_NODE) // pair
 	{
 		if(node->data.pair.type == PIPE) // ls | cat
 		{
@@ -421,7 +424,8 @@ void    executer(t_node *node) // execve( char *path, char **argv, char **envp);
             // printAST(node->data.pair.left, 1 , tmp);
             // printAST(node->data.pair.right, 0 , tmp);
     }
-//     else if (node->type == REDIR_NODE)
+	while(wait(NULL)!= -1);
+//     else if (node->type == REDIR_NODE) // leaf
 //     {
 //         while(node->data.redir)
 //         {

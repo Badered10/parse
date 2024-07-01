@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 21:02:48 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:10:56 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,11 +359,24 @@ void do_cmd(t_node *ast)
 		it means thats cmd its last comd and dup should be to stdout or fd.
 */
 
+void wait_and_get(void)
+{
+	char *exit;
+
+	wait(&g_minishell->exit_s);
+	if (WIFEXITED(g_minishell->exit_s))
+		g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
+	exit = ft_itoa(g_minishell->exit_s);
+	if(!exit)
+		return(print_errors("ERROR WITH FT_ITOA\n"));
+	set_env_var(g_minishell->our_env, "?", exit);
+	free(exit);
+}
+
 void do_pipe(t_node *cmd , int mode)
 {
 	int	id;
 	int	pfd[2];
-	char *exit;
 
 	open_pipe(pfd);
 	id = fork();
@@ -382,22 +395,13 @@ void do_pipe(t_node *cmd , int mode)
 		close(pfd[1]);
 		dup_2(pfd[0], 0);
 		if(mode)
-		{
-			wait(&g_minishell->exit_s);
-			if (WIFEXITED(g_minishell->exit_s))
-			g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
-			exit = ft_itoa(g_minishell->exit_s);
-			if(!exit)
-				return(print_errors("ERROR WITH FT_ITOA\n"));
-			set_env_var(g_minishell->our_env, "?", exit);
-		}
+			wait_and_get();
 	}
 }
 
 void    executer(t_node *node) // ls | wc | cat && ps
 {
 	int id;
-	char *exit;
 	if (!node)
 		return;
     if (node->type == STRING_NODE) // leaf 
@@ -413,15 +417,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			if(!id)
             	do_cmd(node);
 			else
-			{
-				wait(&g_minishell->exit_s);
-				if (WIFEXITED(g_minishell->exit_s))
-        			g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
-				exit = ft_itoa(g_minishell->exit_s);
-				if(!exit)
-					return(print_errors("ERROR WITH FT_ITOA\n"));
-				set_env_var(g_minishell->our_env, "?", exit);
-			}
+				wait_and_get();
 		}
     }
 	else if(node->type == PAIR_NODE) // pair

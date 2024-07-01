@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 18:37:21 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 19:19:17 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,16 +426,25 @@ void    executer(t_node *node) // ls | wc | cat && ps
 		if(node->data.pair.type == PIPE) // ls | cat
 		{
 			do_pipe(node->data.pair.left , 0);
-			if(node->data.pair.right->type == PAIR_NODE)
-				executer(node->data.pair.right);
-			else
-				do_pipe(node->data.pair.right, 1);
+			executer(node->data.pair.right);
 		}
 		else if (node->data.pair.type == OR)
 		{
 			executer(node->data.pair.left);
 			if(g_minishell->exit_s)
+			{
+				dup2(g_minishell->stdin,0);
 				executer(node->data.pair.right);
+			}
+		}
+		else if (node->data.pair.type == AND)
+		{
+			executer(node->data.pair.left);
+			if(!g_minishell->exit_s)
+			{
+				dup2(g_minishell->stdin,0);
+				executer(node->data.pair.right);
+			}
 		}
     }
 	while(wait(NULL)!= -1);

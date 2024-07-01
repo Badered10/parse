@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 21:10:56 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:16:14 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,6 @@ char	*get_fullpath(char *argv, char **env)
 	char	*fullpath;
 	int		i;
 
-	// if (*argv == '\0')
-	// 	return (strdup(""));
 	i = 0;
 	fullpath = NULL;
 	paths = get_env_paths(env);
@@ -214,27 +212,11 @@ int	check_cmd(char *argv, char **env)
 
 void	call_execev(char **env, char *argv , char **cmd)
 {
-	// char	*cat[2];
 	char	*founded_path;
 
 	check_split(cmd, argv);
 	founded_path = get_fullpath(argv, env);
-	// if (!founded_path)
-	// {
-	// 	free_double(cmd);
-	// 	return;
-	// }
-	// cat[0] = "cat";
-	// cat[1] = NULL;
-	// if (*argv == '\0')
-	// {
-	// 	free(founded_path);
-	// 	free_double(cmd);
-	// 	execve(get_fullpath("cat", env), cat, env);
-	// }
-	// else
-		execve(founded_path, cmd, env);
-	// print_err("badashell: command not found: ", "cat");
+	execve(founded_path, cmd, env);
 	print_err("execve failed !!\n", NULL);
 }
 
@@ -327,9 +309,8 @@ char **list_to_argv(t_list *list)
         if(!argv[i])
             return(gc_free_all(g_minishell), NULL);
         gc_add(g_minishell, argv[i]);
-        ft_memmove(argv[i], list->content, len);
+        ft_memmove(argv[i++], list->content, len);
         list = list->next;
-        i++;
     }
     argv[i] = NULL;
     return(argv);

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 17:21:45 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 18:37:21 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,17 +188,26 @@ int	check_cmd(char *argv, char **env)
 	char	*cmd;
     int     check;
 
-    check = 1;
+    check = 0;
 	cmd = get_fullpath(argv, env);
 	if (!cmd && *argv == '.')
 		cmd = get_command(argv);
 	if (*argv != '\0' && (*argv == '/' || *argv == '.')
 		&& access(cmd, F_OK))
-		check = print_err("badashell: no such file or directory:", argv);
+	{
+		print_err("badashell: no such file or directory:", argv);
+		check = 127;
+	}
 	else if (*argv != '\0' && access(cmd, F_OK))
-		check = print_err("badashell: command not found: ", argv);
+	{
+		print_err("badashell: command not found: ", argv);
+		check = 127;
+	}
 	else if (*argv != '\0' && access(cmd, X_OK))
-		check = print_err("badashell: permission denied: ", argv);
+	{
+		print_err("badashell: permission denied: ", argv);
+		check = 126;
+	}
 	free(cmd);
     return (check);
 }
@@ -339,9 +348,9 @@ void do_cmd(t_node *ast)
     if(!env)
 		return;
 	id = check_cmd(*cmd, env);
-	if(id)
+	if(!id)
 		call_execev(env, *cmd , cmd);
-	exit(1);
+	exit(id);
 }
 
 /*
@@ -354,6 +363,7 @@ void do_pipe(t_node *cmd , int mode)
 {
 	int	id;
 	int	pfd[2];
+	char *exit;
 
 	open_pipe(pfd);
 	id = fork();
@@ -369,15 +379,22 @@ void do_pipe(t_node *cmd , int mode)
 	}
 	else
 	{
-			close(pfd[1]);
-			dup_2(pfd[0], 0);
-			wait(&g_minishell->exit_s);
+		close(pfd[1]);
+		dup_2(pfd[0], 0);
+		wait(&g_minishell->exit_s);
+		if (WIFEXITED(g_minishell->exit_s))
+        g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
+		exit = ft_itoa(g_minishell->exit_s);
+		if(!exit)
+			return(print_errors("ERROR WITH FT_ITOA\n"));
+		set_env_var(g_minishell->our_env, "?", exit);
 	}
 }
 
 void    executer(t_node *node) // ls | wc | cat && ps
 {
 	int id;
+	char *exit;
 	if (!node)
 		return;
     if (node->type == STRING_NODE) // leaf 
@@ -385,7 +402,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
         if (ft_is_builtin(node->data.cmd->content))
         {
             printf("Yes its a builtin\n");
-            execute_builtins(g_minishell, list_to_argv(g_minishell->ast->data.cmd));
+            execute_builtins(g_minishell, list_to_argv(node->data.cmd));
         }
         else
 		{
@@ -393,7 +410,15 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			if(!id)
             	do_cmd(node);
 			else
+			{
 				wait(&g_minishell->exit_s);
+				if (WIFEXITED(g_minishell->exit_s))
+        			g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
+				exit = ft_itoa(g_minishell->exit_s);
+				if(!exit)
+					return(print_errors("ERROR WITH FT_ITOA\n"));
+				set_env_var(g_minishell->our_env, "?", exit);
+			}
 		}
     }
 	else if(node->type == PAIR_NODE) // pair

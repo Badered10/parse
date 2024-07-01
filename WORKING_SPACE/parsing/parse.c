@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/27 16:24:45 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 17:08:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ t_node	*parse_or(t_token **tokens) // (ls && ps) || ls && p
 	left = parse_pipe(tokens);
 	if(*tokens && (*tokens)->type == OR)
 	{
-		printf("heeeeeeeeeeeeloo\n");
 		type = (*tokens)->type;
 		(*tokens) = (*tokens)->next;
 		return (pair_node_new(left, parse_or(tokens), type));

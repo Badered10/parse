@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/30 22:31:30 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 17:21:45 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,13 +161,15 @@ char	*get_fullpath(char *argv, char **env)
 	char	*fullpath;
 	int		i;
 
-	if (*argv == '\0')
-		return (strdup(""));
+	// if (*argv == '\0')
+	// 	return (strdup(""));
 	i = 0;
 	fullpath = NULL;
 	paths = get_env_paths(env);
 	paths_num = strings_count(paths);
 	cmd = ft_split(argv, ' ');
+	if(!cmd)
+		return(free(paths),NULL);
 	if (!(access(*cmd, F_OK)))
 	{
 		if ((*argv == '/' || *argv == '.') && !access(*cmd, X_OK))
@@ -302,6 +304,8 @@ char **list_to_argv(t_list *list)
     int len;
 
     i = 0;
+	if(!list)
+		return(NULL);
     size = ft_lstsize(list);
     argv = malloc(sizeof(char *) * (size + 1));
     if(!argv)
@@ -332,10 +336,8 @@ void do_cmd(t_node *ast)
     if(!cmd)
         return;
     env = env_to_envp(g_minishell->our_env);
-    if (!env)
-	{
-        return;
-	}
+    if(!env)
+		return;
 	id = check_cmd(*cmd, env);
 	if(id)
 		call_execev(env, *cmd , cmd);
@@ -376,7 +378,7 @@ void do_pipe(t_node *cmd , int mode)
 void    executer(t_node *node) // ls | wc | cat && ps
 {
 	int id;
-	if (!node) 
+	if (!node)
 		return;
     if (node->type == STRING_NODE) // leaf 
     {
@@ -389,7 +391,9 @@ void    executer(t_node *node) // ls | wc | cat && ps
 		{
 			id = fork();
 			if(!id)
-            	do_cmd(g_minishell->ast);
+            	do_cmd(node);
+			else
+				wait(&g_minishell->exit_s);
 		}
     }
 	else if(node->type == PAIR_NODE) // pair
@@ -398,10 +402,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
 		{
 			do_pipe(node->data.pair.left , 0);
 			if(node->data.pair.right->type == PAIR_NODE)
-			{
-				printf("heey\n");
 				executer(node->data.pair.right);
-			}
 			else
 				do_pipe(node->data.pair.right, 1);
 		}

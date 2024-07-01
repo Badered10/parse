@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 19:19:17 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:02:48 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -381,13 +381,16 @@ void do_pipe(t_node *cmd , int mode)
 	{
 		close(pfd[1]);
 		dup_2(pfd[0], 0);
-		wait(&g_minishell->exit_s);
-		if (WIFEXITED(g_minishell->exit_s))
-        g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
-		exit = ft_itoa(g_minishell->exit_s);
-		if(!exit)
-			return(print_errors("ERROR WITH FT_ITOA\n"));
-		set_env_var(g_minishell->our_env, "?", exit);
+		if(mode)
+		{
+			wait(&g_minishell->exit_s);
+			if (WIFEXITED(g_minishell->exit_s))
+			g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
+			exit = ft_itoa(g_minishell->exit_s);
+			if(!exit)
+				return(print_errors("ERROR WITH FT_ITOA\n"));
+			set_env_var(g_minishell->our_env, "?", exit);
+		}
 	}
 }
 
@@ -426,7 +429,10 @@ void    executer(t_node *node) // ls | wc | cat && ps
 		if(node->data.pair.type == PIPE) // ls | cat
 		{
 			do_pipe(node->data.pair.left , 0);
-			executer(node->data.pair.right);
+			if(node->data.pair.right->type == PAIR_NODE)
+				executer(node->data.pair.right);
+			else
+				do_pipe(node->data.pair.right, 1);
 		}
 		else if (node->data.pair.type == OR)
 		{
@@ -447,7 +453,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			}
 		}
     }
-	while(wait(NULL)!= -1);
+	// while(wait(NULL)!= -1);
 //     else if (node->type == REDIR_NODE) // leaf
 //     {
 //         while(node->data.redir)

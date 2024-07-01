@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 21:16:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:52:26 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,6 +354,13 @@ void wait_and_get(void)
 	free(exit);
 }
 
+// int open_redir(t_redir *redir)
+// {
+// 	if(redir->type == LL_REDIR)
+		
+// }
+
+
 void do_pipe(t_node *cmd , int mode)
 {
 	int	id;
@@ -416,7 +423,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			executer(node->data.pair.left);
 			if(g_minishell->exit_s)
 			{
-				dup2(g_minishell->stdin,0);
+				dup2(g_minishell->stdin, 0);
 				executer(node->data.pair.right);
 			}
 		}
@@ -425,27 +432,31 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			executer(node->data.pair.left);
 			if(!g_minishell->exit_s)
 			{
-				dup2(g_minishell->stdin,0);
+				dup2(g_minishell->stdin, 0);
 				executer(node->data.pair.right);
 			}
 		}
     }
-	// while(wait(NULL)!= -1);
-//     else if (node->type == REDIR_NODE) // leaf
-//     {
-//         while(node->data.redir)
-//         {
-//             t_redir *new = node->data.redir->content;
-//             printf("REDIR NODE , name: '%s'\n",new->file);
-//             while (new->cmd)
-//             {
-//                 printf("'%s' ", (char*)new->cmd->content);
-//                 new->cmd = new->cmd->next;
-//             }
-//             printf("\n");
-//             node->data.redir = node->data.redir->next;
-//         }
-//     }
+    // else if (node->type == REDIR_NODE) // leaf
+    // {
+    //     while(node->data.redir)
+    //     {
+	// 		int fd;
+    //         t_redir *new = node->data.redir->content;
+    //         printf("REDIR NODE , name: '%s'\n",new->file);
+	// 		fd = open_redir(new);
+	// 		if(new->cmd)
+	// 		{
+	// 			while (new->cmd)
+	// 			{
+	// 				printf("'%s' ", (char*)new->cmd->content);
+	// 				new->cmd = new->cmd->next;
+	// 			}
+	// 			printf("\n");
+	// 		}
+    //         node->data.redir = node->data.redir->next;
+    //     }
+    // }
 //     else if(node->type == ERROR_NODE)
 //     {
 //         printf("add'%p', -ERROR -------> '%s",node ,node->data.error);

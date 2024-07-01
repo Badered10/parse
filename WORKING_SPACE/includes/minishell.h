@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/30 22:30:23 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/01 21:40:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <unistd.h>
+# include <fcntl.h>
 # include <sys/wait.h>
 
 typedef struct s_env
@@ -60,6 +61,8 @@ typedef struct s_minishell
 
 extern t_minishell	*g_minishell;
 
+
+void	ft_readline(int flag);
 
 /* Builtins */
 

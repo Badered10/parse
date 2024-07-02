@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/01 21:52:26 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/02 17:47:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,23 +345,25 @@ void wait_and_get(void)
 	char *exit;
 
 	wait(&g_minishell->exit_s);
+	printf("befor '%d'\n",g_minishell->exit_s);
 	if (WIFEXITED(g_minishell->exit_s))
 		g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
 	exit = ft_itoa(g_minishell->exit_s);
+	printf("after '%s'\n",exit);
 	if(!exit)
 		return(print_errors("ERROR WITH FT_ITOA\n"));
 	set_env_var(g_minishell->our_env, "?", exit);
 	free(exit);
 }
 
-// int open_redir(t_redir *redir)
-// {
-// 	if(redir->type == LL_REDIR)
+int open_redir(t_redir *redir)
+{
+	if(redir->type == LL_REDIR)
 		
-// }
+}
 
 
-void do_pipe(t_node *cmd , int mode)
+void do_pipe(t_node *cmd , int mode) // ls | cat
 {
 	int	id;
 	int	pfd[2];
@@ -375,7 +377,7 @@ void do_pipe(t_node *cmd , int mode)
 	}
 	if (id == 0)
 	{
-		fd_duper(pfd, mode); // mode is 0 (ls)  
+		fd_duper(pfd, mode); // mode 0 normal, 1 last cmd
 		do_cmd(cmd);
 	}
 	else
@@ -410,9 +412,9 @@ void    executer(t_node *node) // ls | wc | cat && ps
     }
 	else if(node->type == PAIR_NODE) // pair
 	{
-		if(node->data.pair.type == PIPE) // ls | cat
+		if(node->data.pair.type == PIPE) // 1 | 2 | 3 | 4 -->  1 <-- | --> | , 2 <-- | --> | , 3 <-- | --> 4
 		{
-			do_pipe(node->data.pair.left , 0);
+			do_pipe(node->data.pair.left , 0); // 0 regular cmd , 1 the last cmd  
 			if(node->data.pair.right->type == PAIR_NODE)
 				executer(node->data.pair.right);
 			else
@@ -437,26 +439,28 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			}
 		}
     }
-    // else if (node->type == REDIR_NODE) // leaf
-    // {
-    //     while(node->data.redir)
-    //     {
-	// 		int fd;
-    //         t_redir *new = node->data.redir->content;
-    //         printf("REDIR NODE , name: '%s'\n",new->file);
-	// 		fd = open_redir(new);
-	// 		if(new->cmd)
-	// 		{
-	// 			while (new->cmd)
-	// 			{
-	// 				printf("'%s' ", (char*)new->cmd->content);
-	// 				new->cmd = new->cmd->next;
-	// 			}
-	// 			printf("\n");
-	// 		}
-    //         node->data.redir = node->data.redir->next;
-    //     }
-    // }
+    else if (node->type == REDIR_NODE) // leaf
+    {
+		//---> 1 
+		
+        while(node->data.redir) // linked list of reds
+        {
+			int fd;
+            t_redir *new = node->data.redir->content;
+            printf("REDIR NODE , name: '%s'\n",new->file);
+			fd = open_redir(new);
+			if(new->cmd)
+			{
+				while (new->cmd)
+				{
+					printf("'%s' ", (char*)new->cmd->content);
+					new->cmd = new->cmd->next;
+				}
+				printf("\n");
+			}
+            node->data.redir = node->data.redir->next;
+        }
+    }
 //     else if(node->type == ERROR_NODE)
 //     {
 //         printf("add'%p', -ERROR -------> '%s",node ,node->data.error);

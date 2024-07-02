@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 21:05:29 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 10:43:31 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/02 23:55:17 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_sigint_handler(int sig)
 	set_env_var(g_minishell->our_env, "?", "130");
 }
 
-void	signals(void)
+int	signals(void)
 {
 	rl_catch_signals = 0;
 	signal(SIGINT, ft_sigint_handler);

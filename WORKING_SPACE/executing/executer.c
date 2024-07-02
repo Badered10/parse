@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/02 17:47:58 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/02 22:51:19 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -359,7 +359,8 @@ void wait_and_get(void)
 int open_redir(t_redir *redir)
 {
 	if(redir->type == LL_REDIR)
-		
+		here_doc(redir->file);
+	return(0);
 }
 
 
@@ -441,7 +442,6 @@ void    executer(t_node *node) // ls | wc | cat && ps
     }
     else if (node->type == REDIR_NODE) // leaf
     {
-		//---> 1 
 		
         while(node->data.redir) // linked list of reds
         {
@@ -449,15 +449,15 @@ void    executer(t_node *node) // ls | wc | cat && ps
             t_redir *new = node->data.redir->content;
             printf("REDIR NODE , name: '%s'\n",new->file);
 			fd = open_redir(new);
-			if(new->cmd)
-			{
-				while (new->cmd)
-				{
-					printf("'%s' ", (char*)new->cmd->content);
-					new->cmd = new->cmd->next;
-				}
-				printf("\n");
-			}
+			// if(new->cmd)
+			// {
+			// 	while (new->cmd)
+			// 	{
+			// 		printf("'%s' ", (char*)new->cmd->content);
+			// 		new->cmd = new->cmd->next;
+			// 	}
+			// 	printf("\n");
+			// }
             node->data.redir = node->data.redir->next;
         }
     }

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/02 17:34:37 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/02 22:56:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ int	get_exit_status()
 	return (exit_status);
 }
 
-void	ft_readline(int flag)
+void	ft_readline(void)
 {
 	g_minishell->line = readline(ORANGE PROMPT RESET);
 	gc_add(g_minishell, g_minishell->line);
@@ -161,11 +161,8 @@ void	ft_readline(int flag)
 		// exit(get_exit_status());
 		exit(1);
 	}
-	if(flag)
-	{
 		if (g_minishell->line[0])
 			add_history(g_minishell->line);
-	}
 }
 
 int	main(int ac, char **av, char **env)
@@ -175,15 +172,15 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	while (1)
 	{
-		ft_readline(1);
+		ft_readline();
 		g_minishell->tokens = tokenizer();
 		if (!g_minishell->tokens || syntax() == -1)
 			continue ;
 		g_minishell->ast = parsing();
 		if (!g_minishell->ast)
 			continue ;
-		printAST(g_minishell->ast, 3212, 23123);
-		// executer(g_minishell->ast);
+		// printAST(g_minishell->ast, 3212, 23123);
+		executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
 		dup2(g_minishell->stdin, 0);
 		gc_free_all(g_minishell);

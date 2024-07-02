@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/01 21:40:16 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/02 23:55:39 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ typedef struct s_minishell
 extern t_minishell	*g_minishell;
 
 
-void	ft_readline(int flag);
+void	ft_readline();
 
 /* Builtins */
 
@@ -131,6 +131,8 @@ void				delete_env_var(t_env **env, char *key);
 
 // Main function that execute the user input.
 void				executer(t_node *node);
+
+void				here_doc(char *limiter);
 
 
 /* Expanding */
@@ -274,5 +276,6 @@ int					is_quote(char c);
 
 /* Debugging ones */
 void				print_tokens(t_token *token);
+
 
 #endif /* MINISHELL_H */

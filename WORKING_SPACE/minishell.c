@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/02 22:56:16 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/03 19:30:31 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,7 @@ int	get_exit_status()
 void	ft_readline(void)
 {
 	g_minishell->line = readline(ORANGE PROMPT RESET);
+	// printf("\nYOOOOOOO\n");
 	gc_add(g_minishell, g_minishell->line);
 	// printf("**gc** :: line => '%p'\n", g_minishell->line);
 	// set_env_var(g_minishell->our_env, "?", "0");

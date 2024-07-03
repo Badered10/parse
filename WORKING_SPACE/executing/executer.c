@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/02 22:51:19 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/03 18:08:22 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ void	fd_duper( int *pfd , int mode)
 		close(pfd[1]);
 		close(pfd[0]);
 	}
-	else // write to pipe[1]
+	else // write to pipe[1] // 0
 	{
 		close(pfd[0]);
-		if (dup_2(pfd[1], 1))
+		if (dup_2(pfd[1], 1)) // 
 			exit(EXIT_FAILURE);
 	}
 }
@@ -364,7 +364,7 @@ int open_redir(t_redir *redir)
 }
 
 
-void do_pipe(t_node *cmd , int mode) // ls | cat
+void do_pipe(t_node *cmd , int mode) // ls | cat | cat -e
 {
 	int	id;
 	int	pfd[2];
@@ -384,7 +384,7 @@ void do_pipe(t_node *cmd , int mode) // ls | cat
 	else
 	{
 		close(pfd[1]);
-		dup_2(pfd[0], 0);
+		dup_2(pfd[0], 0); // stdin -> pipe
 		if(mode)
 			wait_and_get();
 	}

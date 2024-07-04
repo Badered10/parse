@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 16:02:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:36:39 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -480,7 +480,7 @@ void    executer(t_node *node) // ls | wc | cat && ps
 		if(node->data.pair.type == PIPE) // 1 | 2 | 3 | 4 -->  1 <-- | --> | , 2 <-- | --> | , 3 <-- | --> 4
 		{
 			do_pipe(node->data.pair.left , 0); // 0 regular cmd , 1 the last cmd  
-			if(node->data.pair.right->type == PAIR_NODE)
+			if(node->data.pair.right->type != STRING_NODE)
 				executer(node->data.pair.right);
 			else
 				do_pipe(node->data.pair.right, 1);

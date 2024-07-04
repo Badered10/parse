@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/04 13:01:41 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:02:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,10 @@ void printAST(t_node* node , int x , t_type type)
             node->data.redir = node->data.redir->next;
         }
     }
-    else if(node->type == ERROR_NODE) // leaf
-    {
-        printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
-    }
+    // else if(node->type == ERROR_NODE) // leaf
+    // {
+    //     printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
+    // }
 }
 
 

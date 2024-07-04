@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 11:30:18 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 10:51:44 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:00:44 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ void	clear_ast(t_node *tree)
         }
         free(tree);
     }
-    else if(tree->type == ERROR_NODE)
-        free(tree);
 }
 
 void	cleanup(void)

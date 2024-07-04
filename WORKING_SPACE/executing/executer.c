@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 17:36:39 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:00:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	dup_2(int old_fd, int new_fd)
 	close(old_fd);
 	return (0);
 }
-
 
 void	fd_duper( int *pfd , int mode)
 {
@@ -76,7 +75,6 @@ char	*add_slash_cmd(char *path, char *cmd)
 	else
 		return (free(fullpath), free(a_path), NULL);
 }
-
 
 int	print_err(char *message, char *word)
 {
@@ -334,12 +332,6 @@ void do_cmd(t_node *ast)
 	exit(id);
 }
 
-/*
-	if mode == 0 it means a reagular dup of stdout to pipe write end pfd[1]
-	else 
-		it means thats cmd its last comd and dup should be to stdout or fd.
-*/
-
 void wait_and_get(void)
 {
 	char *exit;
@@ -353,12 +345,6 @@ void wait_and_get(void)
 	set_env_var(g_minishell->our_env, "?", exit);
 	free(exit);
 }
-
-void open_redir(t_redir *redir)
-{
-	redir->fd = open(redir->file,redir->mode, 0644);
-}
-
 
 void do_pipe(t_node *cmd , int mode) // ls | cat | cat -e
 {
@@ -437,6 +423,11 @@ int output_to_dup(t_list *red_list) // > >>
 	return (fd);
 }
 
+void open_redir(t_redir *redir)
+{
+	redir->fd = open(redir->file,redir->mode, 0644);
+}
+
 void open_and_set(t_list *red_list)
 {
     t_redir *new ;
@@ -450,91 +441,97 @@ void open_and_set(t_list *red_list)
     }
 }
 
-void    executer(t_node *node) // ls | wc | cat && ps
+void run_doc_cmd(t_list *red_list)
 {
-	int id;
-	int fd_here;
+	t_list *last;
+	t_redir *new;
+	
+	last = ft_lstlast(red_list);
+	new = last->content;
+	if(new->cmd)
+		executer(string_node_new(new->cmd));
+}
+
+void	execute_redires(t_list *red_list)
+{
 	int fd_input;
 	int fd_output;
 
+	if (do_here_docs(red_list) == 0)
+		return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
+	open_and_set(red_list);
+	fd_input = input_to_dup(red_list);
+	fd_output = output_to_dup(red_list);
+	if(fd_input > 0)
+		dup2(fd_input, 0);
+	if(fd_output > 0)
+		dup2(fd_output, 1);
+	run_doc_cmd(red_list);
+}
+
+void execute_cmd(t_node *node)
+{
+	int id;
+
+	if (ft_is_builtin(node->data.cmd->content))
+    {
+        printf("Yes its a builtin\n");
+        execute_builtins(g_minishell, list_to_argv(node->data.cmd));
+    }
+    else
+	{
+		id = fork();
+		if(!id)
+            do_cmd(node);
+		else
+			wait_and_get();
+	}
+}
+
+void execute_and_or(t_node *node)
+{
+	if (node->data.pair.type == OR)
+	{
+		executer(node->data.pair.left);
+		if(g_minishell->exit_s)
+		{
+			dup2(g_minishell->stdin, 0);
+			executer(node->data.pair.right);
+		}
+	}
+	else if (node->data.pair.type == AND)
+	{
+		executer(node->data.pair.left);
+		if(!g_minishell->exit_s)
+		{
+			dup2(g_minishell->stdin, 0);
+			executer(node->data.pair.right);
+		}
+	}
+}
+
+void execute_pair(t_node *node)
+{
+	if(node->data.pair.type == PIPE)
+	{
+		do_pipe(node->data.pair.left , 0);
+		if(node->data.pair.right->type != STRING_NODE)
+			executer(node->data.pair.right);
+		else
+			do_pipe(node->data.pair.right, 1);
+	}
+	else
+		execute_and_or(node);
+}
+
+void    executer(t_node *node) // ls | wc | cat && ps
+{
 	if (!node)
 		return;
     if (node->type == STRING_NODE) // leaf 
-    {
-        if (ft_is_builtin(node->data.cmd->content))
-        {
-            printf("Yes its a builtin\n");
-            execute_builtins(g_minishell, list_to_argv(node->data.cmd));
-        }
-        else
-		{
-			id = fork();
-			if(!id)
-            	do_cmd(node);
-			else
-				wait_and_get();
-		}
-    }
+		execute_cmd(node);
 	else if(node->type == PAIR_NODE) // pair
-	{
-		if(node->data.pair.type == PIPE) // 1 | 2 | 3 | 4 -->  1 <-- | --> | , 2 <-- | --> | , 3 <-- | --> 4
-		{
-			do_pipe(node->data.pair.left , 0); // 0 regular cmd , 1 the last cmd  
-			if(node->data.pair.right->type != STRING_NODE)
-				executer(node->data.pair.right);
-			else
-				do_pipe(node->data.pair.right, 1);
-		}
-		else if (node->data.pair.type == OR)
-		{
-			executer(node->data.pair.left);
-			if(g_minishell->exit_s)
-			{
-				dup2(g_minishell->stdin, 0);
-				executer(node->data.pair.right);
-			}
-		}
-		else if (node->data.pair.type == AND)
-		{
-			executer(node->data.pair.left);
-			if(!g_minishell->exit_s)
-			{
-				dup2(g_minishell->stdin, 0);
-				executer(node->data.pair.right);
-			}
-		}
-    }
-    else if (node->type == REDIR_NODE) //leaf // ls -a < input1 << here1 << here2 < input2 < input3 << here3 > output1 >> output2 -k
-    {
-		// do here_docs first
-		t_list *last;
-		t_redir *new;
-		
-		if (do_here_docs(node->data.redir) == 0)
-			return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
-		open_and_set(node->data.redir);
-		fd_input = input_to_dup(node->data.redir);
-		fd_output = output_to_dup(node->data.redir);
-		if(fd_input > 0)
-			dup2(fd_input, 0);
-		if(fd_output > 0)
-			dup2(fd_output, 1);
-		last = ft_lstlast(node->data.redir);
-		new = last->content;
-		if(new->cmd)
-			executer(string_node_new(new->cmd));
-    }
-//     else if(node->type == ERROR_NODE)
-//     {
-//         printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
-//     }
+		execute_pair(node);
+    else if (node->type == REDIR_NODE) // leaf
+		execute_redires(node->data.redir);
 }
-			// if(new->cmd)
-			// {
-			// 	while (new->cmd)
-			// 	{
-			// 		printf("'%s' ", (char*)new->cmd->content);
-			// 		new->cmd = new->cmd->next;
-			// 	}
-			// 	printf("\n");
-			// }

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 10:35:06 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 17:43:10 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 
 
 typedef char CHAR_VALUE; // char
-typedef const char * ERROR_VALUE;
+// typedef const char * ERROR_VALUE;
+// ERROR_NODE = -1,
 
 typedef enum e_node // enum define two types of nodes.
 {
-    ERROR_NODE = -1,
 	PAIR_NODE,
 	CHAR_NODE,
 	REDIR_NODE,
@@ -56,9 +56,10 @@ typedef union u_node_value
 	CHAR_VALUE		char_value;
 	t_list			*cmd;
 	t_list			*redir;
-    ERROR_VALUE 	error;
 }				t_node_value;
 
+    // ERROR_VALUE 	error;
+	
 struct t_node // strcut define a node
 {
 	t_node_type type;

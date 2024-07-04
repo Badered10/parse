@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 14:41:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:02:59 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ static int	write_or_break(int fd, char *limiter, char *buf)
 	if (buf[0] == '\0' || !ft_strncmp (limiter, buf, buf_len))
 		return (0);
 	write(fd, buf, buf_len);
+	write(fd,"\n",1);
 	return (1);
 }
 
@@ -124,7 +125,7 @@ int	here_doc(char *limiter)
 		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
-			printf("re open !!\n");
+			// printf("re open !!\n");
 			fd_hidden = re_open_hidden_file("/var/tmp/tmp.txt");
 			return(fd_hidden);
 			// dup_2(fd_hidden, 0);

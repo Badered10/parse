@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 15:11:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 16:02:52 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,17 +389,65 @@ void do_pipe(t_node *cmd , int mode) // ls | cat | cat -e
 int do_here_docs(t_list *red_list) // func that open every here doc and return a fd to the last one.
 {
 	t_redir *new ;
-	int fd;
-	fd = 0;
+
 	while(red_list)
 	{
 		unlink("/var/tmp/tmp.txt");
 		new = red_list->content;
 		if(new->type == LL_REDIR)
-			fd = here_doc(new->file);
+		{
+			new->fd = here_doc(new->file);
+			if(new->fd < 0)
+				return(0);
+		}
+		red_list = red_list->next;
+	}
+	return(1);
+}
+
+int input_to_dup(t_list *red_list) // < <<
+{
+	t_redir *new ;
+	int fd;
+	
+	fd = -1;
+	while(red_list)
+	{
+		new = red_list->content;
+		if(new->type == L_REDIR || new->type == LL_REDIR)
+			fd = new->fd;
 		red_list = red_list->next;
 	}
 	return (fd);
+}
+
+int output_to_dup(t_list *red_list) // > >>
+{
+	t_redir *new ;
+	int fd;
+	
+	fd = -1;
+	while(red_list)
+	{
+		new = red_list->content;
+		if(new->type == R_REDIR || new->type == RR_REDIR)
+			fd = new->fd;
+		red_list = red_list->next;
+	}
+	return (fd);
+}
+
+void open_and_set(t_list *red_list)
+{
+    t_redir *new ;
+	while(red_list) // linked list of reds
+    {
+		new = red_list->content;
+        // printf("REDIR NODE , name: '%s'\n",new->file);
+		if(new->type != LL_REDIR)
+			open_redir(new);
+        red_list = red_list->next;
+    }
 }
 
 void    executer(t_node *node) // ls | wc | cat && ps
@@ -458,17 +506,29 @@ void    executer(t_node *node) // ls | wc | cat && ps
     }
     else if (node->type == REDIR_NODE) //leaf // ls -a < input1 << here1 << here2 < input2 < input3 << here3 > output1 >> output2 -k
     {
-		// do here_docs first 
-
-		fd_here  = do_here_docs(node->data.redir);
-		if (fd_here < 0)
+		// do here_docs first
+		t_list *last;
+		t_redir *new;
+		
+		if (do_here_docs(node->data.redir) == 0)
 			return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
-        while(node->data.redir) // linked list of reds
-        {
-            t_redir *new = node->data.redir->content;
-            printf("REDIR NODE , name: '%s'\n",new->file);
-			if(new->type != LL_REDIR)
-				open_redir(new);
+		open_and_set(node->data.redir);
+		fd_input = input_to_dup(node->data.redir);
+		fd_output = output_to_dup(node->data.redir);
+		if(fd_input > 0)
+			dup2(fd_input, 0);
+		if(fd_output > 0)
+			dup2(fd_output, 1);
+		last = ft_lstlast(node->data.redir);
+		new = last->content;
+		if(new->cmd)
+			executer(string_node_new(new->cmd));
+    }
+//     else if(node->type == ERROR_NODE)
+//     {
+//         printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
+//     }
+}
 			// if(new->cmd)
 			// {
 			// 	while (new->cmd)
@@ -478,11 +538,3 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			// 	}
 			// 	printf("\n");
 			// }
-            node->data.redir = node->data.redir->next;
-        }
-    }
-//     else if(node->type == ERROR_NODE)
-//     {
-//         printf("add'%p', -ERROR -------> '%s",node ,node->data.error);
-//     }
-}

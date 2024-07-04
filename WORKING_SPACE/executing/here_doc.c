@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc_bonus.c                                   :+:      :+:    :+:   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 16:02:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:30:11 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-static int	dup_2(int old_fd, int new_fd)
-{
-	if (dup2(old_fd, new_fd) < 0)
-		return (-1);
-	close(old_fd);
-	return (0);
-}
 
 static int	open_hidden_file(void)
 {
@@ -52,7 +44,7 @@ static int	write_or_break(int fd, char *limiter, char *buf)
 
 	if(!buf)
 		return(0);
-	doc_len = ft_strlen(limiter); // LIMITER
+	doc_len = ft_strlen(limiter);
 	buf_len = ft_strlen(buf);
 	if (buf[0] == '\0' || !ft_strncmp (limiter, buf, buf_len))
 		return (0);
@@ -68,21 +60,6 @@ static void	read_buf(char **buf)
 		gc_add(g_minishell, *buf);
 }
 
-static void wait_and_get(void)
-{
-	char *exit;
-
-	wait(&g_minishell->exit_s);
-	// printf("befor '%d'\n",g_minishell->exit_s);
-	if (WIFEXITED(g_minishell->exit_s))
-		g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
-	exit = ft_itoa(g_minishell->exit_s);
-	// printf("after '%s'\n",exit);
-	if(!exit)
-		return(print_errors("ERROR WITH FT_ITOA\n"));
-	set_env_var(g_minishell->our_env, "?", exit);
-	free(exit);
-}
 static void	ft_sigint_handler(int sig)
 {
 	if (sig == SIGINT)
@@ -125,10 +102,8 @@ int	here_doc(char *limiter)
 		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
-			// printf("re open !!\n");
 			fd_hidden = re_open_hidden_file("/var/tmp/tmp.txt");
 			return(fd_hidden);
-			// dup_2(fd_hidden, 0);
 		}
 		else if(g_minishell->exit_s == 130)
 		{
@@ -138,6 +113,8 @@ int	here_doc(char *limiter)
 	}
 	return(-1);
 }
+
+
 // void	signal_rr(int s)
 // {
 // 	if (s == SIGINT)

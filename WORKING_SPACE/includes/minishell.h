@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/04 14:33:51 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 18:27:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,37 @@ void				delete_env_var(t_env **env, char *key);
 /* Executing */
 
 // Main function that execute the user input.
-void				executer(t_node *node);
 
-int				here_doc(char *limiter);
+
+void				executer(t_node *node);
+int					here_doc(char *limiter);
+int  				env_size(t_env *env);
+char 				**env_to_envp(t_env *env);
+char 				**list_to_argv(t_list *list);
+void				open_pipe(int *pfd);
+int					dup_2(int old_fd, int new_fd);
+void				fd_duper( int *pfd , int mode);
+char				*get_command(char *argv);
+char				*add_slash_cmd(char *path, char *cmd);
+int 				do_here_docs(t_list *red_list);
+int 				input_to_dup(t_list *red_list);
+int 				output_to_dup(t_list *red_list);
+void				run_doc_cmd(t_list *red_list);
+void 				open_redir(t_redir *redir);
+void 				open_and_set(t_list *red_list);
+int					print_err(char *message, char *word);
+void				check_split(char **cmd, char *word);
+int					strings_count(char **str);
+void				free_double(char **ptr);
+char				*founded_cmd(char *argv, char **paths, char **cmd);
+char				**get_env_paths(char **env);
+char				*get_fullpath(char *argv, char **env);
+int					check_cmd(char *argv, char **env);
+void				call_execev(char **env, char *argv , char **cmd);
+int					ft_malloc_error(char **tab, size_t i);
+void 				wait_and_get(void);
+void 				do_cmd(t_node *ast);
+void 				do_pipe(t_node *cmd , int mode);
 
 
 /* Expanding */

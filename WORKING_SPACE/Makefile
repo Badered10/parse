@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/07/03 21:10:04 by baouragh         ###   ########.fr        #
+#    Updated: 2024/07/04 18:29:38 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,14 @@ ENVIRONMENT		:=	environment/env_utils.c				\
 					environment/free.c
 
 EXECUTING		:=	executing/executer.c				\
-					executing/here_doc_bonus.c
+					executing/here_doc.c          \
+					executing/convert_env.c				\
+					executing/execve_tools.c\
+					executing/here_doc_tools.c\
+					executing/redir_tools.c\
+					executing/tools.c\
+					executing/tools_1.c\
+					executing/tools_2.c
 
 EXPANDING		:=	expanding/expander.c				\
 					expanding/word_helper.c				\

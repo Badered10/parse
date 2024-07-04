@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/03 18:20:10 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:06:48 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,15 @@ t_redir	*do_red(t_token **tokens) //
 	new = malloc(sizeof(t_redir));
 	if(!new)
 		return(NULL);
-	// gc_add(g_minishell, new);
+	gc_add(g_minishell, new);
 	ft_bzero(new, sizeof(t_redir));
 	new->type = (*tokens)->type;
+	if(new->type == L_REDIR)
+		new->mode = O_RDONLY;
+	else if(new->type == R_REDIR)
+		new->mode = O_CREAT | O_RDWR;
+	else if(new->type == RR_REDIR)
+		new->mode = O_CREAT | O_RDWR | O_APPEND;
 	(*tokens) = (*tokens)->next;
 	new->file = (*tokens)->value;
 	return (new);
@@ -49,7 +55,7 @@ t_node *parse_cmd(t_token **tokens) // ls >| cat , ls |>| cat
 			new = ft_lstnew(red);
 			if (!new)
 				return(NULL);
-			// gc_add(g_minishell, new);
+			gc_add(g_minishell, new);
 			ft_lstadd_back(&red_list, new);
 		}
 		else if((*tokens)->type == WORD)

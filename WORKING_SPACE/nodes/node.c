@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 14:02:16 by baouragh          #+#    #+#             */
-/*   Updated: 2024/06/26 10:28:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 14:49:10 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ t_node	*redir_node_new(t_list *red_list)
 	gc_add(g_minishell, new);
 	new->type = REDIR_NODE;
 	new->data.redir = red_list;
-	gc_add(g_minishell, new->data.redir);
-	gc_add(g_minishell, new->data.redir->content);
+	// gc_add(g_minishell, new->data.redir);
+	// gc_add(g_minishell, new->data.redir->content);
 	return (new);
 }
 

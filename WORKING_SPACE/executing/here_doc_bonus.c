@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 13:06:46 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 14:41:14 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void	h_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-void	here_doc(char *limiter)
+int	here_doc(char *limiter)
 {
 	char	*buf;
 	int		fd;
@@ -126,7 +126,8 @@ void	here_doc(char *limiter)
 		{
 			printf("re open !!\n");
 			fd_hidden = re_open_hidden_file("/var/tmp/tmp.txt");
-			dup_2(fd_hidden, 0);
+			return(fd_hidden);
+			// dup_2(fd_hidden, 0);
 		}
 		else if(g_minishell->exit_s == 130)
 		{
@@ -134,6 +135,7 @@ void	here_doc(char *limiter)
 			unlink("/var/tmp/tmp.txt");
 		}
 	}
+	return(-1);
 }
 // void	signal_rr(int s)
 // {

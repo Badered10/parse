@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/03 19:43:45 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 14:33:51 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void				delete_env_var(t_env **env, char *key);
 // Main function that execute the user input.
 void				executer(t_node *node);
 
-void				here_doc(char *limiter);
+int				here_doc(char *limiter);
 
 
 /* Expanding */

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 12:56:32 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 15:11:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,11 +354,9 @@ void wait_and_get(void)
 	free(exit);
 }
 
-int open_redir(t_redir *redir)
+void open_redir(t_redir *redir)
 {
-	if(redir->type == LL_REDIR)
-		here_doc(redir->file);
-	return(0);
+	redir->fd = open(redir->file,redir->mode, 0644);
 }
 
 
@@ -388,9 +386,29 @@ void do_pipe(t_node *cmd , int mode) // ls | cat | cat -e
 	}
 }
 
+int do_here_docs(t_list *red_list) // func that open every here doc and return a fd to the last one.
+{
+	t_redir *new ;
+	int fd;
+	fd = 0;
+	while(red_list)
+	{
+		unlink("/var/tmp/tmp.txt");
+		new = red_list->content;
+		if(new->type == LL_REDIR)
+			fd = here_doc(new->file);
+		red_list = red_list->next;
+	}
+	return (fd);
+}
+
 void    executer(t_node *node) // ls | wc | cat && ps
 {
 	int id;
+	int fd_here;
+	int fd_input;
+	int fd_output;
+
 	if (!node)
 		return;
     if (node->type == STRING_NODE) // leaf 
@@ -438,15 +456,19 @@ void    executer(t_node *node) // ls | wc | cat && ps
 			}
 		}
     }
-    else if (node->type == REDIR_NODE) // leaf
+    else if (node->type == REDIR_NODE) //leaf // ls -a < input1 << here1 << here2 < input2 < input3 << here3 > output1 >> output2 -k
     {
-		
+		// do here_docs first 
+
+		fd_here  = do_here_docs(node->data.redir);
+		if (fd_here < 0)
+			return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
         while(node->data.redir) // linked list of reds
         {
-			int fd;
             t_redir *new = node->data.redir->content;
             printf("REDIR NODE , name: '%s'\n",new->file);
-			fd = open_redir(new);
+			if(new->type != LL_REDIR)
+				open_redir(new);
 			// if(new->cmd)
 			// {
 			// 	while (new->cmd)

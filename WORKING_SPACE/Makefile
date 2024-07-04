@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/07/02 22:54:40 by baouragh         ###   ########.fr        #
+#    Updated: 2024/07/03 21:10:04 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ LIBFT_PATH		:= libft/
 LIBFT			:= libft/libft.a
 
 CC				:= cc
-CFLAGS			:= -Wall -Werror -Wextra -fsanitize=address -g3
+CFLAGS			:= -fsanitize=address -g3
 RM				:= rm -f
 
 BUILTINS		:=	builtins/ft_env.c 					\

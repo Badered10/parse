@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/03 18:08:22 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 12:56:32 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,11 +345,9 @@ void wait_and_get(void)
 	char *exit;
 
 	wait(&g_minishell->exit_s);
-	printf("befor '%d'\n",g_minishell->exit_s);
 	if (WIFEXITED(g_minishell->exit_s))
 		g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
 	exit = ft_itoa(g_minishell->exit_s);
-	printf("after '%s'\n",exit);
 	if(!exit)
 		return(print_errors("ERROR WITH FT_ITOA\n"));
 	set_env_var(g_minishell->our_env, "?", exit);

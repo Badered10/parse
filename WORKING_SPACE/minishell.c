@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/03 19:30:31 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 13:01:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,6 @@ int	init_minishell(char **env)
 		if (!g_minishell->our_env)
 			return (print_errors("dup_env failed !"), 0);
 		add_env_var(g_minishell->our_env, "?", "0", false);
-		signals();
 	return (1);
 }
 
@@ -173,7 +172,9 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	while (1)
 	{
+		signals();
 		ft_readline();
+		after_signals();
 		g_minishell->tokens = tokenizer();
 		if (!g_minishell->tokens || syntax() == -1)
 			continue ;
@@ -183,8 +184,10 @@ int	main(int ac, char **av, char **env)
 		// printAST(g_minishell->ast, 3212, 23123);
 		executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
-		dup2(g_minishell->stdin, 0);
+		// dup2(g_minishell->stdin, 0);
 		gc_free_all(g_minishell);
+		dup2(g_minishell->stdout, 1);
+		dup2(g_minishell->stdin, 0);
 	}
 	gc_free_all(g_minishell);
 	clear_env();

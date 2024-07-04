@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/03 19:24:29 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/04 13:06:46 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ static int	write_or_break(int fd, char *limiter, char *buf)
 	if(!buf)
 		return(0);
 	doc_len = ft_strlen(limiter); // LIMITER
-	if (buf[0] == '\0' || !ft_strncmp (limiter, buf, doc_len))
-		return (0);
 	buf_len = ft_strlen(buf);
+	if (buf[0] == '\0' || !ft_strncmp (limiter, buf, buf_len))
+		return (0);
 	write(fd, buf, buf_len);
 	return (1);
 }
@@ -84,13 +84,11 @@ static void wait_and_get(void)
 }
 static void	ft_sigint_handler(int sig)
 {
-	(void)sig;
-	// ft_putstr_fd("^C\n", 1);
-	// rl_on_new_line();
-	// rl_replace_line("", 0);
-	// rl_redisplay();
-	// set_env_var(g_minishell->our_env, "?", "130");
-	exit(130);
+	if (sig == SIGINT)
+	{
+		sig = 0;
+		exit(130);
+	}
 }
 
 void	h_signals(void)
@@ -99,6 +97,7 @@ void	h_signals(void)
 	signal(SIGINT, ft_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
+
 void	here_doc(char *limiter)
 {
 	char	*buf;
@@ -117,10 +116,11 @@ void	here_doc(char *limiter)
 			if (!write_or_break(fd, limiter, buf))
 				break;
 		}
-		exit(EXIT_SUCCESS);
+		exit(0);
 	}
 	else
 	{
+		// after_signals();
 		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
@@ -130,10 +130,24 @@ void	here_doc(char *limiter)
 		}
 		else if(g_minishell->exit_s == 130)
 		{
-			// printf("CTRL + C , remove tmp file !!\n");
+			printf("CTRL + C , remove tmp file !!\n");
 			unlink("/var/tmp/tmp.txt");
-			dup2(g_minishell->stdout, 1);
-			dup2(g_minishell->stdin, 0);
 		}
 	}
 }
+// void	signal_rr(int s)
+// {
+// 	if (s == SIGINT)
+// 	{
+// 		printf("dd\n");
+// 		exit(130);
+// 	}
+// }
+
+// void	signal_rr_oo(int s)
+// {
+// 	if (s == SIGINT)
+// 	{
+// 		printf("\n");
+// 	}
+// }

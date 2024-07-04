@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/02 23:55:39 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/03 19:43:45 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,6 +221,7 @@ void				remove_token(t_token **head, t_token *token);
 
 // Function that handle signals.
 void				signals(void);
+void 				after_signals(void);
 
 /* Syntax */
 

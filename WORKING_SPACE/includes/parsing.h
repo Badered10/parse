@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/04 17:43:10 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 09:30:56 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,7 @@ struct t_node // strcut define a node
 	t_node_type type;
 	t_node_value data;
 };
+
+void printAST(t_node* node , int x , t_type type);
 
 #endif

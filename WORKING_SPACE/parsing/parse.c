@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 15:06:48 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:03:05 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ t_node	*parse_or(t_token **tokens);
 t_node	*parse_and(t_token **tokens);
 t_node	*parse_block(t_token **tokens);
 
-t_node *parse_cmd(t_token **tokens) // ls >| cat , ls |>| cat
+t_node *parse_cmd(t_token **tokens) //  ((ls && cat ) || cat ) && ps  --> ( AND )
 {
 	t_list *cmd_list;
 	t_list *red_list;
@@ -136,10 +136,22 @@ t_node	*parse_and(t_token **tokens)
 		return(left);
 }
 
+t_node *find_last_left(t_node *node)
+{
+	t_node *left;
+	while(node) // 1->2->3->4->5
+	{
+		left = node;
+		node = node->data.pair.left;
+	}
+	return(left);
+}
+
 t_node	*parse_block(t_token **tokens) // (ls || ps) && clear
 {
 	t_node *left;
 	t_node *right;
+	t_node *tmp;
 
 	left = parse_and(tokens);
 	if((*tokens)->type == R_PAREN)
@@ -149,15 +161,20 @@ t_node	*parse_block(t_token **tokens) // (ls || ps) && clear
 		right = parse_block(tokens);
 		if(right)
 		{
-			right->data.pair.left = left;
+			if(!right->data.pair.left)
+				right->data.pair.left = left;
+			else
+			{
+				tmp = find_last_left(right);
+				tmp->data.pair.left = left;
+			}
 			return(right);
 		}
-		// left->data.pair.right = parse_block(tokens);
 	}
 	return(left);
 }
 
-t_node	*parsing(void)
+t_node	*parsing(void) // ((ls && cat ) || cat ) && ps
 {
 	t_node	*res;
 

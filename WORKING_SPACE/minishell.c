@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/04 18:36:48 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 09:50:12 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,18 @@ void	print_root(t_type type, int x)
 void printAST(t_node* node , int x , t_type type) 
 {
     t_type tmp;
+	t_list *list;
+
     if (!node) return;
     tmp  = ERROR;
     if (node->type == STRING_NODE) // leaf
     {
         print_root(type, x);
-        while (node->data.cmd)
+		list = node->data.cmd;
+        while (list)
         {
-            printf("'%s' ", (char*)node->data.cmd->content);
-            node->data.cmd = node->data.cmd->next;
+            printf("'%s' ", (char*)list->content);
+            list = list->next;
         }
         printf("\n");
     }
@@ -181,8 +184,8 @@ int	main(int ac, char **av, char **env)
 		g_minishell->ast = parsing();
 		if (!g_minishell->ast)
 			continue ;
-		// printAST(g_minishell->ast, 3212, 23123);
-		executer(g_minishell->ast);
+		printAST(g_minishell->ast, 3212, 23123);
+		// executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
 		// dup2(g_minishell->stdin, 0);
 		gc_free_all(g_minishell);

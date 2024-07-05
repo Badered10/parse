@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 18:19:26 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 10:14:23 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,12 @@ void execute_and_or(t_node *node)
 
 void execute_pair(t_node *node)
 {
-	if(node->data.pair.type == PIPE)
+	if(node->data.pair.type == PIPE) // ((ls && cat ) || ps) | cat
 	{
-		do_pipe(node->data.pair.left , 0);
+		if(node->data.pair.left->type != STRING_NODE)
+			executer(node->data.pair.left);
+		else
+			do_pipe(node->data.pair.left , 0);
 		if(node->data.pair.right->type != STRING_NODE)
 			executer(node->data.pair.right);
 		else

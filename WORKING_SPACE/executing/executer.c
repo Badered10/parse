@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/05 16:24:19 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:35:08 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void execute_and_or(t_node *node)
 	if (node->data.pair.type == OR)
 	{
 		executer(node->data.pair.left);
+		wait_and_get();
 		if(g_minishell->exit_s)
 		{
 			dup2(g_minishell->stdin, 0);
@@ -61,6 +62,7 @@ void execute_and_or(t_node *node)
 	else if (node->data.pair.type == AND)
 	{
 		executer(node->data.pair.left);
+		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
 			dup2(g_minishell->stdin, 0);

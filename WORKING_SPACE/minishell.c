@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/05 10:14:38 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 12:02:22 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,7 @@ int	main(int ac, char **av, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		// printAST(g_minishell->ast, 3212, 23123);
+		open_pipe(g_minishell->pipe);
 		executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
 		// dup2(g_minishell->stdin, 0);

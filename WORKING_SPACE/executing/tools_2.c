@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 18:50:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 11:55:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ void do_cmd(t_node *ast)
 	exit(id);
 }
 
-void do_pipe(t_node *cmd , int mode) // ls | cat | cat -e
+void do_pipe(t_node *cmd , int mode , int *pfd) // ls | cat | cat -e
 {
 	int	id;
-	int	pfd[2];
+	// int	pfd[2];
 
-	open_pipe(pfd);
+	// open_pipe(pfd);
 	id = fork();
 	if (id < 0)
 	{
@@ -58,11 +58,12 @@ void do_pipe(t_node *cmd , int mode) // ls | cat | cat -e
 	}
 	if (id == 0)
 	{
-		fd_duper(pfd, mode); // mode 0 normal, 1 last cmd
-		do_cmd(cmd);
+			fd_duper(pfd, mode); // mode 0 normal, 1 last cmd
+			do_cmd(cmd);
 	}
 	else
 	{
+		dup2(g_minishell->stdout, 1);
 		close(pfd[1]);
 		dup_2(pfd[0], 0); // stdin -> pipe
 		if(mode)

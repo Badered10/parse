@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/04 18:27:16 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 12:01:09 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ typedef struct s_minishell
 	int				dq_flag;
 	int				stdin;
 	int				stdout;
+	int				pipe[2];
 }					t_minishell;
 
 extern t_minishell	*g_minishell;
@@ -160,7 +161,7 @@ void				call_execev(char **env, char *argv , char **cmd);
 int					ft_malloc_error(char **tab, size_t i);
 void 				wait_and_get(void);
 void 				do_cmd(t_node *ast);
-void 				do_pipe(t_node *cmd , int mode);
+void 				do_pipe(t_node *cmd , int mode , int *pfd);
 
 
 /* Expanding */

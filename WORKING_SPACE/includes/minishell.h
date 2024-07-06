@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/05 12:01:09 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:46:59 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef struct s_minishell
 	int				dq_flag;
 	int				stdin;
 	int				stdout;
-	int				pipe[2];
 }					t_minishell;
 
 extern t_minishell	*g_minishell;

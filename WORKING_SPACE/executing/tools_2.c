@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/05 16:15:40 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/06 15:05:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void do_cmd(t_node *ast)
     char **cmd;
     char **env;
 
-    cmd = list_to_argv(ast->data.cmd); // /path
+    cmd = list_to_argv(ast->data.cmd); // ls -a -l [ls] [-a]
     if(!cmd)
         return;
     env = env_to_envp(g_minishell->our_env);
@@ -47,9 +47,7 @@ void do_cmd(t_node *ast)
 void do_pipe(t_node *cmd , int mode , int *pfd) // cat -e 
 {
 	int	id;
-	// int	pfd[2];
 
-	// open_pipe(pfd);
 	id = fork();
 	if (id < 0)
 	{

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/06 15:39:38 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/06 19:18:59 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void execute_cmd(t_node *node)
 		id = fork();
 		if(!id)
             do_cmd(node);
-		else
-			wait_and_get();
+		// else
+		// 	wait_and_get();
 	}
 }
 
@@ -75,23 +75,27 @@ void execute_and_or(t_node *node)
 
 void execute_pair(t_node *node)
 {
-	if(node->data.pair.type == PIPE) // ls -a | cat -e  | cat -n
+	if(node->data.pair.type == PIPE) // (cat -e && ps ) | cat -n
 	{
 		int	pfd[2];
 		open_pipe(pfd);
 		if(node->data.pair.left->type != STRING_NODE)
 		{
 			// 2 cases()
-			if (node->data.pair.left->data.pair.left->type == AND)
+			if (node->data.pair.left->data.pair.type == AND)
 			{
-				dup2(pfd[1],1); // write to [pipe]
-				executer(node->data.pair.left->data.pair.left->data.pair.left); // cat -n
+				int x = dup2(pfd[1],1); // write to [pipe]
+				executer(node->data.pair.left->data.pair.left); // cat -e
 				dup2(pfd[0],0); // read from pipe [pipe]
 				dup2(g_minishell->stdout,1);
-				if(node->data.pair.left->data.pair.left->data.pair.right->type != STRING_NODE)
-					executer(node->data.pair.left->data.pair.left->data.pair.right);
+				if(node->data.pair.right->type != STRING_NODE)
+					executer(node->data.pair.left->data.pair.right);
 				else
-					do_pipe(node->data.pair.left->data.pair.left->data.pair.right, 1, pfd); // do last one
+					do_pipe(node->data.pair.right, 1, pfd); // cat -n
+				// dup2(x,1); // write to [pipe]
+				printf("%d , %d\n",x , pfd[1]);
+				executer(node->data.pair.left->data.pair.right); // ps < 0 > 1
+				// dup2(pfd[0],0); // read from pipe [pipe]
 				wait_and_get();
 				if(!g_minishell->exit_s)
 				{

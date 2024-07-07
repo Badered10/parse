@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/06 18:40:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/07 17:09:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,8 @@ int	init_minishell(char **env)
 			return (0);
 		g_minishell->dq_flag = 0;
 		g_minishell->gc = NULL;
-		g_minishell->stdin = dup(0);
-		g_minishell->stdout = dup(1);
+		g_minishell->stdin = dup(0); //  dup2(pipe[0], 0); parent // dup2 ?? 
+		g_minishell->stdout = dup(1); // 
 		// increment_shlvl();
 		g_minishell->our_env = dup_env(env);
 		if (!g_minishell->our_env)

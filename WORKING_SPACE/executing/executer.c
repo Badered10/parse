@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/06 19:18:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/07 18:12:17 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,44 +75,130 @@ void execute_and_or(t_node *node)
 
 void execute_pair(t_node *node)
 {
-	if(node->data.pair.type == PIPE) // (cat -e && ps ) | cat -n
+	if(node->data.pair.type == PIPE) // ( ps && ls ) | (cat && do) 
 	{
 		int	pfd[2];
+		int id;
 		open_pipe(pfd);
-		if(node->data.pair.left->type != STRING_NODE)
+		if(node->data.pair.left->type != STRING_NODE) // LEEEFT side of PIPE CASE 
 		{
-			// 2 cases()
 			if (node->data.pair.left->data.pair.type == AND)
 			{
-				int x = dup2(pfd[1],1); // write to [pipe]
-				executer(node->data.pair.left->data.pair.left); // cat -e
+				id = fork();
+				if(!id)
+				{
+					close(pfd[0]); // read from pipe [pipe]
+					dup2(pfd[1],1); // write to [pipe]
+					executer(node->data.pair.left->data.pair.left); // RUN LEFT OF AND
+					wait_and_get();
+					if(!g_minishell->exit_s) 
+						executer(node->data.pair.left->data.pair.right); // RUN RIGHT OF AND IF LEFT TRUE
+					exit(g_minishell->exit_s);
+				}
 				dup2(pfd[0],0); // read from pipe [pipe]
-				dup2(g_minishell->stdout,1);
+
+
+				if(node->data.pair.right->type != STRING_NODE) // RIGHT side of PIPE CASE   //   | (cat && do) 
+				{
+						
+					if (node->data.pair.right->data.pair.type == AND)
+					{
+						id = fork();
+						if(!id)
+						{
+							close(pfd[0]); // read from pipe [pipe]
+							dup2(pfd[1],1); // write to [pipe]
+							executer(node->data.pair.right->data.pair.left); // RUN LEFT OF AND
+							wait_and_get();
+							if(!g_minishell->exit_s) 
+								executer(node->data.pair.right->data.pair.right); // RUN RIGHT OF AND IF LEFT TRUE
+							exit(g_minishell->exit_s);
+						}
+						dup2(pfd[0],0); // read from pipe [pipe]
+						if(node->data.pair.right->type != STRING_NODE)
+							executer(node->data.pair.right);
+						else
+							do_pipe(node->data.pair.right, 1, pfd);
+					}
+					else if(node->data.pair.left->data.pair.type == PIPE) // PIPE CASE
+					{
+						if(node->data.pair.left->data.pair.left->type != STRING_NODE)
+							executer(node->data.pair.left->data.pair.left);
+						else
+							do_pipe(node->data.pair.left->data.pair.left, 0, pfd);
+						if(node->data.pair.left->data.pair.right->type != STRING_NODE)
+							executer(node->data.pair.left->data.pair.right);
+						else
+							do_pipe(node->data.pair.left->data.pair.right, 1, pfd); // do last one
+					}
+					else if(node->data.pair.left->data.pair.type == OR) // OR CASE
+					{
+						id = fork();
+						if(!id)
+						{
+							close(pfd[0]); // read from pipe [pipe]
+							dup2(pfd[1],1); // write to [pipe]
+							executer(node->data.pair.left->data.pair.left); // RUN LEFT OF OR
+							wait_and_get();
+							if(g_minishell->exit_s)
+								executer(node->data.pair.left->data.pair.right); // RUN RIGHT OF OR if LEFT FALSE
+							exit(g_minishell->exit_s);
+						}
+						dup2(pfd[0],0); // read from pipe [pipe]
+						if(node->data.pair.right->type != STRING_NODE)
+							executer(node->data.pair.right);
+						else
+							do_pipe(node->data.pair.right, 1, pfd);;
+					}
+					else
+						executer(node->data.pair.left);	
+					}
+					else
+						do_pipe(node->data.pair.left , 0 , pfd);
+
+
+
+				
 				if(node->data.pair.right->type != STRING_NODE)
+					executer(node->data.pair.right);
+				else
+					do_pipe(node->data.pair.right, 1, pfd);
+			}
+			else if(node->data.pair.left->data.pair.type == PIPE) // PIPE CASE
+			{
+				if(node->data.pair.left->data.pair.left->type != STRING_NODE)
+					executer(node->data.pair.left->data.pair.left);
+				else
+					do_pipe(node->data.pair.left->data.pair.left, 0, pfd);
+				if(node->data.pair.left->data.pair.right->type != STRING_NODE)
 					executer(node->data.pair.left->data.pair.right);
 				else
-					do_pipe(node->data.pair.right, 1, pfd); // cat -n
-				// dup2(x,1); // write to [pipe]
-				printf("%d , %d\n",x , pfd[1]);
-				executer(node->data.pair.left->data.pair.right); // ps < 0 > 1
-				// dup2(pfd[0],0); // read from pipe [pipe]
-				wait_and_get();
-				if(!g_minishell->exit_s)
-				{
-				// 	// dup2(g_minishell->stdin, 0);
-				// 	// dup2(g_minishell->stdout, 1);
-				// 	executer(node->data.pair.right); // ps
-				}
+					do_pipe(node->data.pair.left->data.pair.right, 1, pfd); // do last one
 			}
-			// executer(node->data.pair.left); // AND
-			// dup2(pfd[0],0);
+			else if(node->data.pair.left->data.pair.type == OR) // OR CASE
+			{
+				id = fork();
+				if(!id)
+				{
+					close(pfd[0]); // read from pipe [pipe]
+					dup2(pfd[1],1); // write to [pipe]
+					executer(node->data.pair.left->data.pair.left); // RUN LEFT OF OR
+					wait_and_get();
+					if(g_minishell->exit_s)
+						executer(node->data.pair.left->data.pair.right); // RUN RIGHT OF OR if LEFT FALSE
+					exit(g_minishell->exit_s);
+				}
+				dup2(pfd[0],0); // read from pipe [pipe]
+				if(node->data.pair.right->type != STRING_NODE)
+					executer(node->data.pair.right);
+				else
+					do_pipe(node->data.pair.right, 1, pfd);;
+			}
+			else
+				executer(node->data.pair.left);	
 		}
 		else
-			do_pipe(node->data.pair.left , 0 , pfd); // do cmd // ls -a
-		if(node->data.pair.right->type != STRING_NODE)
-			executer(node->data.pair.right);
-		else
-			do_pipe(node->data.pair.right, 1, pfd); // do last one
+			do_pipe(node->data.pair.left , 0 , pfd);
 	}
 	else
 		execute_and_or(node);

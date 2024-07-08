@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/06 15:05:29 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/08 10:38:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void do_pipe(t_node *cmd , int mode , int *pfd) // cat -e
 	else
 	{
 		close(pfd[1]);
-		dup_2(pfd[0], 0); // stdin -> pipe
+		dup2(pfd[0], 0); // stdin -> pipe
 		if(mode)
 			wait_and_get();
 	}

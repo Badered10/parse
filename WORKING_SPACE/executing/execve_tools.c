@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:09:20 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/05 16:04:50 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/08 10:18:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	fd_duper( int *pfd , int mode)
 	else // write to pipe[1] // 0
 	{
 		close(pfd[0]);
-		if (dup_2(pfd[1], 1)) // 
+		if (dup2(pfd[1], 1) == -1) // 
 			exit(EXIT_FAILURE);
 	}
 }

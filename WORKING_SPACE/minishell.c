@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/09 12:02:30 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 16:32:44 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ void printAST(t_node* node , int x , t_type type)
                 new->cmd = new->cmd->next;
             }
             printf("\n");
+			if(new->node)
+				printAST(new->node, 121,231);
             node->data.redir = node->data.redir->next;
         }
     }
@@ -230,7 +232,7 @@ int	main(int ac, char **av, char **env)
 		if(scan_and_set(g_minishell->ast))
 			executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
-		wait_and_get();
+		// wait_and_get();
 		gc_free_all(g_minishell);
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);

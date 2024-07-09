@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 10:55:51 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 15:20:46 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,4 +73,6 @@ void run_doc_cmd(t_list *red_list)
 	new = last->content;
 	if(new->cmd)
 		executer(string_node_new(new->cmd));
+	else if(new->node)
+		executer(new->node);
 }

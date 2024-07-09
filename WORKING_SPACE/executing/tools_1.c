@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:11:26 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/06 15:06:11 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 13:57:27 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int	check_cmd(char *argv, char **env)
 	}
 	else if (*argv != '\0' && access(cmd, F_OK))
 	{
-		print_err("badashell: command not found: ", argv);
+		print_err("badashell: Command not found: ", argv);
 		check = 127;
 	}
 	else if (*argv != '\0' && access(cmd, X_OK))

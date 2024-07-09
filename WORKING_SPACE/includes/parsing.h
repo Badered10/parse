@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/05 09:30:56 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 15:11:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ typedef struct s_redir
     int fd;
     char *file;
 	t_list *cmd;
+	t_node *node;
 }              t_redir;
 
 typedef struct s_pair_value

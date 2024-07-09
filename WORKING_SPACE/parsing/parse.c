@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/05 10:03:05 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 15:17:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,16 @@ t_node *find_last_left(t_node *node)
 	return(left);
 }
 
-t_node	*parse_block(t_token **tokens) // (ls || ps) && clear
+void set_left_redir(t_node **left, t_node **right)
+{
+	t_list *last;
+	t_redir *red;
+
+	last = ft_lstlast((*right)->data.redir);
+	red = (t_redir *)last->content;
+	red->node = *left;
+}
+t_node	*parse_block(t_token **tokens) // (ls -a) > 1 || (ls -la | cat) > 1
 {
 	t_node *left;
 	t_node *right;
@@ -161,20 +170,25 @@ t_node	*parse_block(t_token **tokens) // (ls || ps) && clear
 		right = parse_block(tokens);
 		if(right)
 		{
-			if(!right->data.pair.left)
-				right->data.pair.left = left;
-			else
+			if(right->type == PAIR_NODE)
 			{
-				tmp = find_last_left(right);
-				tmp->data.pair.left = left;
+				if(!right->data.pair.left)
+					right->data.pair.left = left;
+				else
+				{
+					tmp = find_last_left(right);
+					tmp->data.pair.left = left;
+				}
 			}
+			else
+				set_left_redir(&left, &right);
 			return(right);
 		}
 	}
 	return(left);
 }
 
-t_node	*parsing(void) // ((ls && cat ) || cat ) && ps
+t_node	*parsing(void) // (ls -a) > 1
 {
 	t_node	*res;
 

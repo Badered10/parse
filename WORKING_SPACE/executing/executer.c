@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 12:09:03 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 16:36:15 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ void execute_cmd(t_node *node)
 		id = fork();
 		if(!id)
             do_cmd(node);
-		else
-			wait_and_get();
+		// else // main role get exit status
+		// 	wait_and_get();
 	}
 }
 
@@ -54,8 +54,8 @@ void execute_and_or(t_node *node)
 		wait_and_get();
 		if(g_minishell->exit_s)
 		{
-			dup2(g_minishell->stdin, 0);
-			dup2(g_minishell->stdout, 1);
+			// dup2(g_minishell->stdin, 0);
+			// dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
 		}
 	}
@@ -65,8 +65,8 @@ void execute_and_or(t_node *node)
 		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
-			dup2(g_minishell->stdin, 0);
-			dup2(g_minishell->stdout, 1);
+			// dup2(g_minishell->stdin, 0);
+			// dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
 		}
 	}
@@ -80,7 +80,7 @@ void execute_pair(t_node *node)
 	if(node->data.pair.type == PIPE) // (cat -e && ps) | (cat -n && true)
 	{
 		open_pipe(pfd);
-		if(node->data.pair.left->type != STRING_NODE) // LEEEFT side of PIPE CASE 
+		if(node->data.pair.left->type != STRING_NODE && node->data.pair.left->type != PIPE) // LEEEFT side of PIPE CASE 
 		{
 			// fprintf(stderr,"--------------->1\n");
 			if (node->data.pair.left->data.pair.type == AND)
@@ -103,17 +103,17 @@ void execute_pair(t_node *node)
 				// else
 				// 	do_pipe(node->data.pair.right, 1, pfd);
 			}
-			else if(node->data.pair.left->data.pair.type == PIPE) // PIPE CASE
-			{
-				if(node->data.pair.left->data.pair.left->type != STRING_NODE)
-					executer(node->data.pair.left->data.pair.left);
-				else
-					do_pipe(node->data.pair.left->data.pair.left, 0, pfd);
-				if(node->data.pair.left->data.pair.right->type != STRING_NODE)
-					executer(node->data.pair.left->data.pair.right);
-				else
-					do_pipe(node->data.pair.left->data.pair.right, 1, pfd); // do last one
-			}
+			// else if(node->data.pair.left->data.pair.type == PIPE) // PIPE CASE
+			// {
+			// 	if(node->data.pair.left->data.pair.left->type != STRING_NODE)
+			// 		executer(node->data.pair.left->data.pair.left);
+			// 	else
+			// 		do_pipe(node->data.pair.left->data.pair.left, 0, pfd);
+			// 	if(node->data.pair.left->data.pair.right->type != STRING_NODE)
+			// 		executer(node->data.pair.left->data.pair.right);
+			// 	else
+			// 		do_pipe(node->data.pair.left->data.pair.right, 1, pfd); // do last one
+			// }
 			else if(node->data.pair.left->data.pair.type == OR) // OR CASE
 			{
 				id = fork();
@@ -134,10 +134,16 @@ void execute_pair(t_node *node)
 				// else
 				// 	do_pipe(node->data.pair.right, 1, pfd);;
 			}
+			else if(node->data.pair.left->type == REDIR_NODE)
+			{
+				executer(node->data.pair.left);
+				dup2(g_minishell->stdout, 1);
+				dup2(g_minishell->stdin, 0);
+			}
 			else
-				executer(node->data.pair.left);	
+				executer(node->data.pair.left);
 		}		
-		else
+		else if(node->data.pair.left->type == STRING_NODE)
 		{
 			fprintf(stderr,"------------------->pipe left is leaf\n");
 			do_pipe(node->data.pair.left , 0 , pfd); // close(pfd[1]);
@@ -168,17 +174,17 @@ void execute_pair(t_node *node)
 				// else
 				// 	do_pipe(node->data.pair.right, 1, pfd);
 			}
-			else if(node->data.pair.right->data.pair.type == PIPE) // PIPE CASE
-			{
-				if(node->data.pair.right->data.pair.left->type != STRING_NODE)
-					executer(node->data.pair.right->data.pair.left);
-				else
-					do_pipe(node->data.pair.right->data.pair.left, 0, pfd);
-				if(node->data.pair.right->data.pair.right->type != STRING_NODE)
-					executer(node->data.pair.right->data.pair.right);
-				else
-					do_pipe(node->data.pair.right->data.pair.right, 1, pfd); // do last one
-			}
+			// else if(node->data.pair.right->data.pair.type == PIPE) // PIPE CASE
+			// {
+			// 	if(node->data.pair.right->data.pair.left->type != STRING_NODE)
+			// 		executer(node->data.pair.right->data.pair.left);
+			// 	else
+			// 		do_pipe(node->data.pair.right->data.pair.left, 0, pfd);
+			// 	if(node->data.pair.right->data.pair.right->type != STRING_NODE)
+			// 		executer(node->data.pair.right->data.pair.right);
+			// 	else
+			// 		do_pipe(node->data.pair.right->data.pair.right, 1, pfd); // do last one
+			// }
 			else if(node->data.pair.right->data.pair.type == OR) // OR CASE
 			{
 				id = fork();
@@ -200,11 +206,14 @@ void execute_pair(t_node *node)
 				// 	do_pipe(node->data.pair.right, 1, pfd);
 			}
 			else
+			{
+				printf("hehe\n");
 				executer(node->data.pair.right);
+			}
 		}
 		else
 		{
-			// fprintf(stderr,"---------------->last one \n");
+			fprintf(stderr,"---------------->last one \n");
 			do_pipe(node->data.pair.right , 1 , pfd);
 		}
 	}

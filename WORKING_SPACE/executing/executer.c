@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 10:52:26 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:09:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@ void	execute_redires(t_list *red_list) // here_Doce 16 // 16 //
 	int fd_input;
 	int fd_output;
 
-	// if (do_here_docs(red_list) == 0)
-	// 	return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
-	open_and_set(red_list);
+	if(!open_and_set(red_list))
+		return;
 	fd_input = input_to_dup(red_list); // < <<
 	fd_output = output_to_dup(red_list); // > >>
 	if(fd_input > 0)
@@ -42,8 +41,8 @@ void execute_cmd(t_node *node)
 		id = fork();
 		if(!id)
             do_cmd(node);
-		// else
-		// 	wait_and_get();
+		else
+			wait_and_get();
 	}
 }
 
@@ -54,7 +53,11 @@ void execute_and_or(t_node *node)
 		executer(node->data.pair.left);
 		wait_and_get();
 		if(g_minishell->exit_s)
+		{
+			dup2(g_minishell->stdin, 0);
+			dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
+		}
 	}
 	else if (node->data.pair.type == AND)
 	{

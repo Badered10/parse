@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/09 09:47:29 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 11:35:31 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,8 +148,8 @@ int 				do_here_docs(t_list *red_list ,int doc_num);
 int 				input_to_dup(t_list *red_list);
 int 				output_to_dup(t_list *red_list);
 void				run_doc_cmd(t_list *red_list);
-void 				open_redir(t_redir *redir);
-void 				open_and_set(t_list *red_list);
+int 				open_redir(t_redir *redir);
+int 				open_and_set(t_list *red_list);
 int					print_err(char *message, char *word);
 void				check_split(char **cmd, char *word);
 int					strings_count(char **str);

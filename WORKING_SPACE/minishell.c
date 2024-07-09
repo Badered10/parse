@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/09 10:58:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 12:02:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,7 +205,6 @@ void unlink_docs(int docs)
 		free(name);
 		docs--;
 	}
-	
 }
 
 
@@ -216,6 +215,8 @@ int	main(int ac, char **av, char **env)
 		return (1);
 	while (1)
 	{
+		g_minishell->docs = 0;
+		g_minishell->exit_s = 0;
 		signals();
 		ft_readline();
 		after_signals();
@@ -226,12 +227,10 @@ int	main(int ac, char **av, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		// printAST(g_minishell->ast, 3212, 23123);
-		// open_pipe(g_minishell->pipe);
-		g_minishell->docs = 0;
 		if(scan_and_set(g_minishell->ast))
 			executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
-		// dup2(g_minishell->stdin, 0);
+		wait_and_get();
 		gc_free_all(g_minishell);
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);

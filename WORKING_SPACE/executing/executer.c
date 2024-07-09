@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 16:36:15 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 20:41:10 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,8 @@ void execute_and_or(t_node *node)
 		wait_and_get();
 		if(g_minishell->exit_s)
 		{
-			// dup2(g_minishell->stdin, 0);
-			// dup2(g_minishell->stdout, 1);
+			dup2(g_minishell->stdin, 0);
+			dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
 		}
 	}
@@ -65,8 +65,8 @@ void execute_and_or(t_node *node)
 		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
-			// dup2(g_minishell->stdin, 0);
-			// dup2(g_minishell->stdout, 1);
+			dup2(g_minishell->stdin, 0);
+			dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
 		}
 	}

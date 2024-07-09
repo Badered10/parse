@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/09 09:54:51 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 10:58:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,8 +170,6 @@ void	ft_readline(void)
 
 int execute_docs(t_list *red_list)
 {
-	g_minishell->docs++;
-	printf("doc num :%d\n",g_minishell->docs);
 	if (do_here_docs(red_list , g_minishell->docs) == 0)
 		return (print_errors("ERROR ACCURE WITH HERE_DOC\n"), 0);
 	return(1);
@@ -198,7 +196,7 @@ void unlink_docs(int docs)
 
 	if(!docs)
 		return;
-	while(docs > 0)
+	while(docs >= 0)
 	{
 		join = ft_itoa(docs);
 		name = ft_strjoin(PATH, join);

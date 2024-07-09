@@ -6,16 +6,23 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 18:30:11 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:52:21 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-static int	open_hidden_file(void)
+static int	open_hidden_file(int doc_num)
 {
-	int fd;
-	fd = open("/var/tmp/tmp.txt", O_CREAT | O_RDWR | O_APPEND, 0777);
+	int	fd;
+	char *join;
+	char *name;
+
+	join  = ft_itoa(doc_num);
+	name = ft_strjoin(PATH, join);
+	fd = open(name, O_CREAT | O_RDWR | O_APPEND, 0777);
+	free(name);
+	free(join);
 	if (fd < 0)
 	{
 		perror("1 --> here_doc failed to get input");
@@ -24,11 +31,17 @@ static int	open_hidden_file(void)
 	return(fd);
 }
 
-static int	re_open_hidden_file(char *name)
+static int	re_open_hidden_file(int doc_num)
 {
 	int	fd;
+	char *join;
+	char *name;
 
+	join  = ft_itoa(doc_num);
+	name = ft_strjoin(PATH, join);
 	fd = open(name, O_RDONLY);
+	free(name);
+	free(join);
 	if (fd < 0)
 	{
 		perror("2 --> here_doc failed to get input");
@@ -76,7 +89,7 @@ void	h_signals(void)
 	signal(SIGQUIT, SIG_IGN);
 }
 
-int	here_doc(char *limiter)
+int	here_doc(char *limiter ,int doc_num)
 {
 	char	*buf;
 	int		fd;
@@ -87,7 +100,7 @@ int	here_doc(char *limiter)
 	if (!id)
 	{
 		h_signals();
-		fd = open_hidden_file();
+		fd = open_hidden_file(doc_num);
 		while (1)
 		{
 			read_buf(&buf);
@@ -102,7 +115,7 @@ int	here_doc(char *limiter)
 		wait_and_get();
 		if(!g_minishell->exit_s)
 		{
-			fd_hidden = re_open_hidden_file("/var/tmp/tmp.txt");
+			fd_hidden = re_open_hidden_file(doc_num);
 			return(fd_hidden);
 		}
 		else if(g_minishell->exit_s == 130)

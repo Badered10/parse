@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/08 11:16:53 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:54:51 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,49 @@ void	ft_readline(void)
 			add_history(g_minishell->line);
 }
 
+int execute_docs(t_list *red_list)
+{
+	g_minishell->docs++;
+	printf("doc num :%d\n",g_minishell->docs);
+	if (do_here_docs(red_list , g_minishell->docs) == 0)
+		return (print_errors("ERROR ACCURE WITH HERE_DOC\n"), 0);
+	return(1);
+}
+
+int scan_and_set(t_node *node)
+{
+	if (!node)
+		return(0);
+	if(node->type == PAIR_NODE)
+	{
+		scan_and_set(node->data.pair.left);
+		scan_and_set(node->data.pair.right);
+	}
+    else if (node->type == REDIR_NODE) // leaf
+		return(execute_docs(node->data.redir));
+	return(1);
+}
+
+void unlink_docs(int docs)
+{
+	char *name;
+	char *join;
+
+	if(!docs)
+		return;
+	while(docs > 0)
+	{
+		join = ft_itoa(docs);
+		name = ft_strjoin(PATH, join);
+		unlink(name);
+		free(join);
+		free(name);
+		docs--;
+	}
+	
+}
+
+
 int	main(int ac, char **av, char **env)
 {
 	(void)ac, (void)av;
@@ -186,12 +229,15 @@ int	main(int ac, char **av, char **env)
 			continue ;
 		// printAST(g_minishell->ast, 3212, 23123);
 		// open_pipe(g_minishell->pipe);
-		executer(g_minishell->ast);
+		g_minishell->docs = 0;
+		if(scan_and_set(g_minishell->ast))
+			executer(g_minishell->ast);
 		while(waitpid(-1, NULL, 0)!= -1);
 		// dup2(g_minishell->stdin, 0);
 		gc_free_all(g_minishell);
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);
+		unlink_docs(g_minishell->docs);
 		// printf("DONE OF WAIT\n");
 	}
 	gc_free_all(g_minishell);

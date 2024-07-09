@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/08 10:37:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:47:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # define MAX_FILES_PER_LINE 6
 
+# define PATH "/var/tmp/"
 # define READLINE_LIBRARY
 # define RED "\033[1;31m"
 # define ORANGE "\033[1;33m"
@@ -57,6 +58,7 @@ typedef struct s_minishell
 	int				dq_flag;
 	int				stdin;
 	int				stdout;
+	int				docs;
 }					t_minishell;
 
 extern t_minishell	*g_minishell;
@@ -133,7 +135,7 @@ void				delete_env_var(t_env **env, char *key);
 
 
 void				executer(t_node *node);
-int					here_doc(char *limiter);
+int					here_doc(char *limiter , int doc_num);
 int  				env_size(t_env *env);
 char 				**env_to_envp(t_env *env);
 char 				**list_to_argv(t_list *list);
@@ -142,7 +144,7 @@ int					dup_2(int old_fd, int new_fd);
 void				fd_duper( int *pfd , int mode);
 char				*get_command(char *argv);
 char				*add_slash_cmd(char *path, char *cmd);
-int 				do_here_docs(t_list *red_list);
+int 				do_here_docs(t_list *red_list ,int doc_num);
 int 				input_to_dup(t_list *red_list);
 int 				output_to_dup(t_list *red_list);
 void				run_doc_cmd(t_list *red_list);

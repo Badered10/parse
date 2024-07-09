@@ -6,19 +6,19 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/08 11:16:32 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:30:26 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	execute_redires(t_list *red_list)
+void	execute_redires(t_list *red_list) // here_Doce 16 // 16 // 
 {
 	int fd_input;
 	int fd_output;
 
-	if (do_here_docs(red_list) == 0)
-		return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
+	// if (do_here_docs(red_list) == 0)
+	// 	return (print_errors("ERROR ACCURE WITH HERE_DOC\n"));
 	open_and_set(red_list);
 	fd_input = input_to_dup(red_list); // < <<
 	fd_output = output_to_dup(red_list); // > >>
@@ -221,6 +221,9 @@ void    executer(t_node *node) // ls | wc | cat && ps
 {
 	if (!node)
 		return;
+		// Scan for her_doc existence if TRUE 
+		// Scan red_lists and creat new list of docs list 
+		// 
     if (node->type == STRING_NODE) // leaf
 		execute_cmd(node);
 	else if(node->type == PAIR_NODE) // pair : | && ||

@@ -6,23 +6,22 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 18:18:58 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/09 09:37:11 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int do_here_docs(t_list *red_list) // func that open every here doc and return a fd to the last one.
+int do_here_docs(t_list *red_list , int doc_num) // func that open every here doc and return a fd to the last one.
 {
 	t_redir *new ;
 
 	while(red_list)
 	{
-		unlink("/var/tmp/tmp.txt");
 		new = red_list->content;
 		if(new->type == LL_REDIR)
 		{
-			new->fd = here_doc(new->file);
+			new->fd = here_doc(new->file , doc_num);
 			if(new->fd < 0)
 				return(0);
 		}

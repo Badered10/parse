@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 20:41:10 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 13:13:17 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void execute_and_or(t_node *node)
 	}
 }
 
-void execute_pair(t_node *node)
+void execute_pair(t_node *node) // ls > a | cat a
 {
 	int	pfd[2];
 	int id;
@@ -206,14 +206,11 @@ void execute_pair(t_node *node)
 				// 	do_pipe(node->data.pair.right, 1, pfd);
 			}
 			else
-			{
-				printf("hehe\n");
 				executer(node->data.pair.right);
-			}
 		}
 		else
 		{
-			fprintf(stderr,"---------------->last one \n");
+			// fprintf(stderr,"---------------->last one \n");
 			do_pipe(node->data.pair.right , 1 , pfd);
 		}
 	}

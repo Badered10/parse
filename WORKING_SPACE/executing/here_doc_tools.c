@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 15:20:46 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 13:38:47 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int do_here_docs(t_list *red_list , int doc_num) // func that open every here do
 		if(new->type == LL_REDIR)
 		{
 			g_minishell->docs++;
-			printf("doc num :%d\n",g_minishell->docs);
+			// printf("doc num :%d\n",g_minishell->docs);
 			new->fd = here_doc(new->file , doc_num);
 			if(new->fd < 0)
 				return(0);

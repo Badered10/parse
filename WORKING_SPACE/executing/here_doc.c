@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 09:52:21 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 13:39:53 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static void	ft_sigint_handler(int sig)
 
 void	h_signals(void)
 {
-	rl_catch_signals = 0;
+	// rl_catch_signals = 0;
 	signal(SIGINT, ft_sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
@@ -113,18 +113,14 @@ int	here_doc(char *limiter ,int doc_num)
 	{
 		// after_signals();
 		wait_and_get();
+		// printf("%d\n",g_minishell->exit_s);
 		if(!g_minishell->exit_s)
 		{
 			fd_hidden = re_open_hidden_file(doc_num);
 			return(fd_hidden);
 		}
-		else if(g_minishell->exit_s == 130)
-		{
-			printf("CTRL + C , remove tmp file !!\n");
-			unlink("/var/tmp/tmp.txt");
-		}
 	}
-	return(-1);
+	return(printf("okey\n"),-1);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/09 16:32:44 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 13:43:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,8 +183,10 @@ int scan_and_set(t_node *node)
 		return(0);
 	if(node->type == PAIR_NODE)
 	{
-		scan_and_set(node->data.pair.left);
-		scan_and_set(node->data.pair.right);
+		if(!scan_and_set(node->data.pair.left))
+			return(0);
+		if(!scan_and_set(node->data.pair.right))
+			return(0);
 	}
     else if (node->type == REDIR_NODE) // leaf
 		return(execute_docs(node->data.redir));

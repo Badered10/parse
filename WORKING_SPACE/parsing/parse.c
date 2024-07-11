@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/11 15:27:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 16:24:20 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,16 @@ t_node	*parse_or(t_token **tokens);
 t_node	*parse_and(t_token **tokens);
 t_node	*parse_block(t_token **tokens);
 
-t_node *parse_cmd(t_token **tokens) //  ((ls && cat ) || cat ) && ps  --> ( AND )
+t_node *parse_cmd(t_token **tokens) // (1 && 2) > 1 && 3
 {
 	t_list *cmd_list;
 	t_list *red_list;
 	t_list *new;
 	t_redir *red;
+	t_node *block;
 
+	// () > 1
+	block = NULL;
 	cmd_list = NULL;
 	red_list = NULL;
 	while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND && (*tokens)->type != R_PAREN))
@@ -69,16 +72,19 @@ t_node *parse_cmd(t_token **tokens) //  ((ls && cat ) || cat ) && ps  --> ( AND 
 		else if((*tokens)->type == L_PAREN)
 		{
 			(*tokens) = (*tokens)->next;
-			return (parse_block(tokens)); 
+			block = parse_block(tokens); // 1 && 2
+			return(block);
 		}
 		(*tokens) = (*tokens)->next;
 	}
+	// if(block && !red_list)
+	// 	return (block);
 	if(!red_list)
 		return(string_node_new(cmd_list));
 	else
 	{
 		red->cmd = cmd_list;
-		return (redir_node_new(red_list));
+		return(redir_node_new(red_list));
 	}
 }
 
@@ -139,8 +145,10 @@ t_node	*parse_and(t_token **tokens)
 t_node *find_last_left(t_node *node)
 {
 	t_node *left;
-	while(node && node->type == PAIR_NODE) // 1->2->3->4->5
+	while(node) // 1->2->3->4->leaf
 	{
+		if(node->type != PAIR_NODE)
+			return (node);
 		left = node;
 		node = node->data.pair.left;
 	}
@@ -177,7 +185,10 @@ t_node	*parse_block(t_token **tokens) // (ls -a) > 1 || (ls -la | cat) > 1
 				else
 				{
 					tmp = find_last_left(right);
-					tmp->data.pair.left = left;
+					if(tmp->type == PAIR_NODE)
+						tmp->data.pair.left = left;
+					else if(tmp->type == REDIR_NODE)
+						set_left_redir(&left, &tmp);
 				}
 			}
 			else

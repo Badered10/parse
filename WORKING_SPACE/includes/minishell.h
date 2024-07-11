@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/11 13:10:42 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:46:20 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,7 +160,7 @@ char				*get_fullpath(char *argv, char **env);
 int					check_cmd(char *argv, char **env);
 void				call_execev(char **env, char *argv , char **cmd);
 int					ft_malloc_error(char **tab, size_t i);
-void 				wait_and_get(void);
+int 				wait_and_get(void);
 void 				do_cmd(t_node *ast);
 void 				do_pipe(t_node *cmd , int mode , int *pfd);
 void 				execute_cmd(t_node *node);

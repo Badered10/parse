@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/11 13:43:58 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:46:33 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,7 @@ void unlink_docs(int docs)
 
 int	main(int ac, char **av, char **env)
 {
+	char *exit_stat;
 	(void)ac, (void)av;
 	if (!init_minishell(env))
 		return (1);
@@ -233,12 +234,15 @@ int	main(int ac, char **av, char **env)
 		// printAST(g_minishell->ast, 3212, 23123);
 		if(scan_and_set(g_minishell->ast))
 			executer(g_minishell->ast);
-		while(waitpid(-1, NULL, 0)!= -1);
-		// wait_and_get();
+		while(wait_and_get() != -1);
+		// while(waitpid(-1, NULL, 0)!= -1);
 		gc_free_all(g_minishell);
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);
 		unlink_docs(g_minishell->docs);
+		exit_stat = ft_itoa(g_minishell->exit_s);
+		set_env_var(g_minishell->our_env, "?", exit_stat);
+		free(exit_stat);
 		// printf("DONE OF WAIT\n");
 	}
 	gc_free_all(g_minishell);

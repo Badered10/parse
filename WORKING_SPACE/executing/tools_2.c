@@ -6,24 +6,27 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/08 10:38:30 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:45:50 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void wait_and_get(void)
+int wait_and_get(void)
 {
-	char *exit;
+	char	*exit;
+	int		fail;
 
-	wait(&g_minishell->exit_s);
+	fail = -1;
+	fail = wait(&g_minishell->exit_s);
 	if (WIFEXITED(g_minishell->exit_s))
 		g_minishell->exit_s = WEXITSTATUS(g_minishell->exit_s);
 	exit = ft_itoa(g_minishell->exit_s);
 	if(!exit)
-		return(print_errors("ERROR WITH FT_ITOA\n"));
+		return(print_errors("ERROR WITH FT_ITOA\n"), fail);
 	set_env_var(g_minishell->our_env, "?", exit);
 	free(exit);
+	return (fail);
 }
 
 void do_cmd(t_node *ast)
@@ -41,6 +44,7 @@ void do_cmd(t_node *ast)
 	id = check_cmd(*cmd, env);
 	if(!id)
 		call_execev(env, *cmd , cmd);
+	printf("id: %d\n",id);
 	exit(id);
 }
 

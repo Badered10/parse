@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 20:49:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:27:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ t_node	*parse_and(t_token **tokens)
 t_node *find_last_left(t_node *node)
 {
 	t_node *left;
-	while(node->type == PAIR_NODE) // 1->2->3->4->5
+	while(node && node->type == PAIR_NODE) // 1->2->3->4->5
 	{
 		left = node;
 		node = node->data.pair.left;

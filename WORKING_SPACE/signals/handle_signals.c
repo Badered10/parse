@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 21:05:29 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/11 13:24:53 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 15:14:38 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,16 @@ void	ft_sigint_handler(int sig)
 		rl_replace_line("", 0);
 		rl_redisplay();
 		set_env_var(g_minishell->our_env, "?", "130");
+		g_minishell->exit_s = 130;
+	}
+	else if (sig == SIGQUIT)
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		printf("WESH1\n");
+		set_env_var(g_minishell->our_env, "?", "131");
+		g_minishell->exit_s = 131;
 	}
 }
 void	ft_sigint_after(int sig)
@@ -30,6 +40,12 @@ void	ft_sigint_after(int sig)
 		set_env_var(g_minishell->our_env, "?", "130");
 		g_minishell->exit_s = 130;
 		printf("after \n");
+	}
+	else if (sig == SIGQUIT)
+	{
+		printf("WESH2\n");
+		set_env_var(g_minishell->our_env, "?", "131");
+		g_minishell->exit_s = 131;
 	}
 }
 void after_signals(void)

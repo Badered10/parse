@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/11 16:26:32 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:42:18 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,7 +224,7 @@ int	main(int ac, char **av, char **env)
 		g_minishell->exit_s = 0;
 		signals();
 		ft_readline();
-		after_signals();
+		// after_signals();
 		g_minishell->tokens = tokenizer();
 		if (!g_minishell->tokens || syntax() == -1)
 			continue ;
@@ -235,7 +235,6 @@ int	main(int ac, char **av, char **env)
 		if(scan_and_set(g_minishell->ast))
 			executer(g_minishell->ast);
 		while(wait_and_get() != -1);
-		// while(waitpid(-1, NULL, 0)!= -1);
 		gc_free_all(g_minishell);
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);
@@ -243,7 +242,6 @@ int	main(int ac, char **av, char **env)
 		exit_stat = ft_itoa(g_minishell->exit_s);
 		set_env_var(g_minishell->our_env, "?", exit_stat);
 		free(exit_stat);
-		// printf("DONE OF WAIT\n");
 	}
 	gc_free_all(g_minishell);
 	clear_env();

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/11 13:39:53 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/11 19:23:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,8 @@ static void	ft_sigint_handler(int sig)
 {
 	if (sig == SIGINT)
 	{
-		sig = 0;
+		// sig = 0;
+		printf("simo\n");
 		exit(130);
 	}
 }
@@ -86,7 +87,7 @@ void	h_signals(void)
 {
 	// rl_catch_signals = 0;
 	signal(SIGINT, ft_sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 }
 
 int	here_doc(char *limiter ,int doc_num)
@@ -120,7 +121,7 @@ int	here_doc(char *limiter ,int doc_num)
 			return(fd_hidden);
 		}
 	}
-	return(printf("okey\n"),-1);
+	return(-1);
 }
 
 

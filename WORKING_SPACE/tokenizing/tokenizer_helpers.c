@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:01:30 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 15:48:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/12 17:17:05 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	append_separator(t_token **tokens, char **line, t_type type)
 	return (1);
 }
 
-int	append_identifier(t_token **tokens, char **line)
+int	append_identifier(t_token **tokens, char **line) //ls -a
 {
 	t_token	*new;
 	char	*value;

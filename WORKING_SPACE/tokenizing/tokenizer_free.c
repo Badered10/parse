@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 19:58:45 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/26 15:46:55 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/12 17:24:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	add_quote(t_token **tokens, char **line)
 	return (1);
 }
 
-t_token	*choose_token(char *value, char c)
+t_token	*choose_token(char *value, char c) // ls -a // -->"ls -a", 'l'
 {
 	t_token	*new;
 

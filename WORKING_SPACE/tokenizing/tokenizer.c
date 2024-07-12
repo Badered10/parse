@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:41:22 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/06/25 21:43:58 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/12 17:16:18 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	handle_separator(t_token **tokens, char **line)
 		return (append_separator(tokens, line, PIPE));
 }
 
-t_token	*tokenizer_handler(char *line)
+t_token	*tokenizer_handler(char *line) //ls -a
 {
 	t_token	*tokens;
 	int		error;

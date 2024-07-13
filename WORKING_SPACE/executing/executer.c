@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/11 19:48:00 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/13 14:03:23 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ void execute_cmd(t_node *node)
 	{
 		id = fork();
 		if(!id)
+		{
             do_cmd(node);
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/11 19:42:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/13 14:03:05 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void	ft_readline(void)
 int execute_docs(t_list *red_list)
 {
 	if (do_here_docs(red_list , g_minishell->docs) == 0)
-		return (print_errors("ERROR ACCURE WITH HERE_DOC\n"), 0);
+		return (0);
 	return(1);
 }
 
@@ -210,7 +210,19 @@ void unlink_docs(int docs)
 		docs--;
 	}
 }
+void hand(int sig)
+{
+	if(sig != SIGQUIT)
+		return;
+	printf("Quit (core dumped)\n");
+}
 
+void hand2(int sig)
+{
+	if(sig != SIGINT)
+		return;
+	printf("\n");
+}
 
 int	main(int ac, char **av, char **env)
 {
@@ -224,16 +236,20 @@ int	main(int ac, char **av, char **env)
 		g_minishell->exit_s = 0;
 		signals();
 		ft_readline();
-		// after_signals();
 		g_minishell->tokens = tokenizer();
 		if (!g_minishell->tokens || syntax() == -1)
 			continue ;
 		g_minishell->ast = parsing();
 		if (!g_minishell->ast)
 			continue ;
-		// printAST(g_minishell->ast, 3212, 23123);
+		signal(SIGINT, SIG_IGN);
 		if(scan_and_set(g_minishell->ast))
+		{
+			signal(SIGQUIT, hand);
+			signal	(SIGINT, hand2);
 			executer(g_minishell->ast);
+		}
+		// signal(SIGQUIT, SIG_IGN);
 		while(wait_and_get() != -1);
 		gc_free_all(g_minishell);
 		dup2(g_minishell->stdout, 1);

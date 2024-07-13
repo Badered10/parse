@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/11 15:46:20 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/13 11:43:10 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ void				delete_env_var(t_env **env, char *key);
 /* Executing */
 
 // Main function that execute the user input.
+void	ft_sigint_handler(int sig);
 
 
 void				executer(t_node *node);

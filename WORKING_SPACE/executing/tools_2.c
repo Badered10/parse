@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/11 15:45:50 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/13 11:31:05 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void do_cmd(t_node *ast)
 	id = check_cmd(*cmd, env);
 	if(!id)
 		call_execev(env, *cmd , cmd);
-	printf("id: %d\n",id);
 	exit(id);
 }
 

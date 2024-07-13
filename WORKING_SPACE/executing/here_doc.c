@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/11 19:23:42 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/13 14:01:26 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,30 @@ static int	write_or_break(int fd, char *limiter, char *buf)
 		return(0);
 	doc_len = ft_strlen(limiter);
 	buf_len = ft_strlen(buf);
-	if (buf[0] == '\0' || !ft_strncmp (limiter, buf, buf_len))
+	if (!ft_strncmp (limiter, buf, buf_len + doc_len))
 		return (0);
 	write(fd, buf, buf_len);
 	write(fd,"\n",1);
 	return (1);
 }
 
+static void ft_sig_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		// sig = 0;
+		printf("DONE\n");		
+		signal(SIGINT, SIG_IGN);
+		g_minishell->exit_s = 130;
+	}
+}
+
+void	h_signals(void)
+{
+	// rl_catch_signals = 0;
+	signal(SIGINT, ft_sig_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
 static void	read_buf(char **buf)
 {
 	*buf = readline(">");
@@ -73,21 +90,17 @@ static void	read_buf(char **buf)
 		gc_add(g_minishell, *buf);
 }
 
-static void	ft_sigint_handler(int sig)
+void handler(int sig)
 {
-	if (sig == SIGINT)
-	{
-		// sig = 0;
-		printf("simo\n");
-		exit(130);
-	}
-}
-
-void	h_signals(void)
-{
-	// rl_catch_signals = 0;
-	signal(SIGINT, ft_sigint_handler);
-	// signal(SIGQUIT, SIG_IGN);
+	if (sig != SIGINT)
+		return ;
+	printf("\n");
+	g_minishell->exit_s = 130;
+	// write(0, "", 1);
+	// rl_on_new_line();
+	// rl_replace_line("", 0);
+	// rl_redisplay();
+	exit(130);
 }
 
 int	here_doc(char *limiter ,int doc_num)
@@ -96,25 +109,25 @@ int	here_doc(char *limiter ,int doc_num)
 	int		fd;
 	int		fd_hidden;
 	int 	id;
-	
+
+	fd_hidden = -1;
+	fd = open_hidden_file(doc_num);
 	id = fork();
 	if (!id)
 	{
-		h_signals();
-		fd = open_hidden_file(doc_num);
-		while (1)
-		{
-			read_buf(&buf);
-			if (!write_or_break(fd, limiter, buf))
-				break;
-		}
+	while (1)
+	{
+		// signal(SIGINT, ft_sigint_handler);
+		signal(SIGINT, handler);
+		read_buf(&buf);
+		if (!write_or_break(fd, limiter, buf)) // ctrl + D --> EOF , limiter
+			break;
+	}
 		exit(0);
 	}
 	else
 	{
-		// after_signals();
 		wait_and_get();
-		// printf("%d\n",g_minishell->exit_s);
 		if(!g_minishell->exit_s)
 		{
 			fd_hidden = re_open_hidden_file(doc_num);

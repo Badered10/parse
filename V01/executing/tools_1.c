@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:11:26 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/09 13:57:27 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 20:42:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	check_cmd(char *argv, char **env)
 	cmd = get_fullpath(argv, env);
 	if (!cmd && *argv == '.') // ./
 		cmd = get_command(argv);
-	if (*argv != '\0' && (*argv == '/' || *argv == '.') && access(cmd, F_OK))
+	if (*argv != '\0' && (*argv == '/' || *argv == '.' || !get_env_var(g_minishell->our_env, "PATH")) && access(cmd, F_OK))
 	{
 		print_err("badashell: no such file or directory:", argv);
 		check = 127;
@@ -77,7 +77,7 @@ int	check_cmd(char *argv, char **env)
 	}
 	else if (*argv != '\0' && access(cmd, F_OK))
 	{
-		print_err("badashell: Command not found: ", argv);
+		print_err("badashell: command not found: ", argv);
 		check = 127;
 	}
 	else if (*argv != '\0' && access(cmd, X_OK))
@@ -92,12 +92,20 @@ int	check_cmd(char *argv, char **env)
 void	call_execev(char **env, char *argv , char **cmd)
 {
 	char	*founded_path;
+	int 	len;
 
+	len = ft_strlen(argv);
 	check_split(cmd, argv);
 	founded_path = get_fullpath(argv, env);
 	execve(founded_path, cmd, env);
-	if(!ft_strncmp(founded_path, argv, ft_strlen(argv) + ft_strlen(founded_path)))
-		print_err("bash: Is a directory : ",founded_path);
+	if(len == 1 && argv[0] == '.')
+		print_err("bash: .: filename argument required\n.: usage: . filename [arguments]", NULL);
+	else if(len != 1 && (argv[0] == '.'))
+		print_err("badashell: Is a directory : ", argv);
+	else if(len == 1 && argv[0] == '/')
+		print_err("badashell: Is a directory : ", argv);
+	else
+		print_err("EXEVE FAILED ", NULL);
 }
 
 int	ft_malloc_error(char **tab, size_t i)

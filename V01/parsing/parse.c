@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 19:29:36 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 20:14:33 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,21 +203,27 @@ void set_null_as_true(t_node **res)
 {
 	t_list *true_c;
 	char *str;
+	char *path;
 
-	str = ft_strdup("true");
-	gc_add(g_minishell, str);
-	true_c = ft_lstnew(str);
-	gc_add(g_minishell, true_c);
-	if(*res && (*res)->type == PAIR_NODE)
+	path = get_fullpath("true", env_to_envp(g_minishell->our_env));
+	gc_add(g_minishell, path);
+	if(get_env_var(g_minishell->our_env, "PATH") || path)
 	{
-		if(!(*res)->data.pair.left)
-			(*res)->data.pair.left = string_node_new(true_c);
-		else if((*res)->data.pair.left->type == PAIR_NODE)
-		 	set_null_as_true(&(*res)->data.pair.left);
-		if(!(*res)->data.pair.right)
-			(*res)->data.pair.right = string_node_new(true_c);
-		else if((*res)->data.pair.right->type == PAIR_NODE)
-		 	set_null_as_true(&(*res)->data.pair.right);
+		str = ft_strdup("true");
+		gc_add(g_minishell, str);
+		true_c = ft_lstnew(str);
+		gc_add(g_minishell, true_c);
+		if(*res && (*res)->type == PAIR_NODE)
+		{
+			if(!(*res)->data.pair.left)
+				(*res)->data.pair.left = string_node_new(true_c);
+			else if((*res)->data.pair.left->type == PAIR_NODE)
+				set_null_as_true(&(*res)->data.pair.left);
+			if(!(*res)->data.pair.right)
+				(*res)->data.pair.right = string_node_new(true_c);
+			else if((*res)->data.pair.right->type == PAIR_NODE)
+				set_null_as_true(&(*res)->data.pair.right);
+		}
 	}
 }
 t_node	*parsing(void) // (ls -a) > 1

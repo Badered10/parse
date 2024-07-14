@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 11:03:26 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:58:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void run_doc_cmd(t_list *red_list)
 int scan_and_set(t_node *node)
 {
 	if (!node)
-		return(0);
+		return(1);
 	if(node->type == PAIR_NODE)
 	{
 		if(!scan_and_set(node->data.pair.left))

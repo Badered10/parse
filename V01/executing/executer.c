@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 14:14:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 19:29:09 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void execute_and_or(t_node *node) // cat || ps
 			g_minishell->exit_s = 130;
 }
 
-void execute_pair(t_node *node) // ls > a | cat a
+void execute_pair(t_node *node) // ls | $dfs | cat
 {
 	int	pfd[2];
 	int id;
@@ -83,7 +83,7 @@ void execute_pair(t_node *node) // ls > a | cat a
 	if(node->data.pair.type == PIPE) // (cat -e && ps) | (cat -n && true)
 	{
 		open_pipe(pfd);
-		if(node->data.pair.left->type != STRING_NODE && node->data.pair.left->type != PIPE) // LEEEFT side of PIPE CASE 
+		if(node->data.pair.left && node->data.pair.left->type != STRING_NODE && node->data.pair.left->type != PIPE) // LEEEFT side of PIPE CASE 
 		{
 			if (node->data.pair.left->data.pair.type == AND)
 			{
@@ -97,7 +97,6 @@ void execute_pair(t_node *node) // ls > a | cat a
 					if(!g_minishell->exit_s && g_minishell->exit_s != 2) 
 						executer(node->data.pair.left->data.pair.right); // RUN RIGHT OF AND IF LEFT TRUE
 					while(waitpid(-1, NULL, 0)!= -1);
-					fprintf(stderr, "=>>> %d\n", g_minishell->exit_s);
 
 					exit(g_minishell->exit_s);
 				}
@@ -115,7 +114,6 @@ void execute_pair(t_node *node) // ls > a | cat a
 					if(g_minishell->exit_s && g_minishell->exit_s != 2)
 						executer(node->data.pair.left->data.pair.right); // RUN RIGHT OF OR if LEFT FALSE
 					while(waitpid(-1, NULL, 0)!= -1)
-					fprintf(stderr, "=>>> %d\n", g_minishell->exit_s);
 
 					exit(g_minishell->exit_s);
 				}
@@ -130,7 +128,7 @@ void execute_pair(t_node *node) // ls > a | cat a
 			else
 				executer(node->data.pair.left);
 		}		
-		else if(node->data.pair.left->type == STRING_NODE)
+		else if(node->data.pair.left && node->data.pair.left->type == STRING_NODE)
 			do_pipe(node->data.pair.left , 0 , pfd); // close(pfd[1]);
 		
 		if(node->data.pair.right->type != STRING_NODE) // RIGHT side of PIPE CASE   //   | (cat && do) 
@@ -147,7 +145,6 @@ void execute_pair(t_node *node) // ls > a | cat a
 					if(!g_minishell->exit_s)
 						executer(node->data.pair.right->data.pair.right); // RUN RIGHT OF AND IF LEFT TRUE
 					while(waitpid(-1, NULL, 0)!= -1);
-					fprintf(stderr, "=>>> %d\n", g_minishell->exit_s);
 
 					exit(g_minishell->exit_s);
 				}
@@ -165,7 +162,6 @@ void execute_pair(t_node *node) // ls > a | cat a
 					if(g_minishell->exit_s)
 						executer(node->data.pair.right->data.pair.right); // RUN RIGHT OF OR if LEFT FALSE
 					while(waitpid(-1, NULL, 0)!= -1);
-					fprintf(stderr, "=>>> %d\n", g_minishell->exit_s);
 					exit(g_minishell->exit_s);
 				}
 				close(pfd[0]);
@@ -184,13 +180,13 @@ void execute_pair(t_node *node) // ls > a | cat a
 	close(pfd[0]);
 }
 
-void    executer(t_node *node) // ls | wc | cat && ps
+void    executer(t_node *node) // $fsdf | sdf | $dfs
 {
 	if (!node)
 		return;
     if (node->type == STRING_NODE) // leaf
 		execute_cmd(node);
-	else if(node->type == PAIR_NODE) // pair : | && ||
+	else if(node->type == PAIR_NODE) // pair
 		execute_pair(node);
     else if (node->type == REDIR_NODE) // leaf
 		execute_redires(node->data.redir);

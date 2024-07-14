@@ -6,13 +6,13 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 11:58:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 17:41:08 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int fix_embgous(t_redir *new)// *2
+int fix_embgous(t_redir *new)// *0*csdasd
 {
         if(new->file[0] == '*')
         {
@@ -22,7 +22,7 @@ int fix_embgous(t_redir *new)// *2
                 gc_add(g_minishell, new->file);
                 return(2);
             }
-            else if (new->file[1] == '1')
+            else if (new->file[1] == '0')
             {
                 new->file = ft_substr(new->file, 2, ft_strlen(new->file));
                 gc_add(g_minishell, new->file);

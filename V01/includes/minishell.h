@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/14 11:16:38 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 19:14:22 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,6 +199,7 @@ void 				execute_cmd(t_node *node);
 int scan_and_set(t_node *node);
 int execute_docs(t_list *red_list);
 void unlink_docs(int docs);
+void printAST(t_node* node , int x , t_type type);
 /* Expanding */
 
 // Main function to do expand.

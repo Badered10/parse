@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 13:45:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/14 19:19:47 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ void do_cmd(t_node *ast)
     char **env;
 
 	id = 0;
-	if (ft_is_builtin(ast->data.cmd->content))
+	if(!ast)
+		return;
+	else if (ft_is_builtin(ast->data.cmd->content))
         execute_builtins(g_minishell, list_to_argv(ast->data.cmd));
 	else
 	{
@@ -53,7 +55,6 @@ void do_cmd(t_node *ast)
 		if(!id)
 			call_execev(env, *cmd , cmd);	
 	}
-	printf("---------------------->%d\n",id);
 	exit(id);
 }
 

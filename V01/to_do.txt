@@ -1,0 +1,5 @@
+you need expand tild because it's shity "khariya" b jehd by simo
+╭─baouragh@c3r5p8 ~/Desktop/42_minishell ‹lass-main●› 
+╰─$ ./minishell
+badashell$> ~~~
+badashell: Command not found: ����������������������������������������

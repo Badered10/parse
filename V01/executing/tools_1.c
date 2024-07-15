@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:11:26 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 20:42:58 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 17:40:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ char	*get_fullpath(char *argv, char **env)
 	char	*fullpath;
 	int		i;
 
+	if (!*argv)
+		return (NULL);
 	i = 0;
 	fullpath = NULL;
 	paths = get_env_paths(env);
@@ -63,26 +65,26 @@ int	check_cmd(char *argv, char **env)
 
     check = 0;
 	cmd = get_fullpath(argv, env);
-	if (!cmd && *argv == '.') // ./
+	if (!cmd && *argv == '.')
 		cmd = get_command(argv);
 	if (*argv != '\0' && (*argv == '/' || *argv == '.' || !get_env_var(g_minishell->our_env, "PATH")) && access(cmd, F_OK))
 	{
-		print_err("badashell: no such file or directory:", argv);
+		print_err("no such file or directory", argv);
 		check = 127;
 	}
-	else if(access(cmd, F_OK) && argv[ft_strlen(argv) - 1] == '/')
+	else if(ft_strlen(argv) == 1 && argv[0] == '.')
 	{
-		print_err("badashell: Is a directory : ", argv);
-		check = 126;
+		print_err("filename argument required\n.: usage: . filename [arguments]", NULL);
+		check = 2;
 	}
-	else if (*argv != '\0' && access(cmd, F_OK))
+	else if (access(cmd, F_OK))
 	{
-		print_err("badashell: command not found: ", argv);
+		print_err("command not found", argv);
 		check = 127;
 	}
-	else if (*argv != '\0' && access(cmd, X_OK))
+	else if (access(cmd, X_OK))
 	{
-		print_err("badashell: permission denied: ", argv);
+		print_err("permission denied", argv);
 		check = 126;
 	}
 	free(cmd);
@@ -98,12 +100,11 @@ void	call_execev(char **env, char *argv , char **cmd)
 	check_split(cmd, argv);
 	founded_path = get_fullpath(argv, env);
 	execve(founded_path, cmd, env);
-	if(len == 1 && argv[0] == '.')
-		print_err("bash: .: filename argument required\n.: usage: . filename [arguments]", NULL);
-	else if(len != 1 && (argv[0] == '.'))
-		print_err("badashell: Is a directory : ", argv);
-	else if(len == 1 && argv[0] == '/')
-		print_err("badashell: Is a directory : ", argv);
+	if(*argv == '/' || *argv == '.')
+	{
+		print_err("Is a directory", argv);
+		exit(126);
+	}
 	else
 		print_err("EXEVE FAILED ", NULL);
 }

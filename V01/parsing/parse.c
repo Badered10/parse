@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 20:14:33 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 16:09:17 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ void set_null_as_true(t_node **res)
 
 	path = get_fullpath("true", env_to_envp(g_minishell->our_env));
 	gc_add(g_minishell, path);
-	if(get_env_var(g_minishell->our_env, "PATH") || path)
+	if(get_env_var(g_minishell->our_env, "PATH") && path)
 	{
 		str = ft_strdup("true");
 		gc_add(g_minishell, str);

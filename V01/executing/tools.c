@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:10:33 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/04 18:30:34 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 16:14:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,12 @@
 
 int	print_err(char *message, char *word)
 {
-	ft_putstr_fd(message, 2);
+	ft_putstr_fd(RED, 2);
+	ft_putstr_fd("badashell$ : ", 2);
 	ft_putstr_fd(word, 2);
-	write(2, "\n", 1);
+	ft_putstr_fd(" : ", 2);
+	ft_putstr_fd(message, 2);
+	ft_putstr_fd("\n" RESET, 2);
     return (0);
 }
 void	check_split(char **cmd, char *word)

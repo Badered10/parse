@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 17:41:08 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 16:20:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,11 @@
 
 int fix_embgous(t_redir *new)// *0*csdasd
 {
+    if (!new->file)
+    {
+        printf("ERROR\n");
+        return(0);
+    }
         if(new->file[0] == '*')
         {
             if(new->file[1] == '2')
@@ -40,12 +45,12 @@ int open_redir(t_redir *redir , int mode)
         if(!mode || mode == 1)
         {
             if(access(redir->file, F_OK) == -1)
-                print_err("badashell: no such file or directory: ",redir->file);
+                print_err("no such file or directory",redir->file);
             else
-                print_err("badashell: permission denied: ",redir->file);
+                print_err("permission denied",redir->file);
         }
         else if(mode == 2)
-            print_err("badashell: ambiguous redirect: ",redir->file);
+            print_err("ambiguous redirect",redir->file);
         g_minishell->exit_s = 1;
         return (0);
     }

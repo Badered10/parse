@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/14 19:29:03 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 15:14:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,6 +202,7 @@ int	main(int achraf, char **bader, char **env)
 		{
 			signal(SIGQUIT, hand);
 			signal(SIGINT, hand2);
+			// printAST(g_minishell->ast, 2234,23423);
 			executer(g_minishell->ast);
 		}
 		while (wait_and_get() != -1);

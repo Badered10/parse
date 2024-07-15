@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 19:19:47 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 16:16:56 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ void do_pipe(t_node *cmd , int mode , int *pfd) // cat -e
 		id = fork();
 		if (id < 0)
 		{
-			print_err("pipex: error occuerd with fork!", NULL);
+			print_err("error occuerd with fork!", NULL);
 			return;
 		}
 		if (id == 0)

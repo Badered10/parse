@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/14 19:29:09 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/15 13:53:19 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ void execute_pair(t_node *node) // ls | $dfs | cat
 		else if(node->data.pair.left && node->data.pair.left->type == STRING_NODE)
 			do_pipe(node->data.pair.left , 0 , pfd); // close(pfd[1]);
 		
-		if(node->data.pair.right->type != STRING_NODE) // RIGHT side of PIPE CASE   //   | (cat && do) 
+		if(node->data.pair.right &&  node->data.pair.right->type != STRING_NODE) // RIGHT side of PIPE CASE   //   | (cat && do) 
 		{
 			if (node->data.pair.right->data.pair.type == AND)
 			{
@@ -169,7 +169,7 @@ void execute_pair(t_node *node) // ls | $dfs | cat
 			else
 				executer(node->data.pair.right);
 		}
-		else
+		else if(node->data.pair.right && node->data.pair.right->type == STRING_NODE)
 			do_pipe(node->data.pair.right , 1 , pfd);
 	}
 	else

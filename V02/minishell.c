@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/17 08:51:08 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/17 17:11:58 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,95 +14,78 @@
 
 t_minishell	*g_minishell;
 
-void	print_root(t_type type, int x)
-{
-	if (type == PIPE)
-	{
-		if (x == 1)
-			printf("\nLEFT OF '|' -> ");
-		else if (x == 0)
-			printf("\nRIGHT OF '|' ----> ");
-	}
-	else if (type == OR)
-	{
-		if (x == 1)
-			printf("\nLEFT OF '||' ----> ");
-		else if (x == 0)
-			printf("\nRIGHT OF '||' ----> ");
-	}
-	else if (type == AND)
-	{
-		if (x == 1)
-			printf("\nLEFT OF '&&' ----> ");
-		else if (x == 0)
-			printf("\nRIGHT OF '&&' ----> ");
-	}
-	else if (type == L_PAREN)
-	{
-		if (x == 1)
-			printf("\nLEFT OF '(' ----> ");
-		else if (x == 0)
-			printf("\nRIGHT OF '(' ----> ");
-	}
-}
+/* Terminal Color */
 
-void printAST(t_node* node , int x , t_type type) 
-{
-    t_type tmp;
-	t_list *list;
+#define W_GREEN   "\033[32m"      /* Green */
 
-    if (!node) return;
-    tmp  = ERROR;
-    if (node->type == STRING_NODE) // leaf
-    {
-        print_root(type, x);
-		list = node->data.cmd;
+#define W_WHITE   "\033[37m"      /* White */
+
+
+void print_ast(const char *prefix,  t_node* root, bool isLeft)
+{
+	char *dup;
+	char *join;
+    if(!root) return ;
+
+	printf(W_GREEN"%s", prefix);
+	
+    // cout << ;
+	printf("%s", (isLeft ? "├──" : "└──" ));
+
+    // cout << WHITE;
+	printf(W_WHITE"");
+
+	if (root->type == PAIR_NODE) {
+
+		if(root->data.pair.type == PIPE)
+        {
+			printf(" |\n");
+
+      
+        }
+        else if (root->data.pair.type == OR)
+        {
+			printf(" ||\n");
+
+        } 
+        else if (root->data.pair.type == AND)
+        {
+			printf(" &&\n");
+        }
+		dup = strdup((isLeft ? "│   " : "    "));
+		join = ft_strjoin(prefix ,  dup);
+    	print_ast(  join ,  root->data.pair.left,  true);
+    	print_ast(  join ,   root->data.pair.right, false);	
+		free(dup);
+		free(join);	
+	} 
+	else if (root->type == STRING_NODE) 
+	{
+		t_list *list;
+		list = root->data.cmd;
         while (list)
         {
             printf("'%s' ", (char*)list->content);
             list = list->next;
         }
         printf("\n");
-    }
-	else if(node->type == PAIR_NODE) // root
+	}
+	else if (root->type == REDIR_NODE) 
 	{
-		print_root(type, x); // 4832948 , 234234
-        if(node->data.pair.type == PIPE)
+		while(root->data.redir)
         {
-            printf("------------------->PIPE<----------------------\n");
-            tmp = PIPE;
-        }
-        else if (node->data.pair.type == OR)
-        {
-            printf("------------------->OR<----------------------\n");
-            tmp = OR;
-        } 
-        else if (node->data.pair.type == AND)
-        {
-            printf("------------------->AND<----------------------\n");
-            tmp = AND;
-        }
-            printAST(node->data.pair.left, 1 , tmp);
-            printAST(node->data.pair.right, 0 , tmp);
-    }
-    else if (node->type == REDIR_NODE) // leaf
-    {
-        print_root(type, x);
-        while(node->data.redir)
-        {
-            t_redir *new = node->data.redir->content;
-            printf("REDIR NODE , name: '%s'\n",new->file);
+            t_redir *new = root->data.redir->content;
+            printf("REDIR NODE , name: '%s' ",new->file);
             while (new->cmd)
             {
                 printf("'%s' ", (char*)new->cmd->content);
                 new->cmd = new->cmd->next;
             }
-            printf("\n");
-			if(new->node)
-				printAST(new->node, 121,231);
-            node->data.redir = node->data.redir->next;
+            printf(" ");
+            root->data.redir = root->data.redir->next;
         }
-    }
+        printf("\n");
+	}   
 }
 
 void	print_tokens(t_token *tokens)
@@ -194,9 +177,9 @@ void	clean_and_set(void)
 	free(exit_stat);
 }
 
-int	main(int achraf, char **bader, char **env)
+int	main(int argc, char **argv, char **env)
 {
-	(void)achraf, (void)bader;
+	(void)argc, (void)argv;
 	
 	if (!init_minishell(env))
 		return (1);
@@ -215,7 +198,7 @@ int	main(int achraf, char **bader, char **env)
 		{
 			signal(SIGQUIT, ft_sigquit);
 			signal(SIGINT, ft_sigint);
-			// printAST(g_minishell->ast, 2234,23423);
+			print_ast("", g_minishell->ast, false);
 			executer(g_minishell->ast);
 		}
 		while (wait_and_get() != -1);

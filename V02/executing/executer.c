@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/17 09:24:49 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/17 17:04:03 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	execute_and_or(t_node *node) // cat || ps
 	{
 		executer(node->data.pair.left);
 		wait_and_get();
-		if (!g_minishell->exit_s && g_minishell->exit_s != 2)
+		if (!g_minishell->exit_s)
 		{
 			dup2(g_minishell->stdin, 0);
 			dup2(g_minishell->stdout, 1);

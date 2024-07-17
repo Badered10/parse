@@ -6,11 +6,12 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/17 17:11:58 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/17 17:57:35 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
+#include "libft/libft.h"
 
 t_minishell	*g_minishell;
 
@@ -72,17 +73,21 @@ void print_ast(const char *prefix,  t_node* root, bool isLeft)
 	}
 	else if (root->type == REDIR_NODE) 
 	{
-		while(root->data.redir)
+		t_list *lst;
+		lst = root->data.redir;
+		while(lst)
         {
-            t_redir *new = root->data.redir->content;
+			t_list *list;
+            t_redir *new = lst->content;
             printf("REDIR NODE , name: '%s' ",new->file);
-            while (new->cmd)
+			list = new->cmd;
+            while (list)
             {
-                printf("'%s' ", (char*)new->cmd->content);
-                new->cmd = new->cmd->next;
+                printf("'%s' ", (char*)list->content);
+                list = list->next;
             }
             printf(" ");
-            root->data.redir = root->data.redir->next;
+            lst = lst->next;
         }
         printf("\n");
 	}   
@@ -194,11 +199,11 @@ int	main(int argc, char **argv, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		signal(SIGINT, SIG_IGN);
+		print_ast("", g_minishell->ast, false);
 		if(scan_and_set(g_minishell->ast))
 		{
 			signal(SIGQUIT, ft_sigquit);
 			signal(SIGINT, ft_sigint);
-			print_ast("", g_minishell->ast, false);
 			executer(g_minishell->ast);
 		}
 		while (wait_and_get() != -1);

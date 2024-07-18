@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/18 10:24:07 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/18 10:38:38 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,11 @@ void	execute_cmd(t_node *node)
 	}
 	id = 0;
 	if (ft_is_builtin(node->data.cmd->content))
+	{
 		execute_builtins(g_minishell, list_to_argv(node->data.cmd));
+		set_env_var(g_minishell->our_env, "?", "0");
+		g_minishell->exit_s = 0;
+	}
 	else
 	{
 		id = fork();

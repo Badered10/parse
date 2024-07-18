@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_helpers.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 14:50:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/12 18:48:56 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:44:06 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void	joining_words(char **split)
 	temp = get_env_var(g_minishell->our_env, split[0]);
 	if (split[1])
 		new = ft_strjoin(temp, split[1]);
+	else
+		return ;
 	gc_add(g_minishell, new);
 	set_env_var(g_minishell->our_env, split[0], new);
 }

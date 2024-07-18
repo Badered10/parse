@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/18 09:55:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/18 12:48:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,7 @@ int	main(int argc, char **argv, char **env)
 		return (1);
 	while (1)
 	{
+		g_minishell->lines++;
 		signals();
 		ft_readline();
 		g_minishell->tokens = tokenizer();

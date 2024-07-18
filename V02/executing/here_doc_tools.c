@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_tools.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/17 09:55:57 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/18 11:59:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	run_doc_cmd(t_list *red_list)
 
 int	scan_and_set(t_node *node)
 {
+	g_minishell->exit_s = 0;
 	if (!node)
 		return (1);
 	if (node->type == PAIR_NODE)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/17 17:50:07 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/18 08:42:35 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,15 @@ void	execute_redires(t_list *red_list)
 void	execute_cmd(t_node *node)
 {
 	int	id;
-
+	t_list *lst;
+	
+	lst = node->data.cmd;
+	while(lst)
+	{
+		if (ft_strchr((char*)lst->content, '$'))
+				here_doc_expanding((char**)&lst->content);
+		lst = lst->next;
+	}
 	id = 0;
 	if (ft_is_builtin(node->data.cmd->content))
 		execute_builtins(g_minishell, list_to_argv(node->data.cmd));
@@ -121,8 +129,8 @@ void	execute_pair(t_node *node) // ls | $dfs | cat
 					if (g_minishell->exit_s && g_minishell->exit_s != 2)
 						executer(node->data.pair.left->data.pair.right);
 							// RUN RIGHT OF OR if LEFT FALSE
-					while (waitpid(-1, NULL, 0) != -1);
-
+					while (waitpid(-1, NULL, 0) != -1)
+					;
 						exit(g_minishell->exit_s);
 				}
 				dup2(pfd[0], 0); // read from pipe [pipe]

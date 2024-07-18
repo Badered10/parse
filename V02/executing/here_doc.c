@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/17 11:08:52 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/18 08:51:40 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,12 @@ int	write_or_break(int fd, char *limiter, char *buf)
 void	read_buf(char **buf)
 {
 	*buf = readline("> ");
+	gc_add(g_minishell, *buf);
 	if (*buf)
 	{
-		gc_add(g_minishell, *buf);
 		if (ft_strchr(*buf, '$'))
 			here_doc_expanding(buf);
+		gc_add(g_minishell, *buf);
 	}
 }
 

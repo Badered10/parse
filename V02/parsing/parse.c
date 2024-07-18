@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/17 17:39:26 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/18 08:54:04 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ t_redir	*do_red(t_token **tokens) //
 	else if(new->type == RR_REDIR)
 		new->mode = O_CREAT | O_RDWR | O_APPEND;
 	(*tokens) = (*tokens)->next;
+	if (ft_strchr((*tokens)->value, '$'))
+			here_doc_expanding(&(*tokens)->value);
 	new->file = (*tokens)->value;
 	return (new);
 }
@@ -230,7 +232,7 @@ t_node	*parsing(void) // (ls -a) > 1
 {
 	t_node	*res;
 
-	expander();
+	// expander();
 	res = parse_block(&g_minishell->tokens);
 	if (!res)
 		gc_free_all(g_minishell);

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/18 08:42:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/18 10:24:07 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ void	execute_cmd(t_node *node)
 	int	id;
 	t_list *lst;
 	
+	if (!node)
+		return ;
 	lst = node->data.cmd;
 	while(lst)
 	{
 		if (ft_strchr((char*)lst->content, '$'))
-				here_doc_expanding((char**)&lst->content);
+			here_doc_expanding((char**)&lst->content);
 		lst = lst->next;
 	}
 	id = 0;
@@ -57,7 +59,7 @@ void	execute_and_or(t_node *node) // cat || ps
 	{
 		executer(node->data.pair.left);
 		wait_and_get();
-		if (g_minishell->exit_s && g_minishell->exit_s != 2)
+		if (g_minishell->exit_s && g_minishell->exit_s != 130)
 		{
 			dup2(g_minishell->stdin, 0);
 			dup2(g_minishell->stdout, 1);
@@ -77,11 +79,9 @@ void	execute_and_or(t_node *node) // cat || ps
 			wait_and_get();
 		}
 	}
-	if (g_minishell->exit_s == 2)
-		g_minishell->exit_s = 130;
 }
 
-void	execute_pair(t_node *node) // ls | $dfs | cat
+void	execute_pair(t_node *node) // cat | ls
 {
 	int pfd[2];
 	int id;
@@ -104,7 +104,7 @@ void	execute_pair(t_node *node) // ls | $dfs | cat
 					executer(node->data.pair.left->data.pair.left);
 						// RUN LEFT OF AND
 					wait_and_get();
-					if (!g_minishell->exit_s && g_minishell->exit_s != 2)
+					if (!g_minishell->exit_s)
 						executer(node->data.pair.left->data.pair.right);
 							// RUN RIGHT OF AND IF LEFT TRUE
 					while (waitpid(-1, NULL, 0) != -1)
@@ -126,7 +126,7 @@ void	execute_pair(t_node *node) // ls | $dfs | cat
 					executer(node->data.pair.left->data.pair.left);
 						// RUN LEFT OF OR
 					wait_and_get();
-					if (g_minishell->exit_s && g_minishell->exit_s != 2)
+					if (g_minishell->exit_s && g_minishell->exit_s != 130)
 						executer(node->data.pair.left->data.pair.right);
 							// RUN RIGHT OF OR if LEFT FALSE
 					while (waitpid(-1, NULL, 0) != -1)
@@ -181,7 +181,7 @@ void	execute_pair(t_node *node) // ls | $dfs | cat
 					executer(node->data.pair.right->data.pair.left);
 						// RUN LEFT OF OR
 					wait_and_get();
-					if (g_minishell->exit_s)
+					if (g_minishell->exit_s && g_minishell->exit_s != 130)
 						executer(node->data.pair.right->data.pair.right);
 							// RUN RIGHT OF OR if LEFT FALSE
 					while (waitpid(-1, NULL, 0) != -1)

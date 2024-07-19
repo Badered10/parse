@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/19 19:03:53 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 20:47:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,8 @@ extern t_minishell	*g_minishell;
 
 t_list	*asterisk_functionality(char *s);
 void 	set_null_as_true(t_node **res);
-void print_ast(const char *prefix,  t_node* root, bool isLeft);
+void 	print_ast(const char *prefix,  t_node* root, bool isLeft);
+void 	add_list_into_list(t_list **lst, t_list *asterisk);
 						
 /* Builtins */
 

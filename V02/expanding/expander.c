@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 11:11:46 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/19 18:50:04 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 20:48:36 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,6 @@ char	*helper_expander(char *s)
 		}
 	}
 	new = new_value(s, len + 1);
-	if (!new)
-		printf("===========>> new is null\n");
-	else
-		printf("===========>> new is `%s`\n", new);
 	return (new);
 }
 

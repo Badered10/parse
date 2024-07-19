@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/19 18:54:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 20:46:23 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 {
 	int	id;
 	t_list *lst;
+	t_list *asterisk;
 
 	id = fork();
 	if (id < 0)
@@ -79,8 +80,16 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 		{
 			if (ft_strchr((char*)lst->content, '$'))
 				here_doc_expanding((char**)&lst->content);
+			else if(ft_strchr((char*)lst->content, '*'))
+			{
+				asterisk = asterisk_functionality((char*)lst->content);
+				add_list_into_list(&lst, asterisk);
+			}
 			lst = lst->next;
 		}
+		set_null_as_true(&cmd);
+		if(!cmd->data.cmd)
+			exit(0);
 		do_cmd(cmd);
 	}
 	else

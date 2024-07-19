@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/19 19:10:17 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 20:44:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ void	execute_cmd(t_node *node) //
 		}
 		lst = lst->next;
 	}
-	print_ast("", node, false);
 	set_null_as_true(&node);
-	print_ast("", node, false);
+	if(!node->data.cmd)
+		return;
 	id = 0;
 	if (ft_is_builtin(node->data.cmd->content))
 	{

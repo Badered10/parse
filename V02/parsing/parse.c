@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/19 19:25:34 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 20:37:53 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,33 +203,32 @@ t_node	*parse_block(t_token **tokens) // (ls -a) > 1 || (ls -la | cat) > 1
 
 void set_null_as_true(t_node **res)
 {
-	// t_list *true_c;
-	// char *str;
-	// char *path;
-	int 	size;
-
-	// path = get_fullpath("true", env_to_envp(g_minishell->our_env));
-	// gc_add(g_minishell, path);
-	// if(get_env_var(g_minishell->our_env, "PATH") && path)
-	// {
-		// str = ft_strdup("true");
-		// gc_add(g_minishell, str);
-		// true_c = ft_lstnew(str);
-		// gc_add(g_minishell, true_c);
-		if(*res && (*res)->type == PAIR_NODE)
+	t_list *list;
+	t_list *a_new;
+	if (!res || !*res)
+		return;
+	list = NULL;
+	if((*res)->type == PAIR_NODE)
+	{
+		if((*res)->data.pair.left->type == PAIR_NODE)
+			set_null_as_true(&(*res)->data.pair.left);
+		if((*res)->data.pair.right->type == PAIR_NODE)
+			set_null_as_true(&(*res)->data.pair.right);
+	}
+	else if((*res)->type == STRING_NODE)
+	{
+		while((*res)->data.cmd)
 		{
-			if((*res)->data.pair.left->type == PAIR_NODE)
-				set_null_as_true(&(*res)->data.pair.left);
-			if((*res)->data.pair.right->type == PAIR_NODE)
-				set_null_as_true(&(*res)->data.pair.right);
+			if((*res)->data.cmd->content)
+			{
+				a_new = ft_lstnew((*res)->data.cmd->content);
+				gc_add(g_minishell, a_new);
+				ft_lstadd_back(&list, a_new);
+			}
+			(*res)->data.cmd = (*res)->data.cmd->next;
 		}
-		else if(*res && !(*res)->data.cmd->content)
-		{
-			size = ft_lstsize((*res)->data.cmd) - 1 ;
-			while(!(*res)->data.cmd->content && size--)
-				(*res)->data.cmd = (*res)->data.cmd->next;
-		}
-	// }
+			(*res)->data.cmd = list;
+	}
 }
 t_node	*parsing(void) // (ls -a) > 1
 {
@@ -239,6 +238,5 @@ t_node	*parsing(void) // (ls -a) > 1
 	res = parse_block(&g_minishell->tokens);
 	if (!res)
 		gc_free_all(g_minishell);
-	set_null_as_true(&res);
 	return(res);
 }

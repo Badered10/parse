@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/19 19:16:30 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 19:25:34 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,34 +203,33 @@ t_node	*parse_block(t_token **tokens) // (ls -a) > 1 || (ls -la | cat) > 1
 
 void set_null_as_true(t_node **res)
 {
-	t_list *true_c;
-	char *str;
-	char *path;
+	// t_list *true_c;
+	// char *str;
+	// char *path;
+	int 	size;
 
-	path = get_fullpath("true", env_to_envp(g_minishell->our_env));
-	gc_add(g_minishell, path);
-	if(get_env_var(g_minishell->our_env, "PATH") && path)
-	{
-		str = ft_strdup("true");
-		gc_add(g_minishell, str);
-		true_c = ft_lstnew(str);
-		gc_add(g_minishell, true_c);
+	// path = get_fullpath("true", env_to_envp(g_minishell->our_env));
+	// gc_add(g_minishell, path);
+	// if(get_env_var(g_minishell->our_env, "PATH") && path)
+	// {
+		// str = ft_strdup("true");
+		// gc_add(g_minishell, str);
+		// true_c = ft_lstnew(str);
+		// gc_add(g_minishell, true_c);
 		if(*res && (*res)->type == PAIR_NODE)
 		{
-			if(!(*res)->data.pair.left)
-				(*res)->data.pair.left = string_node_new(true_c);
-			else if((*res)->data.pair.left->type == PAIR_NODE)
+			if((*res)->data.pair.left->type == PAIR_NODE)
 				set_null_as_true(&(*res)->data.pair.left);
-			if(!(*res)->data.pair.right)
-				(*res)->data.pair.right = string_node_new(true_c);
-			else if((*res)->data.pair.right->type == PAIR_NODE)
+			if((*res)->data.pair.right->type == PAIR_NODE)
 				set_null_as_true(&(*res)->data.pair.right);
 		}
 		else if(*res && !(*res)->data.cmd->content)
 		{
-			(*res)->data.cmd->content = "true";
+			size = ft_lstsize((*res)->data.cmd) - 1 ;
+			while(!(*res)->data.cmd->content && size--)
+				(*res)->data.cmd = (*res)->data.cmd->next;
 		}
-	}
+	// }
 }
 t_node	*parsing(void) // (ls -a) > 1
 {

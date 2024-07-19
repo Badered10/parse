@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/18 08:54:04 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 19:16:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,13 +226,17 @@ void set_null_as_true(t_node **res)
 			else if((*res)->data.pair.right->type == PAIR_NODE)
 				set_null_as_true(&(*res)->data.pair.right);
 		}
+		else if(*res && !(*res)->data.cmd->content)
+		{
+			(*res)->data.cmd->content = "true";
+		}
 	}
 }
 t_node	*parsing(void) // (ls -a) > 1
 {
 	t_node	*res;
 
-	// expander();
+	expander();
 	res = parse_block(&g_minishell->tokens);
 	if (!res)
 		gc_free_all(g_minishell);

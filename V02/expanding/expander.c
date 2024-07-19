@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/02 11:11:46 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/18 15:44:49 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 18:50:04 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,10 @@ char	*helper_expander(char *s)
 		}
 	}
 	new = new_value(s, len + 1);
+	if (!new)
+		printf("===========>> new is null\n");
+	else
+		printf("===========>> new is `%s`\n", new);
 	return (new);
 }
 
@@ -255,15 +259,15 @@ void	expanding(void)
 			tokens->value = custome_path(tokens->value);
 			tokens = tokens->next;
 		}
-		else if (tokens->type == WORD && ft_strchr(tokens->value, '*'))
-		{
-			if (!(tokens->prev && (tokens->prev->type == S_QUOTE
-						|| tokens->prev->type == D_QUOTE)))
-				asterisk_expand(&g_minishell->tokens, tokens);
-			tokens = tokens->next;
-		}
-		else if (tokens->type == WORD && ft_strchr(tokens->value, '$'))
-			tokens = word_helper(tokens);
+		// else if (tokens->type == WORD && ft_strchr(tokens->value, '*'))
+		// {
+		// 	if (!(tokens->prev && (tokens->prev->type == S_QUOTE
+		// 				|| tokens->prev->type == D_QUOTE)))
+		// 		asterisk_expand(&g_minishell->tokens, tokens);
+		// 	tokens = tokens->next;
+		// }
+		// else if (tokens->type == WORD && ft_strchr(tokens->value, '$'))
+		// 	tokens = word_helper(tokens);
 		else
 			tokens = tokens->next;
 	}

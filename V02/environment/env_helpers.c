@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:37:10 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/18 16:19:36 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/19 18:43:52 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,11 @@ void	delete_env_var(t_env **env, char *key)
 	previous = NULL;
 	if(!ft_strncmp((*env)->key, key, ft_strlen(key)))
 	{
-		(*env) = (*env)->next;
-		free(current->value);
-		free(current->key);
-		// free(current);
+		// ft_head to fix the replacement of the env head/
+		// (*env) = (*env)->next;
+		// free(current->value);
+		// free(current->key);
+		// // free(current);
 		return;
 	}
 	while (current && ft_strncmp(current->key, key, ft_strlen(key)))
@@ -70,23 +71,15 @@ void	delete_env_var(t_env **env, char *key)
 		previous = current;
 		current = current->next;
 	}
-	printf("khrej mn l while\n");
 	if (!current)
 		return ;
-	printf("curr is not null\n");
 	if (!previous)
-	{
-		printf("test test\n");
 		*env = current->next;
-	}
 	else
 		previous->next = current->next;
-	printf("curr key >>>>>>>> '%s'\n", current->key);
-	printf("curr value >>>>>>>> '%s'\n", current->value);
-	printf("curr key >>>>>>>> '%p'\n", current);
-	// gc_add(g_minishell, current->key);
-	// gc_add(g_minishell, current->key);
-	// gc_add(g_minishell, current);
+	free(current->key);
+	free(current->value);
+	free(current);
 }
 
 void	clear_env(t_env *env)

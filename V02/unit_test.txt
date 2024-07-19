@@ -10,3 +10,6 @@ export va1="mohammed     mad" with tab => white space or normal space
 Make sure the global varibale or boolen value for signal testing is restating fixed !!
 export var="ls pwd" failed with only using space in between words
 'unset' 'SYSTEMD_EXEC_PID' sigfault from first
+
+
+ls && unset PATH && export PATH=ok && $sadjasjd $sjdsajd pwd && cat -e << 1 

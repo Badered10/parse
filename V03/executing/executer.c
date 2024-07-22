@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/22 15:52:27 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/22 19:35:18 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,10 @@ void	execute_cmd(t_node *node)
 	lst = node->data.cmd;
 	while(lst)
 	{
-		if (ft_strchr((char*)lst->content, '$'))
+		if (ft_strchr((char*)lst->content, '$')) // $a == -a -l -a -l
+		{
 			here_doc_expanding((char**)&lst->content);
+		}
 		else if(ft_strchr((char*)lst->content, '*'))
 		{
 			asterisk = asterisk_functionality((char*)lst->content);

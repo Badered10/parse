@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/22 18:45:03 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/23 18:07:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,10 @@ int	is_ambiguous(t_redir *new)
 
 	size = 0;
 	asterisk = NULL;
-	printf("%s\n",new->file);
 	if (ft_strchr(new->file, '$')) // $*
 	{
 		val = helper_expander(new->file);
 		size = count_words(val);
-		printf("there is >>>> %d word\n", size);
 		if(size == 1 || !size)
 		{
 			if(size)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/22 15:35:47 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/23 19:09:37 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 	else
 	{
 		close(pfd[1]);
-		dup2(pfd[0], 0);
+		// if(!mode)
+			dup2(pfd[0], 0);
 		if (mode)
 			wait_and_get();
 	}

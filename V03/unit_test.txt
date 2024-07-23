@@ -18,8 +18,11 @@ export data="ps      dt"
 // THIS IS THE PART OF EACH ONE OF US :
 
 // baouragh :
-1 : fix number of lines in here_doc DONE!
-2 : check out ambigeous errors DONE!
+1 : fix number of lines in here_doc                 ----->DONE!
+2 : check out ambigeous errors                      ----->DONE!
+3 : "$a == -a -l -a -l NOT CORRECT ! , 
+    MUST STAY AS THEY ARE IN ENV so 
+    ft_echo must be checked !"                      ----> NOTYET
 
 
 

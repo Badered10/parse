@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 14:13:52 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/12 10:58:03 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/23 17:22:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ int	count_nb_here_doc(t_token *tokens)
 	if (count > 16)
 	{
 		print_errors("maximum here-document count exceeded");
-		return (-1);
+		gc_free_all(g_minishell);
+		exit (2);
 	}
 	else
 		return (0);

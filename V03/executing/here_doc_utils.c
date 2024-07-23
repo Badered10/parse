@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 09:08:11 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/22 14:44:46 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/23 17:23:20 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	do_here_doc(char *buf, char *limiter, int fd, int *pipe)
 			break ;
 	}
 	lines = ft_itoa(g_minishell->lines);
-	printf("%s\n",lines);
 	write(pipe[1], lines, ft_strlen(lines)); // 1283893
 	free(lines);
 	close(pipe[0]);

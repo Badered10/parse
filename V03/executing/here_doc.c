@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/22 14:57:42 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/23 18:00:44 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	open_hidden_file(int doc_num)
 	free(join);
 	if (fd < 0)
 	{
-		perror("1 --> here_doc failed to get input");
+		perror("here_doc failed to get input");
 		exit(EXIT_FAILURE);
 	}
 	return (fd);
@@ -81,7 +81,7 @@ int	re_open_hidden_file(int doc_num)
 	free(join);
 	if (fd < 0)
 	{
-		perror("2 --> here_doc failed to get input");
+		perror("here_doc failed to get input");
 		exit(EXIT_FAILURE);
 	}
 	return (fd);
@@ -129,12 +129,10 @@ void	read_buf(char **buf)
 
 void get_lines_count(int *pipe)
 {
-	char	buf[2048];
-
+	char	buf[1024];
 	close(pipe[1]);
-	read(pipe[0], &buf, 2048);
+	read(pipe[0], &buf, 1024);
 	g_minishell->lines = ft_atoi(buf);
-	printf("lines %d , %d\n",g_minishell->lines, ft_atoi(buf));
 }
 
 int	here_doc(char *limiter, int doc_num)

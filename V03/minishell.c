@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/23 18:09:02 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/24 12:49:08 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,26 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 
     if(!root)
 		return ;
-	printf(W_GREEN"%s", prefix);
-	printf("%s", (isLeft ? "├──" : "└──" ));
-	printf(W_WHITE"");
+	fprintf(stderr,W_GREEN"%s", prefix);
+	fprintf(stderr,"%s", (isLeft ? "├──" : "└──" ));
+	fprintf(stderr,W_WHITE"");
 
 	if (root->type == PAIR_NODE) {
 
 		if(root->data.pair.type == PIPE)
         {
-			printf(" |\n");
+			fprintf(stderr," |\n");
 
       
         }
         else if (root->data.pair.type == OR)
         {
-			printf(" ||\n");
+			fprintf(stderr," ||\n");
 
         } 
         else if (root->data.pair.type == AND)
         {
-			printf(" &&\n");
+			fprintf(stderr," &&\n");
         }
 		dup = strdup((isLeft ? "│   " : "    "));
 		join = ft_strjoin(prefix ,  dup);
@@ -63,10 +63,10 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 		list = root->data.cmd;
         while (list)
         {
-            printf("'%s' ", (char*)list->content);
+            fprintf(stderr,"'%s' ", (char*)list->content);
             list = list->next;
         }
-        printf("\n");
+        fprintf(stderr,"\n");
 	}
 	else if (root->type == REDIR_NODE) 
 	{
@@ -76,17 +76,17 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
         {
 			t_list *list;
             t_redir *new = lst->content;
-            printf("REDIR NODE , name: '%s' ",new->file);
+            fprintf(stderr,"REDIR NODE , name: '%s' ",new->file);
 			list = new->cmd;
             while (list)
             {
-                printf("'%s' ", (char*)list->content);
+                fprintf(stderr,"'%s' ", (char*)list->content);
                 list = list->next;
             }
-            printf(" ");
+            fprintf(stderr," ");
             lst = lst->next;
         }
-        printf("\n");
+        fprintf(stderr,"\n");
 	}   
 }
 

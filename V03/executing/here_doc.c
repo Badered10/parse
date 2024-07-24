@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/23 18:00:44 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/24 11:09:34 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@ void	read_buf(char **buf)
 void get_lines_count(int *pipe)
 {
 	char	buf[1024];
+
 	close(pipe[1]);
 	read(pipe[0], &buf, 1024);
 	g_minishell->lines = ft_atoi(buf);

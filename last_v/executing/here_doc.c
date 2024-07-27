@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 00:22:12 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 00:26:24 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,6 @@ void get_lines_count(int *pipe)
 	close(pipe[1]);
 	read(pipe[0], &buf, 2048);
 	g_minishell->lines = ft_atoi(buf);
-	printf("lines %d , %d\n",g_minishell->lines, ft_atoi(buf));
 }
 
 int	here_doc(char *limiter, int doc_num, int expand_flag)

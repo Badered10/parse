@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 00:21:55 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 00:26:04 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,6 @@ int	do_here_docs(t_list *red_list)
 		if (new->type == LL_REDIR)
 		{
 			g_minishell->docs++;
-			printf(">>>> here_doc expand == %d\n", new->hd_expand);
-			// BADER HADI HYA L FLAG LI KATBIYEN LIYA WACH N EXPANDER WLA LA,
-			// MA3REFTCH FIN N USIHA.
-			// IF new->hd_expand == 1 >> EXPAND, ELSE >> DO NOT EXPAND
 			new->fd = here_doc(new->file, g_minishell->docs, new->hd_expand);
 			if (new->fd < 0)
 				return (0);

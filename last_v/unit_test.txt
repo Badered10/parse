@@ -7,7 +7,7 @@
 // baouragh :
 1 : fix number of lines in here_doc DONE!
 2 : check out ambigeous errors DONE!
-
+3 : ft_exit must fix . (if num > LONG_MAX then -> error) , (if num < LONG_MIN then -> error) : check bash on this. >>>>>> NOT_YET
 
 
 // alassiqu :

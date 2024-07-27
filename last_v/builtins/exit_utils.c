@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   exit_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 14:34:18 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/25 14:34:29 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/28 00:34:07 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+#include <limits.h>
 
 void	print_exit_error(char *msg)
 {

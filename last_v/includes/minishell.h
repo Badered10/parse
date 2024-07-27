@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/26 11:28:49 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/28 00:22:48 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,10 +176,10 @@ t_env				*special_dup_env(void);
 void				executer(t_node *node);
 
 // Main function that handle here_doc.
-int					here_doc(char *limiter , int doc_num);
+int					here_doc(char *limiter , int doc_num, int expand_flag);
 
 // Helper function for handling here_doc.
-void				do_here_doc(char *buf, char *limiter, int fd, int *pipe);
+void				do_here_doc(char *buf, char *limiter, int fd, int *pipe, int expand_flag);
 
 // Function that return the size of the env.
 int  				env_size(t_env *env);
@@ -275,7 +275,7 @@ int					execute_docs(t_list *red_list);
 void				unlink_docs(int docs);
 
 // Function that read and fill here_doc buffer.
-void				read_buf(char **buf);
+void				read_buf(char **buf, int expand_flag);
 
 // Function that IDK XD.
 int					write_or_break(int fd, char *limiter, char *buf, int count);

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 03:40:11 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 03:51:05 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,15 +69,13 @@ t_list	*dollar_functionality(char **s)
 	return (lst);
 }
 
-void	execute_cmd(t_node *node)
+void expand_list(t_list *cmd_lst)
 {
-	t_list *cmd_lst;
 	t_list *list;
-	int	id;
 
-	if (!node)
-		return ;
-	cmd_lst = node->data.cmd;
+	list = NULL;
+	if (!cmd_lst)
+		return;
 	while(cmd_lst)
 	{
 		if (ft_strchr((char*)cmd_lst->content, '$'))
@@ -92,13 +90,19 @@ void	execute_cmd(t_node *node)
 		}
 		cmd_lst = cmd_lst->next;
 	}
+}
+
+void	execute_cmd(t_node *node)
+{
+	int	id;
+
+	if (!node)
+		return ;
+	id = 0;
+	expand_list(node->data.cmd);
 	set_null_as_true(&node);
 	if(!node->data.cmd)
-	{
-		set_env_var(g_minishell->our_env, "_", "");
-		return;
-	}
-	id = 0;
+		return (set_env_var(g_minishell->our_env, "_", ""));
 	set_env_var(g_minishell->our_env, "_", (char *)ft_lstlast(node->data.cmd)->content);
 	if (ft_is_builtin(node->data.cmd->content))
 	{
@@ -116,6 +120,8 @@ void	execute_cmd(t_node *node)
 
 void	execute_and_or(t_node *node)
 {
+	if (!node)
+		return;
 	if (node->data.pair.type == OR)
 	{
 		executer(node->data.pair.left);
@@ -137,26 +143,26 @@ void fork_pair(int type, t_node *node , int *pfd, bool way) // LEFT OR RIGHT, TY
 	int	id;
 
 	id = fork();
-		if (!id)
-		{
-			close(pfd[0]);
-			if(!way)
-				dup_2(pfd[1], 1);
-			else
-				close(pfd[1]);
-			executer(node->data.pair.left); // -> [pipe]
-			wait_and_get();
-			if(type == AND && !g_minishell->exit_s)
-				executer(node->data.pair.right); // -> [pipe]
-			else if (type == OR && g_minishell->exit_s && g_minishell->exit_s != 130)
-				executer(node->data.pair.right); // -> [pipe]
-			wait_and_get();
-			exit(g_minishell->exit_s);
-		}
+	if (!id)
+	{
+		close(pfd[0]);
 		if(!way)
-			dup_2(pfd[0], 0);
+			dup_2(pfd[1], 1);
 		else
-			close(pfd[0]);
+			close(pfd[1]);
+		executer(node->data.pair.left); // -> [pipe]
+		wait_and_get();
+		if(type == AND && !g_minishell->exit_s)
+			executer(node->data.pair.right); // -> [pipe]
+		else if (type == OR && g_minishell->exit_s && g_minishell->exit_s != 130)
+			executer(node->data.pair.right); // -> [pipe]
+		wait_and_get();
+		exit(g_minishell->exit_s);
+	}
+	if(!way)
+		dup_2(pfd[0], 0);
+	else
+		close(pfd[0]);
 }
 
 void pipe_left(t_node *node, int *pfd)

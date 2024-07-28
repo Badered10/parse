@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 03:01:08 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 03:40:11 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,137 +121,104 @@ void	execute_and_or(t_node *node)
 		executer(node->data.pair.left);
 		wait_and_get();
 		if (g_minishell->exit_s && g_minishell->exit_s != 130)
-		{
 			executer(node->data.pair.right);
-			wait_and_get();
-		}
 	}
 	else if (node->data.pair.type == AND)
 	{
 		executer(node->data.pair.left);
 		wait_and_get();
 		if (!g_minishell->exit_s)
-		{
 			executer(node->data.pair.right);
-			wait_and_get();
-		}
 	}
+}
+
+void fork_pair(int type, t_node *node , int *pfd, bool way) // LEFT OR RIGHT, TYPE = || or &&
+{
+	int	id;
+
+	id = fork();
+		if (!id)
+		{
+			close(pfd[0]);
+			if(!way)
+				dup_2(pfd[1], 1);
+			else
+				close(pfd[1]);
+			executer(node->data.pair.left); // -> [pipe]
+			wait_and_get();
+			if(type == AND && !g_minishell->exit_s)
+				executer(node->data.pair.right); // -> [pipe]
+			else if (type == OR && g_minishell->exit_s && g_minishell->exit_s != 130)
+				executer(node->data.pair.right); // -> [pipe]
+			wait_and_get();
+			exit(g_minishell->exit_s);
+		}
+		if(!way)
+			dup_2(pfd[0], 0);
+		else
+			close(pfd[0]);
+}
+
+void pipe_left(t_node *node, int *pfd)
+{
+	int std_in;
+	int std_out;
+
+	if(!node)
+		return;
+	if (node->type != STRING_NODE && node->type != PIPE)
+		{
+			if (node->data.pair.type == AND)
+				fork_pair(AND , node, pfd, 0);
+			else if (node->data.pair.type == OR)
+				fork_pair(OR , node, pfd, 0);
+			else if (node->type == REDIR_NODE)
+			{
+				std_out = dup(1);
+				std_in = dup(0);
+				executer(node);
+				dup_2(std_out, 1);
+				dup_2(std_in, 0);
+			}
+			else
+				executer(node);
+		}
+	else
+		do_pipe(node, 0, pfd);
+}
+
+void pipe_right(t_node *node, int *pfd)
+{
+	if(!node)
+		return;
+	if (node->type != STRING_NODE)
+		{
+			if (node->data.pair.type == AND)
+				fork_pair(AND , node, pfd, 1);
+			else if (node->data.pair.type == OR) // OR CASE
+				fork_pair(OR , node, pfd, 1);
+			else
+				executer(node);
+		}
+	else
+		do_pipe(node, 1, pfd);
 }
 
 void	execute_pair(t_node *node)
 {
 	int pfd[2];
 	int id;
-	int stdin;
-	int stdout;
-	
 
 	if (node->data.pair.type == PIPE)
 	{
 		open_pipe(pfd);
-		if (node->data.pair.left && node->data.pair.left->type != STRING_NODE
-			&& node->data.pair.left->type != PIPE)
-		{
-			if (node->data.pair.left->data.pair.type == AND)
-			{
-				id = fork();
-				if (!id)
-				{
-					close(pfd[0]);
-					dup_2(pfd[1], 1);
-					executer(node->data.pair.left->data.pair.left);
-					wait_and_get();
-					if (!g_minishell->exit_s)
-						executer(node->data.pair.left->data.pair.right);
-					while (waitpid(-1, NULL, 0) != -1)
-						;
-					exit(g_minishell->exit_s);
-				}
-				dup_2(pfd[0], 0);
-			}
-			else if (node->data.pair.left->data.pair.type == OR)
-			{
-				id = fork();
-				if (!id)
-				{
-					close(pfd[0]);
-					dup_2(pfd[1], 1);
-					executer(node->data.pair.left->data.pair.left);
-					wait_and_get();
-					if (g_minishell->exit_s && g_minishell->exit_s != 130)
-						executer(node->data.pair.left->data.pair.right);
-					while (waitpid(-1, NULL, 0) != -1)
-						;
-					exit(g_minishell->exit_s);
-				}
-				dup_2(pfd[0], 0);
-			}
-			else if (node->data.pair.left->type == REDIR_NODE)
-			{
-				stdout = dup(1);
-				stdin = dup(0);
-				executer(node->data.pair.left);
-				dup_2(stdout, 1);
-				dup_2(stdin, 0);
-			}
-			else
-				executer(node->data.pair.left);
-		}
-		else if (node->data.pair.left
-			&& node->data.pair.left->type == STRING_NODE)
-			do_pipe(node->data.pair.left, 0, pfd);
-		if (node->data.pair.right && node->data.pair.right->type != STRING_NODE)
-		{
-			if (node->data.pair.right->data.pair.type == AND)
-			{
-				id = fork();
-				if (!id)
-				{
-					close(pfd[0]); // read from pipe [pipe]
-					close(pfd[1]);
-					executer(node->data.pair.right->data.pair.left);
-						// RUN LEFT OF AND
-					wait_and_get();
-					if (!g_minishell->exit_s)
-						executer(node->data.pair.right->data.pair.right);
-							// RUN RIGHT OF AND IF LEFT TRUE
-					while (waitpid(-1, NULL, 0) != -1)
-						;
-
-					exit(g_minishell->exit_s);
-				}
-				close(pfd[0]);
-			}
-			else if (node->data.pair.right->data.pair.type == OR) // OR CASE
-			{
-				id = fork();
-				if (!id)
-				{
-					close(pfd[0]); // read from pipe [pipe]
-					close(pfd[1]);
-					executer(node->data.pair.right->data.pair.left);
-						// RUN LEFT OF OR
-					wait_and_get();
-					if (g_minishell->exit_s && g_minishell->exit_s != 130)
-						executer(node->data.pair.right->data.pair.right);
-							// RUN RIGHT OF OR if LEFT FALSE
-					while (waitpid(-1, NULL, 0) != -1)
-						;
-					exit(g_minishell->exit_s);
-				}
-				close(pfd[0]);
-			}
-			else
-				executer(node->data.pair.right);
-		}
-		else if (node->data.pair.right
-			&& node->data.pair.right->type == STRING_NODE)
-			do_pipe(node->data.pair.right, 1, pfd);
+		pipe_left(node->data.pair.left, pfd);
+		pipe_right(node->data.pair.right, pfd);
+		close(pfd[1]);
+		close(pfd[0]);
 	}
 	else
 		execute_and_or(node);
-	close(pfd[1]);
-	close(pfd[0]);
 }
 
 void	executer(t_node *node)

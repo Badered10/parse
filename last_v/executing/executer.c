@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 10:17:34 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/28 11:57:47 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,19 +178,13 @@ void fork_pair(int type, t_node *node , int *pfd, bool way) // LEFT OR RIGHT, TY
 
 void do_pipes(t_node *node , int *pfd)
 {
-	int std_out;
-	// int std_in;
-
-	std_out = dup(1);
-	// std_in = dup(0);
-	dup_2(pfd[1], 1);
-	pipe_left(node->data.pair.left, pfd);
-	pipe_right(node->data.pair.right, pfd);
-	dup_2(std_out, 1);
-	close(pfd[0]);
-	close(pfd[1]);
-	// dup_2(std_in, 0);
-	fprintf(stderr, "DONE --> %d\n",getpid());
+		int std_out;
+		std_out = dup(1);
+		dup_2(pfd[1], 1);
+		pipe_left(node->data.pair.left, pfd);
+		pipe_right(node->data.pair.right, pfd);
+		dup_2(std_out, 1);
+		fprintf(stderr, "DONE --> %d\n",getpid());
 }
 
 void pipe_left(t_node *node, int *pfd)

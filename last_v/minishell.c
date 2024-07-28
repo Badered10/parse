@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/27 16:57:15 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 03:00:45 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,26 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 
     if(!root)
 		return ;
-	printf(W_GREEN"%s", prefix);
-	printf("%s", (isLeft ? "├──" : "└──" ));
-	printf(W_WHITE"");
+	fprintf(stderr,W_GREEN"%s", prefix);
+	fprintf(stderr,"%s", (isLeft ? "├──" : "└──" ));
+	fprintf(stderr,W_WHITE"");
 
 	if (root->type == PAIR_NODE) {
 
 		if(root->data.pair.type == PIPE)
         {
-			printf(" |\n");
+			fprintf(stderr," |\n");
 
       
         }
         else if (root->data.pair.type == OR)
         {
-			printf(" ||\n");
+			fprintf(stderr," ||\n");
 
         } 
         else if (root->data.pair.type == AND)
         {
-			printf(" &&\n");
+			fprintf(stderr," &&\n");
         }
 		dup = strdup((isLeft ? "│   " : "    "));
 		join = ft_strjoin(prefix ,  dup);
@@ -63,10 +63,10 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 		list = root->data.cmd;
         while (list)
         {
-            printf("'%s' ", (char*)list->content);
+            fprintf(stderr,"'%s' ", (char*)list->content);
             list = list->next;
         }
-        printf("\n");
+        fprintf(stderr,"\n");
 	}
 	else if (root->type == REDIR_NODE) 
 	{
@@ -76,17 +76,17 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
         {
 			t_list *list;
             t_redir *new = lst->content;
-            printf("REDIR NODE , name: '%s' ",new->file);
+            fprintf(stderr,"REDIR NODE , name: '%s' ",new->file);
 			list = new->cmd;
             while (list)
             {
-                printf("'%s' ", (char*)list->content);
+                fprintf(stderr,"'%s' ", (char*)list->content);
                 list = list->next;
             }
-            printf(" ");
+            fprintf(stderr," ");
             lst = lst->next;
         }
-        printf("\n");
+        fprintf(stderr,"\n");
 	}   
 }
 
@@ -199,14 +199,17 @@ int	main(int argc, char **argv, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		signal(SIGINT, SIG_IGN);
-		print_ast("", g_minishell->ast, false);
+		// print_ast("", g_minishell->ast, false);
 		if(scan_and_set(g_minishell->ast))
 		{
 			signal(SIGQUIT, ft_sigquit);
 			signal(SIGINT, ft_sigint);
 			executer(g_minishell->ast);
 		}
+		close(1);
+		close(0);
 		while (wait_and_get() != -1);
+		fprintf(stderr, "DONE OF LOOP\n");
 		clean_and_set();
 	}
 	cleanup_minishell();

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/27 15:33:18 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/07/28 03:01:08 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void	execute_redires(t_list *red_list)
 	fd_input = input_to_dup(red_list);
 	fd_output = output_to_dup(red_list);
 	if (fd_input > 0)
-		dup2(fd_input, 0);
+		dup_2(fd_input, 0);
 	if (fd_output > 0)
-		dup2(fd_output, 1);
+		dup_2(fd_output, 1);
 	run_doc_cmd(red_list);
 }
 
@@ -122,8 +122,6 @@ void	execute_and_or(t_node *node)
 		wait_and_get();
 		if (g_minishell->exit_s && g_minishell->exit_s != 130)
 		{
-			dup2(g_minishell->stdin, 0);
-			dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
 			wait_and_get();
 		}
@@ -134,8 +132,6 @@ void	execute_and_or(t_node *node)
 		wait_and_get();
 		if (!g_minishell->exit_s)
 		{
-			dup2(g_minishell->stdin, 0);
-			dup2(g_minishell->stdout, 1);
 			executer(node->data.pair.right);
 			wait_and_get();
 		}
@@ -146,6 +142,9 @@ void	execute_pair(t_node *node)
 {
 	int pfd[2];
 	int id;
+	int stdin;
+	int stdout;
+	
 
 	if (node->data.pair.type == PIPE)
 	{
@@ -159,7 +158,7 @@ void	execute_pair(t_node *node)
 				if (!id)
 				{
 					close(pfd[0]);
-					dup2(pfd[1], 1);
+					dup_2(pfd[1], 1);
 					executer(node->data.pair.left->data.pair.left);
 					wait_and_get();
 					if (!g_minishell->exit_s)
@@ -168,7 +167,7 @@ void	execute_pair(t_node *node)
 						;
 					exit(g_minishell->exit_s);
 				}
-				dup2(pfd[0], 0);
+				dup_2(pfd[0], 0);
 			}
 			else if (node->data.pair.left->data.pair.type == OR)
 			{
@@ -176,7 +175,7 @@ void	execute_pair(t_node *node)
 				if (!id)
 				{
 					close(pfd[0]);
-					dup2(pfd[1], 1);
+					dup_2(pfd[1], 1);
 					executer(node->data.pair.left->data.pair.left);
 					wait_and_get();
 					if (g_minishell->exit_s && g_minishell->exit_s != 130)
@@ -185,13 +184,15 @@ void	execute_pair(t_node *node)
 						;
 					exit(g_minishell->exit_s);
 				}
-				dup2(pfd[0], 0);
+				dup_2(pfd[0], 0);
 			}
 			else if (node->data.pair.left->type == REDIR_NODE)
 			{
+				stdout = dup(1);
+				stdin = dup(0);
 				executer(node->data.pair.left);
-				dup2(g_minishell->stdout, 1);
-				dup2(g_minishell->stdin, 0);
+				dup_2(stdout, 1);
+				dup_2(stdin, 0);
 			}
 			else
 				executer(node->data.pair.left);
@@ -249,8 +250,6 @@ void	execute_pair(t_node *node)
 	}
 	else
 		execute_and_or(node);
-	close(0);
-	close(1);
 	close(pfd[1]);
 	close(pfd[0]);
 }
@@ -265,4 +264,7 @@ void	executer(t_node *node)
 		execute_pair(node);
 	else if (node->type == REDIR_NODE)
 		execute_redires(node->data.redir);
+	// fprintf(stderr,"DONE --> ast : --> ");
+	// print_ast("", node, false);
+	// fprintf(stderr,"\n");
 }

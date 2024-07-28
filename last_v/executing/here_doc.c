@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 00:26:24 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 02:45:50 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,8 +162,9 @@ int	here_doc(char *limiter, int doc_num, int expand_flag)
 		if (!g_minishell->exit_s)
 		{
 			fd_hidden = re_open_hidden_file(doc_num);
+			close(fd);
 			return (fd_hidden);
 		}
 	}
-	return (-1);
+	return (close(fd), -1);
 }

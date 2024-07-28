@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/27 22:35:54 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 01:24:49 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_node	*parse_or(t_token **tokens);
 t_node	*parse_and(t_token **tokens);
 t_node	*parse_block(t_token **tokens);
 
-t_node *parse_cmd(t_token **tokens) // (1 && 2) > 1 && 3
+t_node *parse_cmd(t_token **tokens) // ls || (cat && ps) && ps
 {
 	t_list *cmd_list;
 	t_list *red_list;
@@ -53,6 +53,7 @@ t_node *parse_cmd(t_token **tokens) // (1 && 2) > 1 && 3
 	red_list = NULL;
 	while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND && (*tokens)->type != R_PAREN))
 	{
+		// ls || (cat && ps) && ps
 		if((*tokens)->type >= 4 && (*tokens)->type <= 7)
 		{
 			red = do_red(tokens);
@@ -89,7 +90,7 @@ t_node *parse_cmd(t_token **tokens) // (1 && 2) > 1 && 3
 	}
 }
 
-t_node	*parse_pipe(t_token **tokens) // (ls && ps) // $sdads | ls
+t_node	*parse_pipe(t_token **tokens) //ls || (cat && ps) && ps
 {
 	t_node *left;
 	t_type type;
@@ -111,7 +112,7 @@ t_node	*parse_pipe(t_token **tokens) // (ls && ps) // $sdads | ls
 		return (left);
 }
 
-t_node	*parse_or(t_token **tokens) // (ls && ps) || ls && p
+t_node	*parse_or(t_token **tokens) // ls || (cat && ps) && ps
 {
 	t_node *left;
 	t_type type;
@@ -165,7 +166,7 @@ void set_left_redir(t_node **left, t_node **right)
 	red = (t_redir *)last->content;
 	red->node = *left;
 }
-t_node	*parse_block(t_token **tokens) // ls || (cat) && ps
+t_node	*parse_block(t_token **tokens) //  ls || (cat && ps) && ps
 {
 	t_node *left;
 	t_node *right;
@@ -175,10 +176,7 @@ t_node	*parse_block(t_token **tokens) // ls || (cat) && ps
 	if(tokens && *tokens && (*tokens)->type == R_PAREN)
 	{
 		(*tokens) = (*tokens)->next;
-		
-		if((*tokens)->type != WORD && left->type != PAIR_NODE)
-			return(left);
-		right = parse_block(tokens);
+		right = parse_and(tokens);
 		if(right)
 		{
 			if(right->type == PAIR_NODE)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 04:45:20 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 10:17:34 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,6 @@ void	execute_and_or(t_node *node)
 	{
 		executer(node->data.pair.left);
 		wait_and_get();
-		fprintf(stderr,"DONE -->  WAIT || \n");
 		if (g_minishell->exit_s && g_minishell->exit_s != 130)
 			executer(node->data.pair.right);
 	}
@@ -149,6 +148,7 @@ void fork_pair(int type, t_node *node , int *pfd, bool way) // LEFT OR RIGHT, TY
 	id = fork();
 	if (!id)
 	{
+		fprintf(stderr,"0 --> %d\n",getpid());
 		close(pfd[0]);
 		if(!way)
 			dup_2(pfd[1], 1);
@@ -156,17 +156,41 @@ void fork_pair(int type, t_node *node , int *pfd, bool way) // LEFT OR RIGHT, TY
 			close(pfd[1]);
 		executer(node->data.pair.left); // -> [pipe]
 		wait_and_get();
+		fprintf(stderr, "DONE 1--> %d\n",getpid());
+		fprintf(stderr,"%d\n",getpid());
 		if(type == AND && !g_minishell->exit_s)
 			executer(node->data.pair.right); // -> [pipe]
 		else if (type == OR && g_minishell->exit_s && g_minishell->exit_s != 130)
 			executer(node->data.pair.right); // -> [pipe]
 		wait_and_get();
+		fprintf(stderr, "DONE 2--> %d\n",getpid());
 		exit(g_minishell->exit_s);
 	}
+	fprintf(stderr, "1 DONE 3--> %d\n",getpid());
+	close(pfd[1]);
+	fprintf(stderr, "2 DONE 3--> %d\n",getpid());
 	if(!way)
 		dup_2(pfd[0], 0);
 	else
 		close(pfd[0]);
+	fprintf(stderr, " 3 DONE 3--> %d\n",getpid());
+}
+
+void do_pipes(t_node *node , int *pfd)
+{
+	int std_out;
+	// int std_in;
+
+	std_out = dup(1);
+	// std_in = dup(0);
+	dup_2(pfd[1], 1);
+	pipe_left(node->data.pair.left, pfd);
+	pipe_right(node->data.pair.right, pfd);
+	dup_2(std_out, 1);
+	close(pfd[0]);
+	close(pfd[1]);
+	// dup_2(std_in, 0);
+	fprintf(stderr, "DONE --> %d\n",getpid());
 }
 
 void pipe_left(t_node *node, int *pfd)
@@ -190,8 +214,11 @@ void pipe_left(t_node *node, int *pfd)
 				dup_2(std_out, 1);
 				dup_2(std_in, 0);
 			}
-			else
-				executer(node);
+			else // pipe
+			{
+				// executer(node);
+				do_pipes(node , pfd);
+			}
 		}
 	else
 		do_pipe(node, 0, pfd);
@@ -217,7 +244,6 @@ void pipe_right(t_node *node, int *pfd)
 void	execute_pair(t_node *node)
 {
 	int pfd[2];
-	int id;
 
 	if (node->data.pair.type == PIPE)
 	{
@@ -234,14 +260,14 @@ void	execute_pair(t_node *node)
 void	executer(t_node *node)
 {
 	if (!node)
-		return ;
+		return;
 	if (node->type == STRING_NODE)
 		execute_cmd(node);
 	else if (node->type == PAIR_NODE)
 		execute_pair(node);
 	else if (node->type == REDIR_NODE)
 		execute_redires(node->data.redir);
-	fprintf(stderr,"DONE --> ast : --> ");
-	print_ast("", node, false);
-	fprintf(stderr,"\n");
+	// fprintf(stderr,"DONE --> ast : --> ");
+	// print_ast("", node, false);
+	// fprintf(stderr,"\n");
 }

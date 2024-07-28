@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/28 04:25:12 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 09:37:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ int	main(int argc, char **argv, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		signal(SIGINT, SIG_IGN);
-		// print_ast("", g_minishell->ast, false);
+		print_ast("", g_minishell->ast, false);
 		if(scan_and_set(g_minishell->ast))
 		{
 			signal(SIGQUIT, ft_sigquit);
@@ -208,9 +208,7 @@ int	main(int argc, char **argv, char **env)
 		}
 		close(1);
 		close(0);
-		fprintf(stderr,"--> START WAIT\n");
 		while (wait_and_get() != -1);
-		fprintf(stderr,"--> DONE OF WAIT\n");
 		clean_and_set();
 	}
 	cleanup_minishell();

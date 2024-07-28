@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 04:21:57 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 09:03:30 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,12 +159,12 @@ void set_left_redir(t_node **left, t_node **right)
 	red->node = *left;
 }
 
-t_node *adjust_right(t_node **right, t_node **left)
+void adjust_right(t_node **right, t_node **left)
 {
 	t_node *tmp;
 
 	if(!right || !*right)
-		return(NULL);
+		return;
 	tmp = NULL;
 	if((*right)->type == PAIR_NODE)
 	{
@@ -187,7 +187,6 @@ t_node	*parse_block(t_token **tokens)
 {
 	t_node *left;
 	t_node *right;
-	t_node *tmp;
 
 	left = parse_and(tokens);
 	if(tokens && *tokens && (*tokens)->type == R_PAREN)

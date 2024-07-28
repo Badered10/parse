@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/28 03:55:40 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 09:48:31 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,13 @@ typedef struct s_minishell
 
 extern t_minishell	*g_minishell;
 
+void pipe_left(t_node *node, int *pfd);
+void pipe_right(t_node *node, int *pfd);
 t_list	*dollar_functionality(char **s);
 t_list	*asterisk_functionality(char *s);
 void 	remove_null(t_node **res);
 void 	print_ast(const char *prefix,  t_node* root, bool isLeft);
-void 	add_list_into_list(t_list **lst, t_list *asterisk);
+void 	add_list_into_list(t_list **lst, t_list *new);
 char	*build_file_name(char *join);
 int		ft_isnum(int c);
 int		process_exit(char **args);

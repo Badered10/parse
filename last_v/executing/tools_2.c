@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 02:53:03 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 04:54:25 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	do_cmd(t_node *ast)
 	char	**env;
 
 	if (!ast)
-		return ;
+		exit(0) ;
 	id = 0;
 	if (ft_is_builtin(ast->data.cmd->content))
 		execute_builtins(g_minishell, list_to_argv(ast->data.cmd));
@@ -52,7 +52,7 @@ void	do_cmd(t_node *ast)
 			exit(0);
 		env = env_to_envp(g_minishell->our_env);
 		if (!env)
-			return ;
+			exit(0);
 		id = check_cmd(*cmd, env);
 		if (!id)
 			call_execev(env, *cmd, cmd);
@@ -90,18 +90,19 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 			}
 			cmd_lst = cmd_lst->next;
 		}
-		set_null_as_true(&cmd);
+		remove_null(&cmd);
 		if(!cmd->data.cmd)
 			exit(0);
 		do_cmd(cmd);
+		exit(0);
 	}
 	else
 	{
 		close(pfd[1]);
 		dup_2(pfd[0], 0);
 		close(pfd[0]);
-		if (mode)
-			wait_and_get();
+		// if (mode)
+		// 	wait_and_get();
 	}
 }
 

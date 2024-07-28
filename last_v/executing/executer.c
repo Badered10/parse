@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 03:51:05 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 04:45:20 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ void	execute_cmd(t_node *node)
 		return ;
 	id = 0;
 	expand_list(node->data.cmd);
-	set_null_as_true(&node);
+	remove_null(&node);
 	if(!node->data.cmd)
 		return (set_env_var(g_minishell->our_env, "_", ""));
 	set_env_var(g_minishell->our_env, "_", (char *)ft_lstlast(node->data.cmd)->content);
@@ -114,7 +114,10 @@ void	execute_cmd(t_node *node)
 	{
 		id = fork();
 		if (!id)
+		{
 			do_cmd(node);
+			exit(0);
+		}
 	}
 }
 
@@ -126,6 +129,7 @@ void	execute_and_or(t_node *node)
 	{
 		executer(node->data.pair.left);
 		wait_and_get();
+		fprintf(stderr,"DONE -->  WAIT || \n");
 		if (g_minishell->exit_s && g_minishell->exit_s != 130)
 			executer(node->data.pair.right);
 	}
@@ -237,7 +241,7 @@ void	executer(t_node *node)
 		execute_pair(node);
 	else if (node->type == REDIR_NODE)
 		execute_redires(node->data.redir);
-	// fprintf(stderr,"DONE --> ast : --> ");
-	// print_ast("", node, false);
-	// fprintf(stderr,"\n");
+	fprintf(stderr,"DONE --> ast : --> ");
+	print_ast("", node, false);
+	fprintf(stderr,"\n");
 }

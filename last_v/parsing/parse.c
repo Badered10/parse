@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 01:24:49 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 04:21:57 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_node	*parse_or(t_token **tokens);
 t_node	*parse_and(t_token **tokens);
 t_node	*parse_block(t_token **tokens);
 
-t_node *parse_cmd(t_token **tokens) // ls || (cat && ps) && ps
+t_node *parse_cmd(t_token **tokens)
 {
 	t_list *cmd_list;
 	t_list *red_list;
@@ -47,13 +47,11 @@ t_node *parse_cmd(t_token **tokens) // ls || (cat && ps) && ps
 	t_redir *red;
 	t_node *block;
 
-	// () > 1
 	block = NULL;
 	cmd_list = NULL;
 	red_list = NULL;
 	while(*tokens && ((*tokens)->type != END && (*tokens)->type != PIPE && (*tokens)->type != OR && (*tokens)->type != AND && (*tokens)->type != R_PAREN))
 	{
-		// ls || (cat && ps) && ps
 		if((*tokens)->type >= 4 && (*tokens)->type <= 7)
 		{
 			red = do_red(tokens);
@@ -79,8 +77,6 @@ t_node *parse_cmd(t_token **tokens) // ls || (cat && ps) && ps
 		}
 		(*tokens) = (*tokens)->next;
 	}
-	// if(block && !red_list)
-	// 	return (block);
 	if(!red_list)
 		return(string_node_new(cmd_list));
 	else
@@ -90,14 +86,12 @@ t_node *parse_cmd(t_token **tokens) // ls || (cat && ps) && ps
 	}
 }
 
-t_node	*parse_pipe(t_token **tokens) //ls || (cat && ps) && ps
+t_node	*parse_pipe(t_token **tokens)
 {
 	t_node *left;
 	t_type type;
 
 	left = NULL;
-	// if((*tokens)->type == L_PAREN)
-	//		 left = parse_block(tokens);
 	if(*tokens && ((*tokens)->type == WORD || ((*tokens)->type >= 4 && (*tokens)->type <= 7) || (*tokens)->type == L_PAREN))
 		left = parse_cmd(tokens);
 	if(*tokens && ((*tokens)->type == PIPE))
@@ -106,13 +100,11 @@ t_node	*parse_pipe(t_token **tokens) //ls || (cat && ps) && ps
 		(*tokens) = (*tokens)->next;
 		return (pair_node_new(left, parse_pipe(tokens), type));
 	}
-	// else if(!left)
-	//	 return(error_node_new("invalid pair node from pipe func\n"));
 	else
 		return (left);
 }
 
-t_node	*parse_or(t_token **tokens) // ls || (cat && ps) && ps
+t_node	*parse_or(t_token **tokens)
 {
 	t_node *left;
 	t_type type;
@@ -147,7 +139,7 @@ t_node	*parse_and(t_token **tokens)
 t_node *find_last_left(t_node *node)
 {
 	t_node *left;
-	while(node) // 1->2->3->4->leaf
+	while(node)
 	{
 		if(node->type != PAIR_NODE)
 			return (node);
@@ -166,7 +158,32 @@ void set_left_redir(t_node **left, t_node **right)
 	red = (t_redir *)last->content;
 	red->node = *left;
 }
-t_node	*parse_block(t_token **tokens) //  ls || (cat && ps) && ps
+
+t_node *adjust_right(t_node **right, t_node **left)
+{
+	t_node *tmp;
+
+	if(!right || !*right)
+		return(NULL);
+	tmp = NULL;
+	if((*right)->type == PAIR_NODE)
+	{
+		if(!(*right)->data.pair.left)
+			(*right)->data.pair.left = *left;
+		else
+		{
+			tmp = find_last_left(*right);
+			if(tmp->type == PAIR_NODE)
+				tmp->data.pair.left = *left;
+			else if(tmp->type == REDIR_NODE)
+				set_left_redir(&*left, &tmp);
+		}
+	}
+	else
+		set_left_redir(&*left, &*right);
+}
+
+t_node	*parse_block(t_token **tokens)
 {
 	t_node *left;
 	t_node *right;
@@ -179,55 +196,52 @@ t_node	*parse_block(t_token **tokens) //  ls || (cat && ps) && ps
 		right = parse_and(tokens);
 		if(right)
 		{
-			if(right->type == PAIR_NODE)
-			{
-				if(!right->data.pair.left)
-					right->data.pair.left = left;
-				else
-				{
-					tmp = find_last_left(right);
-					if(tmp->type == PAIR_NODE)
-						tmp->data.pair.left = left;
-					else if(tmp->type == REDIR_NODE)
-						set_left_redir(&left, &tmp);
-				}
-			}
-			else
-				set_left_redir(&left, &right);
-			return(right);
+			adjust_right(&right, &left);
+			return (right);
 		}
 	}
-	return(left); // 
+	return(left);
 }
 
-void set_null_as_true(t_node **res)
+void	execlude_null(t_list **lst)
 {
-	t_list *list;
-	t_list *a_new;
+	t_list *res;
+	t_list *new;
+
+	if (!lst || !*lst)
+		return;
+	res = NULL;
+	while(*lst)
+		{
+			if((*lst)->content)
+			{
+				new = ft_lstnew((*lst)->content);
+				gc_add(g_minishell, new);
+				ft_lstadd_back(&res, new);
+			}
+			(*lst) = (*lst)->next;
+		}
+	(*lst) = res;	
+}
+
+void remove_null(t_node **res)
+{
+	t_node *left;
+	t_node *right;
+
 	if (!res || !*res)
 		return;
-	list = NULL;
 	if((*res)->type == PAIR_NODE)
 	{
-		if((*res)->data.pair.left->type == PAIR_NODE)
-			set_null_as_true(&(*res)->data.pair.left);
-		if((*res)->data.pair.right->type == PAIR_NODE)
-			set_null_as_true(&(*res)->data.pair.right);
+		left = (*res)->data.pair.left;
+		right = (*res)->data.pair.right;
+		if(left && left->type == PAIR_NODE)
+			remove_null(&left);
+		if(right && right->type == PAIR_NODE)
+			remove_null(&right);
 	}
 	else if((*res)->type == STRING_NODE)
-	{
-		while((*res)->data.cmd)
-		{
-			if((*res)->data.cmd->content)
-			{
-				a_new = ft_lstnew((*res)->data.cmd->content);
-				gc_add(g_minishell, a_new);
-				ft_lstadd_back(&list, a_new);
-			}
-			(*res)->data.cmd = (*res)->data.cmd->next;
-		}
-		(*res)->data.cmd = list;
-	}
+		execlude_null(&(*res)->data.cmd);
 }
 
 void	join_words(t_token *tokens)

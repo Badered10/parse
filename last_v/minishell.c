@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/28 03:41:34 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 04:25:12 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,9 @@ int	main(int argc, char **argv, char **env)
 		}
 		close(1);
 		close(0);
+		fprintf(stderr,"--> START WAIT\n");
 		while (wait_and_get() != -1);
+		fprintf(stderr,"--> DONE OF WAIT\n");
 		clean_and_set();
 	}
 	cleanup_minishell();

@@ -6,7 +6,7 @@
 /*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/28 00:22:48 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/28 03:55:40 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ extern t_minishell	*g_minishell;
 
 t_list	*dollar_functionality(char **s);
 t_list	*asterisk_functionality(char *s);
-void 	set_null_as_true(t_node **res);
+void 	remove_null(t_node **res);
 void 	print_ast(const char *prefix,  t_node* root, bool isLeft);
 void 	add_list_into_list(t_list **lst, t_list *asterisk);
 char	*build_file_name(char *join);

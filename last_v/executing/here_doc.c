@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 02:45:50 by marvin           ###   ########.fr       */
+/*   Updated: 2024/07/29 16:09:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,20 +89,20 @@ int	re_open_hidden_file(int doc_num)
 
 int	write_or_break(int fd, char *limiter, char *buf, int count)
 {
-	int	doc_len;
-	int	buf_len;
-	char *count_s;
+	int		doc_len;
+	int		buf_len;
+	char	*count_s;
 
 	if (!buf)
 	{
 		ft_putstr_fd("warning: here-document at line ", 2);
 		count_s = ft_itoa(count);
-		ft_putstr_fd(count_s ,2);
+		ft_putstr_fd(count_s, 2);
 		free(count_s);
-		ft_putstr_fd(" delimited by end-of-file (wanted `",2);
-		ft_putstr_fd(limiter ,2);
-		ft_putstr_fd("')" ,2);
-		ft_putstr_fd("\n" ,2);
+		ft_putstr_fd(" delimited by end-of-file (wanted `", 2);
+		ft_putstr_fd(limiter, 2);
+		ft_putstr_fd("')", 2);
+		ft_putstr_fd("\n", 2);
 		return (0);
 	}
 	doc_len = ft_strlen(limiter);
@@ -127,7 +127,7 @@ void	read_buf(char **buf, int expand_flag)
 	}
 }
 
-void get_lines_count(int *pipe)
+void	get_lines_count(int *pipe)
 {
 	char	buf[2048];
 
@@ -138,26 +138,24 @@ void get_lines_count(int *pipe)
 
 int	here_doc(char *limiter, int doc_num, int expand_flag)
 {
-	char	*buf;
 	int		id;
 	int		fd;
-	int 	pipe[2];
+	int		pipe[2];
 	int		fd_hidden;
 
 	open_pipe(pipe);
-	buf = NULL;
 	fd_hidden = -1;
 	fd = open_hidden_file(doc_num);
 	id = fork();
 	if (!id)
 	{
-		do_here_doc(buf, limiter, fd, pipe, expand_flag);
+		do_here_doc(limiter, fd, pipe, expand_flag);
 		exit(0);
 	}
 	else
 	{
 		wait_and_get();
-		if(g_minishell->exit_s != 130)
+		if (g_minishell->exit_s != 130)
 			get_lines_count(pipe);
 		if (!g_minishell->exit_s)
 		{

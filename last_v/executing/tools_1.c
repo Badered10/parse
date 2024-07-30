@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:11:26 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/29 16:00:38 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 10:01:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ int	check_cmd(char *argv)
 	statbuf.st_mode = 0;
 	stat(argv, &statbuf);
 	if (S_ISDIR(statbuf.st_mode) == true && ft_strchr(argv, '/'))
-		return (print_err("Is a directory", argv), 1);
+		return (print_err("Is a directory", argv), 126);
 	cmd = get_fullpath(argv);
 	gc_add(g_minishell, cmd);
 	if (!cmd && *argv == '.')
@@ -89,7 +89,7 @@ int	check_cmd(char *argv)
 			NULL);
 		return (2);
 	}
-	else if (access(cmd, F_OK)) //
+	else if (access(cmd, F_OK) || (argv[0] == '.')) //
 		return (print_err("command not found", argv), 127);
 	else if (access(cmd, X_OK))
 		return (print_err("permission denied", argv), 126);

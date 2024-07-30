@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/29 16:09:41 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 09:50:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	open_hidden_file(int doc_num)
 	if (fd < 0)
 	{
 		perror("here_doc failed to get input");
-		exit(EXIT_FAILURE);
+		return (-1);
 	}
 	return (fd);
 }
@@ -82,7 +82,7 @@ int	re_open_hidden_file(int doc_num)
 	if (fd < 0)
 	{
 		perror("here_doc failed to get input");
-		exit(EXIT_FAILURE);
+		return (-1);
 	}
 	return (fd);
 }

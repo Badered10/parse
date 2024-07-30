@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/29 17:16:16 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 10:03:51 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,6 @@ void	fork_pair(int type, t_node *node, int *pfd, bool way) // LEFT OR RIGHT, TYP
 	id = fork();
 	if (!id)
 	{
-		fprintf(stderr, "0 --> %d\n", getpid());
 		close(pfd[0]);
 		if (!way)
 			dup_2(pfd[1], 1);
@@ -156,36 +155,26 @@ void	fork_pair(int type, t_node *node, int *pfd, bool way) // LEFT OR RIGHT, TYP
 			close(pfd[1]);
 		executer(node->data.pair.left); // -> [pipe]
 		wait_and_get();
-		fprintf(stderr, "DONE 1--> %d\n", getpid());
-		fprintf(stderr, "%d\n", getpid());
 		if (type == AND && !g_minishell->exit_s)
 			executer(node->data.pair.right); // -> [pipe]
 		else if (type == OR && g_minishell->exit_s
 			&& g_minishell->exit_s != 130)
 			executer(node->data.pair.right); // -> [pipe]
-		wait_and_get();
-		fprintf(stderr, "DONE 2--> %d\n", getpid());
+		wait_and_get();;
 		exit(g_minishell->exit_s);
 	}
-	fprintf(stderr, "1 DONE 3--> %d\n", getpid());
 	close(pfd[1]);
-	fprintf(stderr, "2 DONE 3--> %d\n", getpid());
 	if (!way)
 		dup_2(pfd[0], 0);
 	else
 		close(pfd[0]);
-	fprintf(stderr, " 3 DONE 3--> %d\n", getpid());
 }
 
-void	do_pipes(t_node *node, int *pfd)
+void	do_pipes(t_node *node, int *pfd , bool flag)
 {
-	int	std_out;
-
-	std_out = dup(1);
-	dup_2(pfd[1], 1);
+	(void)flag;
 	pipe_left(node->data.pair.left, pfd);
 	pipe_right(node->data.pair.right, pfd);
-	dup_2(std_out, 1);
 	fprintf(stderr, "DONE --> %d\n", getpid());
 }
 void	run_doc_cmd_p(t_list *red_list , int *pfd , bool flag) // 1 last
@@ -249,7 +238,7 @@ void execute_redir_p(t_node *node , bool flag , int *pfd)
 	}
 	else if(!flag)
 	{
-		dup2(pfd[0], 0);
+		dup_2(pfd[0], 0);
 	}
 	if (fd_output > 0)
 	{
@@ -273,7 +262,7 @@ void	pipe_left(t_node *node, int *pfd)
 		}
 		else // pipe
 		{
-			do_pipes(node, pfd);
+			do_pipes(node, pfd, 0);
 		}
 	}
 	else
@@ -293,10 +282,13 @@ void	pipe_right(t_node *node, int *pfd)
 			fork_pair(OR, node, pfd, 1);
 		else if (node->type == REDIR_NODE)
 		{
-				execute_redir_p(node, 1 , pfd);
+			execute_redir_p(node, 1 , pfd);
 		}
 		else
-			executer(node);
+		{
+			do_pipes(node, pfd, 1);
+		}
+		
 	}
 	else
 		do_pipe(node, 1, pfd);

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 11:56:12 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:58:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,12 +170,9 @@ void	fork_pair(int type, t_node *node, int *pfd, bool way) // LEFT OR RIGHT, TYP
 		close(pfd[0]);
 }
 
-void	do_pipes(t_node *node, int *pfd , bool flag)
+void	do_pipes(t_node *node, int *pfd)
 {
-	(void)flag;
 	pipe_left(node->data.pair.left, pfd);
-	// while(wait_and_get() != -1)
-	// 	;
 	pipe_right(node->data.pair.right, pfd);
 	fprintf(stderr, "DONE --> %d\n", getpid());
 }
@@ -262,9 +259,9 @@ void	pipe_left(t_node *node, int *pfd)
 		{
 				execute_redir_p(node, 0 , pfd);
 		}
-		else // pipe
+		else // (ls | cat -n)
 		{
-			do_pipes(node, pfd, 0);
+			
 		}
 	}
 	else
@@ -288,7 +285,7 @@ void	pipe_right(t_node *node, int *pfd)
 		}
 		else
 		{
-			do_pipes(node, pfd, 1);
+			executer(node);
 		}
 		
 	}
@@ -300,7 +297,7 @@ void	execute_pair(t_node *node)
 {
 	int	pfd[2];
 
-	if (node->data.pair.type == PIPE) //  cat -e | cat -n | ps
+	if (node->data.pair.type == PIPE) // (ls | cat -n) | cat -e
 	{
 		open_pipe(pfd);
 		pipe_left(node->data.pair.left, pfd);
@@ -312,7 +309,7 @@ void	execute_pair(t_node *node)
 		execute_and_or(node);
 }
 
-void	executer(t_node *node)
+void	executer(t_node *node) // (ls | cat -n) | cat -e
 {
 	if (!node)
 		return ;

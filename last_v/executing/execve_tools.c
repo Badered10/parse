@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:09:20 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 10:03:22 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 17:37:48 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ void	fd_duper(int *pfd, int mode)
 	else
 	{
 		close(pfd[0]);
+		fprintf(stderr,"HERE\n");
 		dup_2(pfd[1], 1);
+		fprintf(stderr,"HERE1\n");
 	}
 }
 

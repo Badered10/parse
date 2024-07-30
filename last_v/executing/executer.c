@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 10:03:51 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:56:12 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	expand_list(t_list *cmd_lst)
 		return ;
 	while (cmd_lst)
 	{
-		if (ft_strchr((char *)cmd_lst->content, '$'))
+		if (ft_strchr((char *)cmd_lst->content, '$') && cmd_lst->wd_expand)
 		{
 			list = dollar_functionality((char **)&cmd_lst->content);
 			add_list_into_list(&cmd_lst, list);
@@ -174,6 +174,8 @@ void	do_pipes(t_node *node, int *pfd , bool flag)
 {
 	(void)flag;
 	pipe_left(node->data.pair.left, pfd);
+	// while(wait_and_get() != -1)
+	// 	;
 	pipe_right(node->data.pair.right, pfd);
 	fprintf(stderr, "DONE --> %d\n", getpid());
 }
@@ -298,7 +300,7 @@ void	execute_pair(t_node *node)
 {
 	int	pfd[2];
 
-	if (node->data.pair.type == PIPE) //  < /dev/stdin cat | ls > /dev/stdout
+	if (node->data.pair.type == PIPE) //  cat -e | cat -n | ps
 	{
 		open_pipe(pfd);
 		pipe_left(node->data.pair.left, pfd);

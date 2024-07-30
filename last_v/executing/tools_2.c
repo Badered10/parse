@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 10:08:44 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:57:12 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,12 @@ int	wait_and_get(void)
 
 	fail = -1;
 	fail = wait(&x);
-	if (g_minishell->exit_s == 130)
-	{
-		exit = ft_itoa(g_minishell->exit_s);
-		set_env_var(g_minishell->our_env, "?", exit);
-		return (free(exit), -1);
-	}
+	// if (g_minishell->exit_s == 130)
+	// {
+	// 	exit = ft_itoa(g_minishell->exit_s);
+	// 	set_env_var(g_minishell->our_env, "?", exit);
+	// 	return (free(exit), -1);
+	// }
 	if (WIFEXITED(x))
 		g_minishell->exit_s = WEXITSTATUS(x);
 	exit = ft_itoa(g_minishell->exit_s);
@@ -77,7 +77,7 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 		cmd_lst = cmd->data.cmd;
 		while (cmd_lst)
 		{
-			if (ft_strchr((char *)cmd_lst->content, '$'))
+			if (ft_strchr((char *)cmd_lst->content, '$') && cmd_lst->wd_expand)
 			{
 				list = dollar_functionality((char **)&cmd_lst->content);
 				add_list_into_list(&cmd_lst, list);

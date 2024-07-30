@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/28 09:03:30 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/30 11:50:15 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ t_node	*parse_cmd(t_token **tokens)
 			new = ft_lstnew((*tokens)->value);
 			if (!new)
 				return (NULL);
+			new->wd_expand = (*tokens)->word_expand;
 			gc_add(g_minishell, new);
 			ft_lstadd_back(&cmd_list, new);
 		}

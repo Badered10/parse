@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/30 10:49:43 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/31 20:10:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_minishell
 	t_env			*our_env;
 	t_node			*ast;
 	t_gc			*gc;
+	pid_t			last_child;
 	int				nb_tokens;
 	int				dq_flag;
 	int				exit_s;
@@ -67,10 +68,10 @@ typedef struct s_minishell
 extern t_minishell	*g_minishell;
 
 // Function that handle the left side of a pipe.
-void				pipe_left(t_node *node, int *pfd);
+void				pipe_left(t_node *node, int *pfd, bool mode);
 
 // Function that handle the right side of a pipe.
-void				pipe_right(t_node *node, int *pfd);
+void				pipe_right(t_node *node, int *pfd, bool mode);
 
 // Function that remove null nodes.
 void				remove_null(t_node **res);

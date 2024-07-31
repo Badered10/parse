@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 09:50:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/31 20:13:02 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ void	get_lines_count(int *pipe)
 
 int	here_doc(char *limiter, int doc_num, int expand_flag)
 {
-	int		id;
+	// int		id;
 	int		fd;
 	int		pipe[2];
 	int		fd_hidden;
@@ -146,8 +146,8 @@ int	here_doc(char *limiter, int doc_num, int expand_flag)
 	open_pipe(pipe);
 	fd_hidden = -1;
 	fd = open_hidden_file(doc_num);
-	id = fork();
-	if (!id)
+	g_minishell->last_child = fork();
+	if (!g_minishell->last_child)
 	{
 		do_here_doc(limiter, fd, pipe, expand_flag);
 		exit(0);

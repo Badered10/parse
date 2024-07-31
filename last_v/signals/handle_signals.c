@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 21:05:29 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/30 11:08:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/31 21:17:19 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,23 +43,23 @@ void	ft_sigquit(int sig)
 {
 	if (sig != SIGQUIT)
 		return ;
-	printf("Quit (core dumped)\n");
+	ft_putstr_fd("Quit (core dumped)\n", 2);
+	g_minishell->exit_s = 131;
 }
 
 void	ft_sigint(int sig)
 {
-	printf("----> CTRL + C \n");
 	if (sig != SIGINT)
 		return ;
 	g_minishell->exit_s = 130;
-	printf("\n");
+	ft_putstr_fd("\n", 2);
 }
 
 void	here_doc_sig(int sig)
 {
 	if (sig != SIGINT)
 		return ;
-	printf("\n");
+	ft_putstr_fd("\n", 2);
 	g_minishell->exit_s = 130;
 	exit(130);
 }

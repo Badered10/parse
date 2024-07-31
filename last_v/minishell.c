@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/30 15:08:08 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/31 21:15:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,8 +175,6 @@ void	clean_and_set(void)
 	char	*exit_stat;
 
 	gc_free_all(g_minishell);
-	dup2(g_minishell->stdout, 1);
-	dup2(g_minishell->stdin, 0);
 	unlink_docs(g_minishell->docs);
 	exit_stat = ft_itoa(g_minishell->exit_s);
 	set_env_var(g_minishell->our_env, "?", exit_stat);
@@ -207,12 +205,12 @@ int	main(int argc, char **argv, char **env)
 			signal(SIGINT, ft_sigint);
 			executer(g_minishell->ast);
 		}
-		close(1);
-		close(0);
-		while (wait_and_get() != -1);
+		dup2(g_minishell->stdout, 1);
+		dup2(g_minishell->stdin, 0);
+		wait_and_get();
+		while(waitpid(-1, NULL, 0) != -1)
+			;
 		clean_and_set();
-		if(g_minishell->exit_s == 130)
-			printf("\n");
 	}
 	cleanup_minishell();
 	return (0);

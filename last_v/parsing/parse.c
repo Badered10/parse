@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 11:50:15 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/31 15:52:14 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,23 +184,41 @@ void	adjust_right(t_node **right, t_node **left)
 				set_left_redir(&*left, &tmp);
 		}
 	}
-	else
+	else if((*right)->type == REDIR_NODE)
 		set_left_redir(&*left, &*right);
 }
 
-t_node	*parse_block(t_token **tokens)
+t_node	*parse_block(t_token **tokens) //  0 || (1) && 2
 {
 	t_node	*left;
 	t_node	*right;
 
-	left = parse_and(tokens);
+	write(2, "PARSE()\n",ft_strlen("PARSE()\n"));
+	left = parse_and(tokens); // ---> 1
+	// print_ast("", left,false);
 	if (tokens && *tokens && (*tokens)->type == R_PAREN)
 	{
 		(*tokens) = (*tokens)->next;
-		right = parse_and(tokens);
+		right = parse_and(tokens); // && --> 2
+		// print_ast("", right ,false);
+		// exit(1);
 		if (right)
 		{
-			adjust_right(&right, &left);
+			if(right->type == PAIR_NODE)
+			{
+				if(right->data.pair.type == AND)
+				{
+					adjust_right(&right, &left);
+					write(2, "AND\n",ft_strlen("AND\n"));
+				}
+				else
+				{
+					adjust_right(&left, &right);
+					write(2, "OR\n",ft_strlen("OR\n"));
+				}
+			}
+			else
+				write(2, "NOT PAIR\n",ft_strlen("NOT PAIR\n"));
 			return (right);
 		}
 	}
@@ -268,7 +286,7 @@ void	join_words(t_token *tokens)
 	}
 }
 
-t_node	*parsing(void)
+t_node	*parsing(void) //  0 || (1) && 2
 {
 	t_node	*res;
 

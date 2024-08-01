@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_helpers.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:01:30 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/26 10:59:04 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:10:14 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	append_separator(t_token **tokens, char **line, t_type type)
 		value = ft_substr(*line, 0, 2);
 	else
 		value = ft_substr(*line, 0, 1);
+	// printf(">>>> value %s, type %d\n", value, type);
 	token = new_token(value, type);
 	if (!token)
 		return (0);

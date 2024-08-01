@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/31 20:34:55 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 14:49:32 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ void	execute_cmd(t_node *node)
 		g_minishell->last_child = fork();
 		if (!g_minishell->last_child)
 		{
+			signal(SIGQUIT, ft_sigquit);
 			// signal(SIGQUIT, SIG_DFL);
 			do_cmd(node);
 			exit(0);

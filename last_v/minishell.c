@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/31 21:15:58 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:10:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,14 +197,11 @@ int	main(int argc, char **argv, char **env)
 		g_minishell->ast = parsing();
 		if (!g_minishell->ast)
 			continue ;
-		signal(SIGINT, SIG_IGN);
 		print_ast("", g_minishell->ast, false);
+		signal(SIGQUIT, ft_sigquit);
+		signal(SIGINT, ft_sigint);
 		if(scan_and_set(g_minishell->ast))
-		{
-			signal(SIGQUIT, ft_sigquit);
-			signal(SIGINT, ft_sigint);
 			executer(g_minishell->ast);
-		}
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);
 		wait_and_get();

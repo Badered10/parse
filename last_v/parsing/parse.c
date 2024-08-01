@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/31 15:52:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:42:37 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_node	*parse_or(t_token **tokens);
 t_node	*parse_and(t_token **tokens);
 t_node	*parse_block(t_token **tokens);
 
-t_node	*parse_cmd(t_token **tokens)
+t_node	*parse_cmd(t_token **tokens) // 0 || (1) && 2
 {
 	t_list	*cmd_list;
 	t_list	*red_list;
@@ -72,10 +72,12 @@ t_node	*parse_cmd(t_token **tokens)
 			gc_add(g_minishell, new);
 			ft_lstadd_back(&cmd_list, new);
 		}
-		else if ((*tokens)->type == L_PAREN)
+		else if ((*tokens)->type == L_PAREN) // ((((ps)))
 		{
 			(*tokens) = (*tokens)->next;
-			block = parse_block(tokens); // 1 && 2
+			block = parse_and(tokens);
+			(*tokens) = (*tokens)->next; // )
+			 // 1 && 2
 			return (block);
 		}
 		(*tokens) = (*tokens)->next;
@@ -87,57 +89,6 @@ t_node	*parse_cmd(t_token **tokens)
 		red->cmd = cmd_list;
 		return (redir_node_new(red_list));
 	}
-}
-
-t_node	*parse_pipe(t_token **tokens)
-{
-	t_node	*left;
-	t_type	type;
-
-	left = NULL;
-	if (*tokens && ((*tokens)->type == WORD || ((*tokens)->type >= 4
-				&& (*tokens)->type <= 7) || (*tokens)->type == L_PAREN))
-		left = parse_cmd(tokens);
-	if (*tokens && ((*tokens)->type == PIPE))
-	{
-		type = (*tokens)->type;
-		(*tokens) = (*tokens)->next;
-		return (pair_node_new(left, parse_pipe(tokens), type));
-	}
-	else
-		return (left);
-}
-
-t_node	*parse_or(t_token **tokens)
-{
-	t_node	*left;
-	t_type	type;
-
-	left = parse_pipe(tokens);
-	if (*tokens && (*tokens)->type == OR)
-	{
-		type = (*tokens)->type;
-		(*tokens) = (*tokens)->next;
-		return (pair_node_new(left, parse_or(tokens), type));
-	}
-	else
-		return (left);
-}
-
-t_node	*parse_and(t_token **tokens)
-{
-	t_node	*left;
-	t_type	type;
-
-	left = parse_or(tokens);
-	if (*tokens && (*tokens)->type == AND)
-	{
-		type = (*tokens)->type;
-		(*tokens) = (*tokens)->next;
-		return (pair_node_new(left, parse_and(tokens), type));
-	}
-	else
-		return (left);
 }
 
 t_node	*find_last_left(t_node *node)
@@ -187,40 +138,96 @@ void	adjust_right(t_node **right, t_node **left)
 	else if((*right)->type == REDIR_NODE)
 		set_left_redir(&*left, &*right);
 }
+t_node	*parse_pipe(t_token **tokens)
+{
+	t_node	*left;
+	t_node	*right;
+	t_type	type;
+
+	left = NULL;
+	right = NULL;
+	if (*tokens && ((*tokens)->type == WORD || ((*tokens)->type >= 4
+				&& (*tokens)->type <= 7) || (*tokens)->type == L_PAREN))
+		left = parse_cmd(tokens);
+	if (*tokens && ((*tokens)->type == PIPE))
+	{
+		fprintf(stderr ,"------------------------------> parse | \n");
+		type = (*tokens)->type;
+		(*tokens) = (*tokens)->next;
+		right = parse_pipe(tokens); // && --> 2
+		return (pair_node_new(left, right, type));
+	}
+	return(left);
+}
+
+t_node	*parse_or(t_token **tokens) // 0 || 1 && 2
+{
+	t_node	*left;
+	t_type	type;
+
+	left = parse_pipe(tokens);
+	if (*tokens && (*tokens)->type == OR)
+	{
+		fprintf(stderr ,"------------------------------> parse || \n");
+		type = (*tokens)->type;
+		(*tokens) = (*tokens)->next;
+		return (pair_node_new(left, parse_or(tokens), type));
+	}
+	else
+		return (left);
+}
+
+t_node	*parse_and(t_token **tokens) // 0 || 1 && 2
+{
+	t_node	*left;
+	t_node	*right;
+	t_type	type;
+
+	left = parse_or(tokens); // 0 || 1
+	if (*tokens && (*tokens)->type == AND)
+	{
+		fprintf(stderr ,"------------------------------> parse && , %d \n", (*tokens)->type);
+		type = (*tokens)->type;
+		(*tokens) = (*tokens)->next;
+		right = parse_and(tokens); // && --> 2
+		return (pair_node_new(left, right, type));
+	}
+	else
+		return (left);
+}
+
 
 t_node	*parse_block(t_token **tokens) //  0 || (1) && 2
 {
 	t_node	*left;
-	t_node	*right;
+	// t_node	*right;
 
-	write(2, "PARSE()\n",ft_strlen("PARSE()\n"));
-	left = parse_and(tokens); // ---> 1
+	// write(2, "PARSE()\n",ft_strlen("PARSE()\n"));
+	left = parse_and(tokens); // ---> ||
 	// print_ast("", left,false);
 	if (tokens && *tokens && (*tokens)->type == R_PAREN)
 	{
 		(*tokens) = (*tokens)->next;
-		right = parse_and(tokens); // && --> 2
-		// print_ast("", right ,false);
-		// exit(1);
-		if (right)
-		{
-			if(right->type == PAIR_NODE)
-			{
-				if(right->data.pair.type == AND)
-				{
-					adjust_right(&right, &left);
-					write(2, "AND\n",ft_strlen("AND\n"));
-				}
-				else
-				{
-					adjust_right(&left, &right);
-					write(2, "OR\n",ft_strlen("OR\n"));
-				}
-			}
-			else
-				write(2, "NOT PAIR\n",ft_strlen("NOT PAIR\n"));
-			return (right);
-		}
+		// right = parse_and(tokens); // && --> 2
+		// if (right)
+		// {
+		// 	if(right->type == PAIR_NODE)
+		// 	{
+		// 		if(right->data.pair.type == AND)
+		// 		{
+					// adjust_right(&right, &left);
+		// 			write(2, "AND\n",ft_strlen("AND\n"));
+		// 		}
+		// 		else
+		// 		{
+		// 			adjust_right(&left, &right);
+		// 			write(2, "OR\n",ft_strlen("OR\n"));
+		// 		}
+		// 	}
+		// 	else
+		// 		write(2, "NOT PAIR\n",ft_strlen("NOT PAIR\n"));
+		// 	return (right);
+		// }
 	}
 	return (left);
 }
@@ -288,13 +295,35 @@ void	join_words(t_token *tokens)
 
 t_node	*parsing(void) //  0 || (1) && 2
 {
-	t_node	*res;
+	// t_node	*res;
+	t_node	*left;
+	// t_node	*right;
+	// t_type type;
 
+
+	left = NULL;
+	// res = NULL;
+	// right = NULL;
 	expanding();
 	remove_quotes(&g_minishell->tokens);
 	join_words(g_minishell->tokens);
-	res = parse_block(&g_minishell->tokens);
-	if (!res)
+	left = parse_block(&g_minishell->tokens); // 0 || (1)
+	// print_ast("", left , false);
+	// if(g_minishell->tokens->type != END)
+	// 	right = parsing();
+	// if(left && left->type == PAIR_NODE)
+	// 	type = left->data.pair.type;
+	// if(right && right->type == PAIR_NODE)
+	// 	if(type > right->data.pair.type)
+	// 		type = right->data.pair.type;
+	// if(left && right)
+	// {
+	// 	printf("YOO\n");
+	// 	res = pair_node_new(left, right, type);
+	// }
+	// else
+	// 	res = left;
+	if (!left)
 		gc_free_all(g_minishell);
-	return (res);
+	return (left);
 }

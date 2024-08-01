@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:04:32 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/30 11:43:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 17:37:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ typedef enum e_type
 {
 	WORD,
 	PIPE,
-	AND,
 	OR,
+	AND,
 	LL_REDIR,
 	RR_REDIR,
 	L_REDIR,

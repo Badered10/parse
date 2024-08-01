@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 21:05:29 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/31 21:17:19 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 14:53:28 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	ft_sigint(int sig)
 	if (sig != SIGINT)
 		return ;
 	g_minishell->exit_s = 130;
-	ft_putstr_fd("\n", 2);
+	// ft_putstr_fd("\n", 2);
 }
 
 void	here_doc_sig(int sig)

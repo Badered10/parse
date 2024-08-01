@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/01 20:10:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 21:42:48 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,11 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
                 fprintf(stderr,"'%s' ", (char*)list->content);
                 list = list->next;
             }
+			if(new->node)
+			{
+				write(2,"\n",1);
+				print_ast("", new->node, false);
+			}
             fprintf(stderr," ");
             lst = lst->next;
         }
@@ -180,6 +185,20 @@ void	clean_and_set(void)
 	set_env_var(g_minishell->our_env, "?", exit_stat);
 	free(exit_stat);
 }
+int wait_last(void)
+{
+	int		fail;
+	int		x;
+	char	*exit;
+
+	fail = -1;
+	fail = waitpid(g_minishell->last_child, &x, 0);
+	if (WIFEXITED(x))
+		g_minishell->exit_s = WEXITSTATUS(x);
+	exit = ft_itoa(g_minishell->exit_s);
+	set_env_var(g_minishell->our_env, "?", exit);
+	return (free(exit), fail);
+}
 
 int	main(int argc, char **argv, char **env)
 {
@@ -204,7 +223,7 @@ int	main(int argc, char **argv, char **env)
 			executer(g_minishell->ast);
 		dup2(g_minishell->stdout, 1);
 		dup2(g_minishell->stdin, 0);
-		wait_and_get();
+		wait_last();
 		while(waitpid(-1, NULL, 0) != -1)
 			;
 		clean_and_set();

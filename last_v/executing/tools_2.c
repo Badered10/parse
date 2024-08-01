@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/31 21:03:37 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/01 20:47:10 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ int	wait_and_get(void)
 	char	*exit;
 
 	fail = -1;
-	fail = waitpid(g_minishell->last_child, &x, 0);
-	// fail = wait(&x);
+	// fail = waitpid(g_minishell->last_child, &x, 0);
+	fail = wait(&x);
 	// if (g_minishell->exit_s == 130)
 	// {
 	// 	exit = ft_itoa(g_minishell->exit_s);

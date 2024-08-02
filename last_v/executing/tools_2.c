@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/02 19:02:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:12:26 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 	}
 	if (g_minishell->last_child == 0)
 	{
+		fprintf(stderr,"%d\n",getpid());
 		fd_duper(pfd, mode);
 		cmd_lst = cmd->data.cmd;
 		while (cmd_lst)

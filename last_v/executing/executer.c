@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/02 19:06:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 20:38:56 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,11 +340,11 @@ void	executer(t_node *node) // (ls | cat -n) | cat -e
 			if(!id)
 			{
 				execute_cmd(node);
-				wait_and_get();
+				// wait_and_get();
 				exit(g_minishell->exit_s);
 			}
-			else
-				wait_and_get();
+			// else
+			// 	wait_and_get();
 		}
 		else
 			execute_cmd(node);
@@ -358,11 +358,11 @@ void	executer(t_node *node) // (ls | cat -n) | cat -e
 			if(!id)
 			{
 				execute_pair(node);
-				wait_and_get();
+				// wait_and_get();
 				exit(g_minishell->exit_s);
 			}
-			else
-				wait_and_get();
+			// else
+			// 	wait_and_get();
 		}
 		else
 			execute_pair(node);
@@ -375,11 +375,11 @@ void	executer(t_node *node) // (ls | cat -n) | cat -e
 			if(!id)
 			{
 				execute_redires(node->data.redir);
-				wait_and_get();
+				// wait_and_get();
 				exit(g_minishell->exit_s);
 			}
-			else
-				wait_and_get();
+			// else
+			// 	wait_and_get();
 		}
 		else
 			execute_redires(node->data.redir);

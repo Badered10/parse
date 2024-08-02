@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/01 21:35:06 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 18:12:45 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,12 @@ t_node	*parse_cmd(t_token **tokens) // 0 || (1) && 2
 		{
 			(*tokens) = (*tokens)->next;
 			block = parse_and(tokens);
+			if(block && block->type == PAIR_NODE)
+				block->data.pair.is_block = 1;
+			else if(block && block->type == STRING_NODE)
+				block->data.cmd->is_block = 1;
+			else if(block && block->type == REDIR_NODE)
+				block->data.redir->is_block = 1;
 			(*tokens) = (*tokens)->next;
 			while((*tokens)->type == WHITESPACE)
 				(*tokens) = (*tokens)->next;

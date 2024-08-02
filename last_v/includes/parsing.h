@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/12 09:42:47 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/26 10:00:07 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/02 17:52:38 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_redir
 	int					fd;
 	int					hd_expand;
 	char				*file;
+	bool				is_block;
 	t_list				*cmd;
 	t_node				*node;
 }						t_redir;
@@ -44,6 +45,7 @@ typedef struct s_pair_value
 	t_type				type;
 	t_node				*left;
 	t_node				*right;
+	bool				is_block;
 }						t_pair_value;
 
 typedef union u_node_value

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/01 20:47:10 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 19:02:35 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ int	wait_and_get(void)
 	int		x;
 	char	*exit;
 
+	x = -1;
 	fail = -1;
 	// fail = waitpid(g_minishell->last_child, &x, 0);
 	fail = wait(&x);
@@ -27,7 +28,7 @@ int	wait_and_get(void)
 	// 	set_env_var(g_minishell->our_env, "?", exit);
 	// 	return (free(exit), -1);
 	// }
-	if (WIFEXITED(x))
+	if (x != -1 && WIFEXITED(x))
 		g_minishell->exit_s = WEXITSTATUS(x);
 	exit = ft_itoa(g_minishell->exit_s);
 	set_env_var(g_minishell->our_env, "?", exit);
@@ -99,7 +100,10 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 	else
 	{
 		close(pfd[1]);
-		dup2(pfd[0], 0);
+		if(!mode)
+			dup2(pfd[0], 0);
+		else
+			close(pfd[0]);
 		// if (mode)
 		// 	wait_and_get();
 	}

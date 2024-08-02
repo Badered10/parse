@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/01 21:42:48 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 18:01:08 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,17 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 
 		if(root->data.pair.type == PIPE)
         {
-			fprintf(stderr," |\n");
-
+			fprintf(stderr," | ,is BLOCK : %d\n",root->data.pair.is_block);
       
         }
         else if (root->data.pair.type == OR)
         {
-			fprintf(stderr," ||\n");
+			fprintf(stderr," || ,is BLOCK : %d\n",root->data.pair.is_block);
 
         } 
         else if (root->data.pair.type == AND)
         {
-			fprintf(stderr," &&\n");
+			fprintf(stderr," && ,is BLOCK : %d\n",root->data.pair.is_block);
         }
 		dup = strdup((isLeft ? "│   " : "    "));
 		join = ft_strjoin(prefix ,  dup);
@@ -63,6 +62,7 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 		list = root->data.cmd;
         while (list)
         {
+			fprintf(stderr,"list is BLOCK : %d  --> ",list->is_block);
             fprintf(stderr,"'%s' ", (char*)list->content);
             list = list->next;
         }
@@ -74,9 +74,11 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 		lst = root->data.redir;
 		while(lst)
         {
+			
 			t_list *list;
             t_redir *new = lst->content;
             fprintf(stderr,"REDIR NODE , name: '%s' ",new->file);
+			fprintf(stderr,"REDIR is BLOCK : %d\n",new->is_block);
 			list = new->cmd;
             while (list)
             {

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:26:57 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/29 14:19:15 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/02 17:42:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	builtins_exec_check(char **args)
 			ft_putstr_fd("args.\n" RESET, 2);
 		else if (nb_options(args))
 			ft_putstr_fd("options.\n" RESET, 2);
-		set_env_var(g_minishell->our_env, "?", "1");
 		return (g_minishell->exit_s = 1, 1);
 	}
 	if ((!ft_strcmp(args[0], "export") || !ft_strcmp(args[0], "exit")
@@ -58,7 +57,6 @@ int	builtins_exec_check(char **args)
 		ft_putstr_fd(RED "badashell$ : ", 2);
 		ft_putstr_fd(args[0], 2);
 		ft_putstr_fd(": can't run it with options.\n" RESET, 2);
-		set_env_var(g_minishell->our_env, "?", "1");
 		return (g_minishell->exit_s = 1, 1);
 	}
 	return (0);
@@ -73,7 +71,6 @@ int	check_cd_and_exit(t_minishell *mini, char **args)
 		if (nb_args(args) > 2)
 		{
 			print_errors("cd : too many arguments.");
-			set_env_var(g_minishell->our_env, "?", "1");
 			return (g_minishell->exit_s = 1, -1);
 		}
 		else
@@ -85,7 +82,6 @@ int	check_cd_and_exit(t_minishell *mini, char **args)
 		if (flag == 0)
 			return (0);
 	}
-	set_env_var(g_minishell->our_env, "?", "0");
 	g_minishell->exit_s = 0;
 	return (1);
 }

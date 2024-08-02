@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/01 14:49:32 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 19:06:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,17 +106,13 @@ void	execute_cmd(t_node *node)
 	set_env_var(g_minishell->our_env, "_",
 		(char *)ft_lstlast(node->data.cmd)->content);
 	if (ft_is_builtin(node->data.cmd->content))
-	{
 		execute_builtins(g_minishell, list_to_argv(node->data.cmd));
-		set_env_var(g_minishell->our_env, "?", "0");
-	}
 	else
 	{
 		g_minishell->last_child = fork();
 		if (!g_minishell->last_child)
 		{
-			signal(SIGQUIT, ft_sigquit);
-			// signal(SIGQUIT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			do_cmd(node);
 			exit(0);
 		}
@@ -249,6 +245,9 @@ void execute_redir_p(t_node *node , bool flag , int *pfd)
 }
 void	pipe_left(t_node *node, int *pfd, bool mode)
 {
+	// int fd_in;
+	// int fd_out;
+
 	if (!node)
 		return ;
 	if (node->type != STRING_NODE && node->type != PIPE)
@@ -261,9 +260,13 @@ void	pipe_left(t_node *node, int *pfd, bool mode)
 		{
 				execute_redir_p(node, mode , pfd);
 		}
-		else // (ls | cat -n)
+		else // (ls | cat -e)
 		{
-			do_pipes(node, pfd, mode);
+			// fd_in = dup(0);
+			// fd_out = dup(1);
+			// dup2(pfd[1],1);
+			executer(node);
+			// dup2(1,fd_out);
 		}
 	}
 	else
@@ -273,6 +276,9 @@ void	pipe_left(t_node *node, int *pfd, bool mode)
 
 void	pipe_right(t_node *node, int *pfd, bool mode)
 {
+	// int fd_in;
+	// fd_in = dup(0);
+	// dup2(pfd[0], 0);
 	if (!node)
 		return ;
 	if (node->type != STRING_NODE)
@@ -289,23 +295,32 @@ void	pipe_right(t_node *node, int *pfd, bool mode)
 		{
 			executer(node);
 		}
-		
 	}
 	else
 		do_pipe(node, mode, pfd);
+	// dup2(0, fd_in);
 }
 
 void	execute_pair(t_node *node)
 {
 	int	pfd[2];
+	int fd_in;
+	int fd_out;
 
-	if (node->data.pair.type == PIPE) // (ls | cat -n) | cat -e
+	fd_in = dup(0);
+	fd_out = dup(1);
+	if (node->data.pair.type == PIPE) // (ls | cat -e) | cat -n | cat
 	{
 		open_pipe(pfd);
-		pipe_left(node->data.pair.left, pfd, 0); //  (ls | cat -n)
-		pipe_right(node->data.pair.right, pfd, 1); // | cat -e
+		dup2(pfd[1], 1);
+		pipe_left(node->data.pair.left, pfd, 0); //  (ls | cat -e)
+		dup2(fd_out, 1);
+		dup2(pfd[0], 0);
+		pipe_right(node->data.pair.right, pfd, 1); // cat -n
 		close(pfd[1]);
 		close(pfd[0]);
+		dup2(fd_in, 0);
+		dup2(fd_out, 1);
 	}
 	else
 		execute_and_or(node);
@@ -313,14 +328,62 @@ void	execute_pair(t_node *node)
 
 void	executer(t_node *node) // (ls | cat -n) | cat -e
 {
+	int id;
+
 	if (!node)
 		return ;
 	if (node->type == STRING_NODE)
-		execute_cmd(node);
-	else if (node->type == PAIR_NODE)
-		execute_pair(node);
+	{
+		if(node->data.cmd->is_block)
+		{
+			id = fork();
+			if(!id)
+			{
+				execute_cmd(node);
+				wait_and_get();
+				exit(g_minishell->exit_s);
+			}
+			else
+				wait_and_get();
+		}
+		else
+			execute_cmd(node);
+		
+	}
+	else if (node->type == PAIR_NODE) // (ls | ps)
+	{
+		if(node->data.pair.is_block)
+		{
+			id = fork();
+			if(!id)
+			{
+				execute_pair(node);
+				wait_and_get();
+				exit(g_minishell->exit_s);
+			}
+			else
+				wait_and_get();
+		}
+		else
+			execute_pair(node);
+	}
 	else if (node->type == REDIR_NODE)
-		execute_redires(node->data.redir);
+	{
+		if(node->data.redir->is_block)
+		{
+			id = fork();
+			if(!id)
+			{
+				execute_redires(node->data.redir);
+				wait_and_get();
+				exit(g_minishell->exit_s);
+			}
+			else
+				wait_and_get();
+		}
+		else
+			execute_redires(node->data.redir);
+	}
 	// fprintf(stderr,"DONE --> ast : --> ");
 	// print_ast("", node, false);
 	// fprintf(stderr,"\n");

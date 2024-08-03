@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:22:14 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/28 18:45:00 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:53:35 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char	*custome_path(char *path)
 	int		j;
 
 	home = get_env_var(g_minishell->our_env, "HOME");
+	if (!home)
+		return (NULL);
 	new_path = malloc(sizeof(char) * (ft_strlen(home) + ft_strlen(path)));
 	if (!new_path)
 		print_errors("Allocation failed !");

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/03 19:24:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:54:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,15 +78,18 @@ void	expand_list(t_list *cmd_lst)
 		return ;
 	while (cmd_lst)
 	{
-		if (ft_strchr((char *)cmd_lst->content, '$') && cmd_lst->wd_expand)
+		if (cmd_lst->content)
 		{
-			list = dollar_functionality((char **)&cmd_lst->content);
-			add_list_into_list(&cmd_lst, list);
-		}
-		else if (ft_strchr((char *)cmd_lst->content, '*'))
-		{
-			list = asterisk_functionality((char *)cmd_lst->content);
-			add_list_into_list(&cmd_lst, list);
+			if (ft_strchr((char *)cmd_lst->content, '$') && cmd_lst->wd_expand)
+			{
+				list = dollar_functionality((char **)&cmd_lst->content);
+				add_list_into_list(&cmd_lst, list);
+			}
+			else if (ft_strchr((char *)cmd_lst->content, '*'))
+			{
+				list = asterisk_functionality((char *)cmd_lst->content);
+				add_list_into_list(&cmd_lst, list);
+			}
 		}
 		cmd_lst = cmd_lst->next;
 	}

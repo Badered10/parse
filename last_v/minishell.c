@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/02 20:30:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 13:40:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	print_ast(const char *prefix,  t_node* root, bool isLeft)
 	{
 		t_list *lst;
 		lst = root->data.redir;
+		fprintf(stderr,"REDIR_LIST is BLOCK : %d ",lst->is_block);
 		while(lst)
         {
 			

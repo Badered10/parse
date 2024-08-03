@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/03 13:29:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 13:58:46 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,22 +326,51 @@ void	execute_pair(t_node *node)
 		execute_and_or(node);
 }
 
+bool check_builtin(char *cmd)
+{
+	char *built_ins[7];
+	int  i;
+
+	i = 0;
+	if(!cmd)
+		return(0);
+	built_ins[0] = "echo";
+	built_ins[1] = "cd";
+	built_ins[2] = "pwd";
+	built_ins[3] = "export";
+	built_ins[4] = "unset";
+	built_ins[5] = "env";
+	built_ins[6] = "exit";
+	while(built_ins[i])
+	{
+		if(!strncmp(cmd, built_ins[i], ft_strlen(cmd)))
+			return(1);
+		i++;
+	}
+	return(0);
+}
+
 void	executer(t_node *node) // (ls | cat -n) | cat -e
 {
+	bool is_builtin;
 	int id;
 
 	if (!node)
 		return ;
 	if (node->type == STRING_NODE)
 	{
+		check_builtin((char *)node->data.cmd->content);
 		if(node->data.cmd->is_block)
 		{
 			id = fork();
 			if(!id)
 			{
 				execute_cmd(node);
+				fprintf(stderr,"------------->1 \n");
 				wait_last();
+				fprintf(stderr,"------------->2 \n");
 				while(waitpid(-1, NULL, 0) != -1);
+				fprintf(stderr,"------------->3 \n");
 				exit(g_minishell->exit_s);
 			}
 			else

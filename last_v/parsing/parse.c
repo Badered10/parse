@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 11:09:11 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/02 18:12:45 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 13:41:59 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	adjust_right(t_node **right, t_node **left)
 		set_left_redir(&*left, &*right);
 }
 
-t_node	*parse_cmd(t_token **tokens) // 0 || (1) && 2
+t_node	*parse_cmd(t_token **tokens) // (ls > 1)
 {
 	t_list	*cmd_list;
 	t_list	*red_list;
@@ -127,19 +127,29 @@ t_node	*parse_cmd(t_token **tokens) // 0 || (1) && 2
 		else if ((*tokens)->type == L_PAREN) // ls || ps ls || ((ps | cat) && 1)
 		{
 			(*tokens) = (*tokens)->next;
-			block = parse_and(tokens);
+			block = parse_and(tokens); // (ls > 1) > 2
 			if(block && block->type == PAIR_NODE)
+			{
+				fprintf(stderr ,"I AM PAIR NODE \n");
 				block->data.pair.is_block = 1;
+			}
 			else if(block && block->type == STRING_NODE)
+			{
+				fprintf(stderr ,"I AM STRING NODE \n");
 				block->data.cmd->is_block = 1;
+			}
 			else if(block && block->type == REDIR_NODE)
+			{
+				fprintf(stderr ,"I AM REDIR NODE \n");
 				block->data.redir->is_block = 1;
+			}
 			(*tokens) = (*tokens)->next;
 			while((*tokens)->type == WHITESPACE)
 				(*tokens) = (*tokens)->next;
 			if((*tokens)->type >= 4 && (*tokens)->type <= 7)
 			{
 				redir = parse_cmd(tokens); // > 1
+				// redir->data.redir->is_block = 1;
 				if(block && redir->type == REDIR_NODE)
 					return (set_left_redir(&block, &redir) ,redir);
 			}

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 19:17:11 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 16:09:43 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:37:31 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,75 +34,76 @@ char	**custome_split(char **split)
 	return (split);
 }
 
-int	process_joining(char **args, int i, t_minishell *minishell)
+int	process_joining(char **args, int i)
 {
 	char	**split;
 
 	split = custome_split(ft_split(args[i], '='));
-	if (check_identifier(split, 0, minishell) == -1)
+	if (check_identifier(split, 0) == -1)
 	{
-		return (minishell->exit_s = 1, free_split(split), -1);
+		return (g_minishell->exit_s = 1, free_split(split), -1);
 	}
-	if (get_env_var(minishell->our_env, split[0]))
+	if (get_env_var(g_minishell->our_env, split[0]))
 	{
-		joining_words(split, minishell);
+		joining_words(split);
 	}
 	else
 	{
 		if (!split[1])
-			add_env_var(minishell->our_env, split[0], "\0");
+			add_env_var(g_minishell->our_env, split[0], "\0");
 		else
-			add_env_var(minishell->our_env, split[0], split[1]);
-		set_as_exported(minishell->our_env, split[0]);
+			add_env_var(g_minishell->our_env, split[0], split[1]);
+		set_as_exported(g_minishell->our_env, split[0]);
 	}
-	set_env_var(minishell->our_env, "?", "0");
-	return (minishell->exit_s = 0, free_split(split), 0);
+	set_env_var(g_minishell->our_env, "?", "0");
+	return (g_minishell->exit_s = 0, free_split(split), 0);
 }
 
-int	case_of_no_value(char **args, int *i, t_minishell *minishell)
+int	case_of_no_value(char **args, int *i)
 {
-	if (check_identifier(&args[(*i)], 0, minishell) == -1)
+	if (check_identifier(&args[(*i)], 0) == -1)
 	{
-		minishell->exit_s = 1;
+		g_minishell->exit_s = 1;
 		return (1);
 	}
-	else if (!get_env_var(minishell->our_env, args[(*i)]))
+	else if (!get_env_var(g_minishell->our_env, args[(*i)]))
 	{
-		add_env_var(minishell->our_env, args[(*i)], NULL);
-		set_as_invisible(minishell->our_env, args[(*i)]);
+		printf("adding >> %s \n", args[(*i)]);
+		add_env_var(g_minishell->our_env, args[(*i)], NULL);
+		set_as_invisible(g_minishell->our_env, args[(*i)]);
 	}
 	return (0);
 }
 
-void	process_each_arg(char **args, int i, t_minishell *minishell)
+void	process_each_arg(char **args, int i)
 {
 	if (ft_strchr(args[i], '='))
 	{
 		if (ft_strstr(args[i], "+="))
 		{
-			if (process_joining(args, i, minishell) == -1)
+			if (process_joining(args, i) == -1)
 				return ;
 		}
-		else if (process_equal(args, i, minishell) == -1)
+		else if (process_equal(args, i) == -1)
 		{
-			minishell->exit_s = 1;
+			g_minishell->exit_s = 1;
 			return ;
 		}
 	}
 	else
 	{
-		if (case_of_no_value(args, &i, minishell))
+		if (case_of_no_value(args, &i))
 			return ;
 	}
-	minishell->exit_s = 0;
+	g_minishell->exit_s = 0;
 }
 
-void	ft_export(char **args, int nb_args, t_minishell *minishell)
+void	ft_export(char **args, int nb_args)
 {
 	t_env	*sorted_env;
 	int		i;
 
-	sorted_env = sort_env(minishell->our_env);
+	sorted_env = sort_env(g_minishell->our_env);
 	if (nb_args == 1)
 		print_env(sorted_env);
 	else
@@ -110,7 +111,7 @@ void	ft_export(char **args, int nb_args, t_minishell *minishell)
 		i = 1;
 		while (args[i])
 		{
-			process_each_arg(args, i, minishell);
+			process_each_arg(args, i);
 			i++;
 		}
 	}

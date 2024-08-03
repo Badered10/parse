@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_here_doc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 08:21:56 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 16:47:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:51:20 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*expand_without_space(char *s, int len, t_minishell *minishell)
+char	*expand_without_space(char *s, int len)
 {
 	char	*new;
 	int		i;
@@ -23,7 +23,7 @@ char	*expand_without_space(char *s, int len, t_minishell *minishell)
 		return (NULL);
 	i = 0;
 	j = 0;
-	gc_add(minishell, new);
+	gc_add(g_minishell, new);
 	while (s && s[i])
 	{
 		if (ft_isspace(s[i]))
@@ -39,7 +39,7 @@ char	*expand_without_space(char *s, int len, t_minishell *minishell)
 	return (new);
 }
 
-char	*avoid_spaces(char *s, t_minishell *minishell)
+char	*avoid_spaces(char *s)
 {
 	int	i;
 	int	len;
@@ -63,10 +63,10 @@ char	*avoid_spaces(char *s, t_minishell *minishell)
 			len++;
 		}
 	}
-	return (expand_without_space(s, len, minishell));
+	return (expand_without_space(s, len));
 }
 
-void	here_doc_expanding(char **s, t_minishell *minishell)
+void	here_doc_expanding(char **s)
 {
-	*s = avoid_spaces(helper_expander(*s, minishell), minishell);
+	*s = avoid_spaces(helper_expander(*s));
 }

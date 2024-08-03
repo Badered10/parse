@@ -6,61 +6,61 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 14:02:16 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/03 17:23:11 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 18:03:59 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-t_node	*redir_node_new(t_list *red_list, t_minishell *minishell)
+t_node	*redir_node_new(t_list *red_list)
 {
 	t_node	*new;
 
 	new = malloc(sizeof(t_node));
 	if (!new)
 		return (NULL);
-	gc_add(minishell, new);
+	gc_add(g_minishell, new);
 	new->type = REDIR_NODE;
 	new->data.redir = red_list;
 	new->data.redir->is_block = 0;
 	return (new);
 }
 
-t_node	*char_node_new(char c, t_minishell *minishell)
+t_node	*char_node_new(char c)
 {
 	t_node	*new;
 
 	new = malloc(sizeof(t_node));
 	if (!new)
 		return (NULL);
-	gc_add(minishell, new);
+	gc_add(g_minishell, new);
 	new->type = CHAR_NODE;
 	new->data.char_value = c;
 	return (new);
 }
 
-t_node	*string_node_new(t_list *list, t_minishell *minishell)
+t_node	*string_node_new(t_list *list)
 {
 	t_node	*new;
 
 	new = malloc(sizeof(t_node));
 	if (!new)
 		return (NULL);
-	gc_add(minishell, new);
+	gc_add(g_minishell, new);
 	new->type = STRING_NODE;
 	new->data.cmd = list;
 	new->data.cmd->is_block = 0;
 	return (new);
 }
 
-t_node	*pair_node_new(t_node *left, t_node *right, t_type type, t_minishell *minishell)
+t_node	*pair_node_new(t_node *left, t_node *right, t_type type)
 {
 	t_node	*new;
 
 	new = malloc(sizeof(t_node));
 	if (!new)
 		return (NULL);
-	gc_add(minishell, new);
+	gc_add(g_minishell, new);
 	new->type = PAIR_NODE;
 	new->data.pair.left = left;
 	new->data.pair.right = right;

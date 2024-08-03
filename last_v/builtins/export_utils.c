@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 14:40:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 16:08:09 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:41:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	print_env(t_env *env)
 	}
 }
 
-void	error_identifier(char **s, t_minishell *minishell)
+void	error_identifier(char **s)
 {
 	ft_putstr_fd(RED "badashell$ : export: `", 2);
 	if (s[0])
@@ -38,11 +38,11 @@ void	error_identifier(char **s, t_minishell *minishell)
 	if (s[1])
 		ft_putstr_fd(s[1], 2);
 	ft_putstr_fd("`: not a valid identifier.\n" RESET, 2);
-	set_env_var(minishell->our_env, "?", "2");
-	minishell->exit_s = 2;
+	set_env_var(g_minishell->our_env, "?", "2");
+	g_minishell->exit_s = 2;
 }
 
-int	check_identifier(char **s, int join_flag, t_minishell *minishell)
+int	check_identifier(char **s, int join_flag)
 {
 	int	i;
 
@@ -52,7 +52,7 @@ int	check_identifier(char **s, int join_flag, t_minishell *minishell)
 	if (ft_isalpha(s[0][0]) || !ft_strncmp(&s[0][0], "_", 1))
 		i++;
 	else
-		return (error_identifier(s, minishell), -1);
+		return (error_identifier(s), -1);
 	while (ft_isalnum(s[0][i]) || !ft_strncmp(&s[0][i], "_", 1))
 		i++;
 	if (join_flag == 1 && s[0][i] == '+')
@@ -60,7 +60,7 @@ int	check_identifier(char **s, int join_flag, t_minishell *minishell)
 	else if (join_flag == 0 && !s[0][i])
 		return (0);
 	else
-		return (error_identifier(s, minishell), -1);
+		return (error_identifier(s), -1);
 }
 
 t_env	*sort_env(t_env *env)

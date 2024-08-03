@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:46:08 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 15:50:25 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:41:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ t_env	*dup_env(char **env)
 	return (head);
 }
 
-t_env	*special_dup_env(t_minishell *minishell)
+t_env	*special_dup_env(void)
 {
 	t_env	*head;
 	t_env	*pwd;
@@ -88,12 +88,12 @@ t_env	*special_dup_env(t_minishell *minishell)
 
 	head = NULL;
 	cwd = getcwd(NULL, 0);
-	gc_add(minishell, cwd);
+	gc_add(g_minishell, cwd);
 	pwd = (t_env *)malloc(sizeof(t_env));
 	shlvl = (t_env *)malloc(sizeof(t_env));
 	underscore = (t_env *)malloc(sizeof(t_env));
-	gc_add(minishell, shlvl);
-	gc_add(minishell, underscore);
+	gc_add(g_minishell, shlvl);
+	gc_add(g_minishell, underscore);
 	if (!pwd || !shlvl || !underscore)
 		return (NULL);
 	pwd->key = ft_strdup("PWD");
@@ -104,5 +104,7 @@ t_env	*special_dup_env(t_minishell *minishell)
 	head = pwd;
 	add_env_var(head, "SHLVL", "1");
 	add_env_var(head, "_", "/usr/bin/env");
+	add_env_var(head, "OLDPWD", NULL);
+	set_as_invisible(head, "OLDPWD");
 	return (head);
 }

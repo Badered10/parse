@@ -3,34 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 20:33:35 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 17:19:02 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/29 13:23:34 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*new_value(char *s, int size, t_minishell *minishell)
+char	*new_value(char *s, int size)
 {
 	char	*new;
-	char	*tmp;
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	tmp = s;
-	new = ft_malloc(minishell, size);
+	new = ft_malloc(g_minishell, size);
 	if (!new)
 		return (NULL);
-	while (*tmp)
+	while (s[i])
 	{
-		if (*tmp == '$')
-			fill_dollar(tmp, new, &j, minishell);
+		if (s[i] == '$')
+			fill_dollar(s, &i, new, &j);
 		else
-			new[j++] = (*tmp)++;
+			new[j++] = s[i++];
 	}
 	new[j] = '\0';
 	if (!new[0])
@@ -38,7 +36,7 @@ char	*new_value(char *s, int size, t_minishell *minishell)
 	return (new);
 }
 
-char	*helper_expander(char *s, t_minishell *minishell)
+char	*helper_expander(char *s)
 {
 	char	*new;
 	int		len;
@@ -49,14 +47,14 @@ char	*helper_expander(char *s, t_minishell *minishell)
 	while (s[i])
 	{
 		if (s[i] == '$')
-			handle_dollar(s, &i, &len, minishell);
+			handle_dollar(s, &i, &len);
 		else
 		{
 			len++;
 			i++;
 		}
 	}
-	new = new_value(s, len + 1, minishell);
+	new = new_value(s, len + 1);
 	return (new);
 }
 

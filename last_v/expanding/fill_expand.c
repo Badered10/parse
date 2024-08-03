@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   fill_expand.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:38:26 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 17:13:41 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/29 13:22:56 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	search_and_copy(char *expand, char *new, int *k, t_minishell *minishell)
+void	search_and_copy(char *expand, char *new, int *j, int *k)
 {
 	char	*expanded;
 	char	*var;
@@ -20,7 +20,7 @@ void	search_and_copy(char *expand, char *new, int *k, t_minishell *minishell)
 
 	i = 0;
 	var = ft_substr(expand, 0, (*k));
-	expanded = get_env_var(minishell->our_env, var);
+	expanded = get_env_var(g_minishell->our_env, var);
 	free(var);
 	if (!expanded)
 		return ;
@@ -28,8 +28,8 @@ void	search_and_copy(char *expand, char *new, int *k, t_minishell *minishell)
 	{
 		while (expanded[i])
 		{
-			*new = expanded[i++];
-			(*new)++;
+			new[*j] = expanded[i++];
+			(*j)++;
 		}
 	}
 }
@@ -55,15 +55,18 @@ int	double_copy_case(char *expand)
 		|| ft_isnum(expand[1]));
 }
 
-void	fill_dollar(char *s, char *new, int *j, t_minishell *minishell)
+void	fill_dollar(char *s, int *i, char *new, int *j)
 {
 	char	*expand;
 	int		k;
 
-	expand = s;
+	expand = s + *i;
 	k = 0;
 	if (!ft_strncmp(&expand[1], "\0", 1))
-		return (new[(*j)++] = (*s)++, (void)0);
+	{
+		new[(*j)++] = s[(*i)++];
+		return ;
+	}
 	else if (!ft_strncmp(&expand[1], "?", 1) || !ft_strncmp(&expand[1], "_", 1))
 	{
 		k = 1;
@@ -71,12 +74,12 @@ void	fill_dollar(char *s, char *new, int *j, t_minishell *minishell)
 	}
 	else if (double_copy_case(expand))
 	{
-		new[(*j)++] = (*s)++;
-		new[(*j)++] = (*s)++;
+		new[(*j)++] = s[(*i)++];
+		new[(*j)++] = s[(*i)++];
 		return ;
 	}
 	else
 		general_case(&expand, &k);
-	s += k + 1;
-	search_and_copy(expand, &new[*j], &k, minishell);
+	(*i) += k + 1;
+	search_and_copy(expand, new, j, &k);
 }

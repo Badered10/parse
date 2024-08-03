@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   dollar_expand.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 09:08:32 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 17:18:37 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/25 19:07:39 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	handle_cases_len(char *expand, int *i, int *j, int *len)
 	return (0);
 }
 
-void	handle_dollar(char *s, int *i, int *len, t_minishell *minishell)
+void	handle_dollar(char *s, int *i, int *len)
 {
 	char	*expand;
 	char	*var;
@@ -59,7 +59,7 @@ void	handle_dollar(char *s, int *i, int *len, t_minishell *minishell)
 	if (handle_cases_len(expand, i, &j, len) == -1)
 		return ;
 	var = ft_substr(expand, 0, j);
-	env_len = check_env(var, minishell);
+	env_len = check_env(var);
 	free(var);
 	(*i) += j + 1;
 	if (env_len == -1)

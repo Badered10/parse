@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_helpers.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 15:37:10 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 15:51:25 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/29 12:17:14 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	free_line_of_env(t_env *current)
 	free(current);
 }
 
-void	delete_env_var(t_env **env, char *key, t_minishell *minishell)
+void	delete_env_var(t_env **env, char *key)
 {
 	t_env	*current;
 	t_env	*previous;
@@ -62,7 +62,7 @@ void	delete_env_var(t_env **env, char *key, t_minishell *minishell)
 	previous = NULL;
 	if (!ft_strncmp((*env)->key, key, ft_strlen(key)))
 	{
-		minishell->our_env = (*env)->next;
+		g_minishell->our_env = (*env)->next;
 		free_line_of_env(*env);
 		return ;
 	}

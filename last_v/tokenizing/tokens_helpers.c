@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   tokens_helpers.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 10:44:14 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 17:50:24 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/29 14:23:55 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	handle_special_case(t_token **tokens, t_token **current, t_minishell *minishell)
+void	handle_special_case(t_token **tokens, t_token **current)
 {
 	t_token	*tmp;
 
@@ -32,20 +32,20 @@ void	handle_special_case(t_token **tokens, t_token **current, t_minishell *minis
 		remove_token(tokens, (*current));
 		(*current) = tmp;
 		(*current)->value = ft_strdup("\0");
-		gc_add(minishell, (*current)->value);
+		gc_add(g_minishell, (*current)->value);
 		(*current)->type = WORD;
 		(*current) = (*current)->next;
 	}
 }
 
-void	join_tokens(t_token **tokens, t_token **current, t_minishell *minishell)
+void	join_tokens(t_token **tokens, t_token **current)
 {
 	t_token	*tmp;
 	char	*value;
 
 	value = ft_strjoin((*current)->prev->value, (*current)->next->value);
 	(*current)->prev->value = value;
-	gc_add(minishell, value);
+	gc_add(g_minishell, value);
 	tmp = (*current)->next->next;
 	remove_token(tokens, (*current));
 	remove_token(tokens, (*current)->next);
@@ -69,7 +69,7 @@ void	remove_it(t_token **tokens, t_token **current)
 	(*current) = tmp;
 }
 
-void	remove_quotes(t_minishell *minishell, t_token **tokens)
+void	remove_quotes(t_token **tokens)
 {
 	t_token	*current;
 
@@ -81,10 +81,10 @@ void	remove_quotes(t_minishell *minishell, t_token **tokens)
 			if (current->prev && current->next && current->prev->type == WORD
 				&& ft_strchr(current->prev->value, '=')
 				&& current->next->type == WORD)
-				join_tokens(tokens, &current, minishell);
+				join_tokens(tokens, &current);
 			else if (current->next && special_case(current->prev, current,
 					current->next))
-				handle_special_case(tokens, &current, minishell);
+				handle_special_case(tokens, &current);
 			else
 			{
 				remove_it(tokens, &current);

@@ -6,13 +6,13 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:13:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/03 17:26:29 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:23:55 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	do_here_docs(t_list *red_list, t_minishell *minishell)
+int	do_here_docs(t_list *red_list)
 {
 	t_redir	*new;
 
@@ -21,8 +21,8 @@ int	do_here_docs(t_list *red_list, t_minishell *minishell)
 		new = red_list->content;
 		if (new->type == LL_REDIR)
 		{
-			minishell->docs++;
-			new->fd = here_doc(new->file, new->hd_expand, minishell);
+			g_minishell->docs++;
+			new->fd = here_doc(new->file, g_minishell->docs, new->hd_expand);
 			if (new->fd < 0)
 				return (0);
 		}
@@ -63,7 +63,7 @@ int	output_to_dup(t_list *red_list)
 	return (fd);
 }
 
-void	run_doc_cmd(t_list *red_list, t_minishell *minishell)
+void	run_doc_cmd(t_list *red_list)
 {
 	t_list	*last;
 	t_redir	*new;
@@ -71,24 +71,23 @@ void	run_doc_cmd(t_list *red_list, t_minishell *minishell)
 	last = ft_lstlast(red_list);
 	new = last->content;
 	if (new->cmd)
-		executer(string_node_new(new->cmd, minishell), minishell);
+		executer(string_node_new(new->cmd));
 	else if (new->node)
-		executer(new->node, minishell);
+		executer(new->node);
 }
 
-int	scan_and_set(t_node *node, t_minishell *minishell)
+int	scan_and_set(t_node *node)
 {
-	minishell->exit_s = 0;
 	if (!node)
 		return (1);
 	if (node->type == PAIR_NODE)
 	{
-		if (!scan_and_set(node->data.pair.left, minishell))
+		if (!scan_and_set(node->data.pair.left))
 			return (0);
-		if (!scan_and_set(node->data.pair.right, minishell))
+		if (!scan_and_set(node->data.pair.right))
 			return (0);
 	}
 	else if (node->type == REDIR_NODE)
-		return (execute_docs(node->data.redir, minishell));
+		return (execute_docs(node->data.redir));
 	return (1);
 }

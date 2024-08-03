@@ -3,50 +3,48 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:22:14 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 18:36:36 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/28 18:45:00 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	cd_error(char *path, t_minishell *minishell)
+void	cd_error(char *path)
 {
 	ft_putstr_fd(RED "badashell$: cd: `", 2);
 	ft_putstr_fd(path, 2);
 	ft_putstr_fd("`: No such file or directory\n" RESET, 2);
-	minishell->exit_s = 1;
+	g_minishell->exit_s = 1;
 }
 
-int	cd_home(t_minishell *minishell)
+int	cd_home(t_minishell *mini)
 {
 	char	*home;
 
-	set_env_var(minishell->our_env, "OLDPWD", get_env_var(minishell->our_env, "PWD"));
-	home = get_env_var(minishell->our_env, "HOME");
+	set_env_var(mini->our_env, "OLDPWD", get_env_var(mini->our_env, "PWD"));
+	home = get_env_var(mini->our_env, "HOME");
 	if (!home)
 		return (print_errors("cd: HOME not set"), 1);
 	if (!chdir(home))
-		return (set_env_var(minishell->our_env, "PWD", home), 0);
+		return (set_env_var(mini->our_env, "PWD", home), 0);
 	return (1);
 }
 
-char	*custome_path(char *path, t_minishell *minishell)
+char	*custome_path(char *path)
 {
 	char	*new_path;
 	char	*home;
 	int		i;
 	int		j;
 
-	home = get_env_var(minishell->our_env, "HOME");
-	if(!home)
-		return(NULL);
+	home = get_env_var(g_minishell->our_env, "HOME");
 	new_path = malloc(sizeof(char) * (ft_strlen(home) + ft_strlen(path)));
 	if (!new_path)
 		print_errors("Allocation failed !");
-	gc_add(minishell, new_path);
+	gc_add(g_minishell, new_path);
 	if (!ft_strncmp(path, "~", ft_strlen(path)) || !ft_strncmp(path, "~/", 2))
 	{
 		i = -1;
@@ -62,27 +60,27 @@ char	*custome_path(char *path, t_minishell *minishell)
 	return (new_path);
 }
 
-void	ft_cd(char *path, t_minishell *minishell)
+void	ft_cd(t_minishell *mini, char *path)
 {
 	char	*cwd;
 
 	if (!path)
 	{
-		cd_home(minishell);
+		cd_home(mini);
 		return ;
 	}
 	if (chdir(path))
 	{
-		cd_error(path, minishell);
+		cd_error(path);
 		return ;
 	}
-	set_env_var(minishell->our_env, "OLDPWD", get_env_var(minishell->our_env, "PWD"));
+	set_env_var(mini->our_env, "OLDPWD", get_env_var(mini->our_env, "PWD"));
 	cwd = getcwd(NULL, 0);
-	gc_add(minishell, cwd);
+	gc_add(g_minishell, cwd);
 	if (!cwd)
 	{
 		print_errors("getcwd: unable to determine current directory.");
 		return ;
 	}
-	set_env_var(minishell->our_env, "PWD", cwd);
+	set_env_var(mini->our_env, "PWD", cwd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export_handlers.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/29 11:25:23 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 16:08:33 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/29 12:16:31 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,29 +50,29 @@ char	**split_string(char *str, char delimiter)
 	return (result);
 }
 
-int	process_equal(char **args, int i, t_minishell *minishell)
+int	process_equal(char **args, int i)
 {
 	char	**split;
 
 	split = split_string(args[i], '=');
 	if (!split)
 		return (print_errors("Split failed in process equal !"), -1);
-	if (check_identifier(split, 0, minishell) == -1)
+	if (check_identifier(split, 0) == -1)
 		return (free_split(split), -1);
-	if (get_env_var(minishell->our_env, split[0]))
+	if (get_env_var(g_minishell->our_env, split[0]))
 	{
-		set_as_visible(minishell->our_env, split[0]);
-		set_as_exported(minishell->our_env, split[0]);
+		set_as_visible(g_minishell->our_env, split[0]);
+		set_as_exported(g_minishell->our_env, split[0]);
 		if (split[1])
-			set_env_var(minishell->our_env, split[0], split[1]);
+			set_env_var(g_minishell->our_env, split[0], split[1]);
 	}
 	else
 	{
 		if (!split[1])
-			add_env_var(minishell->our_env, split[0], "\0");
+			add_env_var(g_minishell->our_env, split[0], "\0");
 		else
-			add_env_var(minishell->our_env, split[0], split[1]);
-		set_as_exported(minishell->our_env, split[0]);
+			add_env_var(g_minishell->our_env, split[0], split[1]);
+		set_as_exported(g_minishell->our_env, split[0]);
 	}
 	return (free_split(split), 0);
 }

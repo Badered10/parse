@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 09:20:20 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 18:15:43 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/29 10:50:12 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,20 @@ void	clear_ast(t_node *tree)
 	}
 }
 
-char	*ft_malloc(t_minishell *minishell, size_t size)
+char	*ft_malloc(t_minishell *mini, size_t size)
 {
 	char	*memory;
 
 	memory = malloc(size);
 	if (!memory)
 		return (perror("Malloc failed!"), NULL);
-	gc_add(minishell, memory);
+	gc_add(mini, memory);
 	return (memory);
 }
 
-void	cleanup_minishell(t_minishell *minishell)
+void	cleanup_minishell(void)
 {
-	close(minishell->stdin);
-	close(minishell->stdout);
-	clear_env(minishell->our_env);
-	gc_free_all(minishell);
-	free(minishell);
+	clear_env(g_minishell->our_env);
+	gc_free_all(g_minishell);
+	free(g_minishell);
 }

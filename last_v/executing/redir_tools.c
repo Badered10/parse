@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/03 17:24:37 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/07/27 23:53:46 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ bool	check_name(t_redir *new)
 		return (print_err("no such file or directory", new->file), 1);
 }
 
-int	is_ambiguous(t_redir *new, int flag, t_minishell *minishell)
+int	is_ambiguous(t_redir *new, int flag)
 {
 	t_list	*asterisk;
 	char	*val;
@@ -75,7 +75,7 @@ int	is_ambiguous(t_redir *new, int flag, t_minishell *minishell)
 	asterisk = NULL;
 	if (ft_strchr(new->file, '$'))
 	{
-		val = helper_expander(new->file, minishell);
+		val = helper_expander(new->file);
 		size = count_words(val);
 		if (size == 1 || !size)
 		{
@@ -90,7 +90,7 @@ int	is_ambiguous(t_redir *new, int flag, t_minishell *minishell)
 	}
 	else if (ft_strchr(new->file, '*'))
 	{
-		asterisk = asterisk_functionality(new->file, minishell);
+		asterisk = asterisk_functionality(new->file);
 		size = ft_lstsize(asterisk);
 		if (size == 1 || !size)
 		{
@@ -106,18 +106,18 @@ int	is_ambiguous(t_redir *new, int flag, t_minishell *minishell)
 	return (0);
 }
 
-int	open_redir(t_redir *redir, t_minishell *minishell)
+int	open_redir(t_redir *redir)
 {
-	if (!is_ambiguous(redir, redir->hd_expand, minishell))
+	if (!is_ambiguous(redir, redir->hd_expand))
 	{
 		redir->fd = open(redir->file, redir->mode, 0644);
 		return (1);
 	}
-	minishell->exit_s = 1;
+	g_minishell->exit_s = 1;
 	return (0);
 }
 
-int	open_and_set(t_list *red_list, t_minishell *minishell)
+int	open_and_set(t_list *red_list)
 {
 	t_redir	*new;
 
@@ -126,7 +126,7 @@ int	open_and_set(t_list *red_list, t_minishell *minishell)
 		new = red_list->content;
 		if (new->type != LL_REDIR)
 		{
-			if (!open_redir(new, minishell))
+			if (!open_redir(new))
 				return (0);
 		}
 		red_list = red_list->next;
@@ -168,5 +168,5 @@ int	open_and_set(t_list *red_list, t_minishell *minishell)
 // }
 // else if (size > 1)
 // 	print_err("A- ambiguous redirect", new->file);
-// minishell->exit_s = 1;
+// g_minishell->exit_s = 1;
 // return (1);

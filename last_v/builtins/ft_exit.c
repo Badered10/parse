@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 19:18:18 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 15:43:56 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:26:25 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@ int	is_out_of_range(const char *str)
 	const char	*neg_limit = "-9223372036854775808";
 	size_t		len;
 
-	len = strlen(str);
+	if (!str)
+		return (0);
+	len = ft_strlen(str);
 	if (str[0] == '-')
 	{
 		if (len > 20)
@@ -41,22 +43,22 @@ int	is_out_of_range(const char *str)
 	return (0);
 }
 
-void	ft_exit(char *args, int print, t_minishell *minishell)
+void	ft_exit(char *args, int print)
 {
 	int	exit_status;
 
-	exit_status = minishell->exit_s;
+	exit_status = g_minishell->exit_s;
 	if (args)
 	{
 		exit_status = ft_atoi(args);
 	}
 	if (print)
 		ft_putstr_fd("exit\n", 1);
-	if (is_out_of_range(args))
+	if (args && is_out_of_range(args))
 	{
 		print_exit_error(args);
 		exit(2);
 	}
-	cleanup_minishell(minishell);
+	cleanup_minishell();
 	exit(exit_status);
 }

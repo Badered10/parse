@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/25 14:34:18 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 15:58:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/02 17:42:46 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	sec_is_num(char *s)
 	return (0);
 }
 
-int	process_exit(char **args, t_minishell *minishell)
+int	process_exit(char **args)
 {
 	if (nb_args(args) > 2)
 	{
@@ -40,18 +40,18 @@ int	process_exit(char **args, t_minishell *minishell)
 		if (sec_is_num(args[1]))
 		{
 			print_errors("exit : too many arguments.");
-			minishell->exit_s = 1;
+			g_minishell->exit_s = 1;
 		}
 		else
 		{
 			print_exit_error(args[1]);
-			minishell->exit_s = 2;
-			ft_exit("2", 0, minishell);
+			g_minishell->exit_s = 2;
+			ft_exit("2", 0);
 		}
 		return (0);
 	}
 	else
-		ft_exit(args[1], 1, minishell);
-	minishell->exit_s = 0;
+		ft_exit(args[1], 1);
+	g_minishell->exit_s = 0;
 	return (1);
 }

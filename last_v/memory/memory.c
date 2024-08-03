@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 09:20:20 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 15:37:00 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:15:43 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ char	*ft_malloc(t_minishell *minishell, size_t size)
 
 void	cleanup_minishell(t_minishell *minishell)
 {
+	close(minishell->stdin);
+	close(minishell->stdout);
 	clear_env(minishell->our_env);
 	gc_free_all(minishell);
 	free(minishell);

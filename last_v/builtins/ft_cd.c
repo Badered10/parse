@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:22:14 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 16:11:20 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:36:36 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ char	*custome_path(char *path, t_minishell *minishell)
 	int		j;
 
 	home = get_env_var(minishell->our_env, "HOME");
+	if(!home)
+		return(NULL);
 	new_path = malloc(sizeof(char) * (ft_strlen(home) + ft_strlen(path)));
 	if (!new_path)
 		print_errors("Allocation failed !");

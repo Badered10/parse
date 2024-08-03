@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 22:12:44 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 17:21:04 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:08:07 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	fill_tokens(t_token *current, char *new_value, t_minishell *minishell)
 			while (new_value[i] && !ft_isspace(new_value[i]))
 				i++;
 			chunk = ft_substr(new_value, j, (i - j));
-			new_tok = new_token(chunk, WORD);
+			new_tok = new_token(chunk, WORD, minishell);
 			add_token_middle(&minishell->tokens, new_tok, current->prev);
 			current = new_tok->next;
 		}

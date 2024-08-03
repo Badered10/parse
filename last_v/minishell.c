@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 17:42:18 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 18:27:25 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,10 +169,33 @@ void	ft_readline(t_minishell *minishell)
 		add_history(minishell->line);
 }	
 
+void clean_fds(t_node *ast)
+{
+	t_list *red_lst;
+	t_redir *red;
+
+	if(ast->type == PAIR_NODE)
+	{
+		clean_fds(ast->data.pair.left);
+		clean_fds(ast->data.pair.right);
+	}
+	else if(ast->type == REDIR_NODE)
+	{
+		red_lst = ast->data.redir;
+		while(red_lst)
+		{
+			red = red_lst->content;
+			close(red->fd);
+			red_lst = red_lst->next;
+		}
+	}
+}
+
 void	clean_and_set(t_minishell *minishell)
 {
 	char	*exit_stat;
 
+	clean_fds(minishell->ast);
 	dup2(minishell->stdout, 1);
 	dup2(minishell->stdin, 0);
 	gc_free_all(minishell);

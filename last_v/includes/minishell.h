@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/31 20:10:13 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 13:27:04 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ typedef struct s_minishell
 }					t_minishell;
 
 extern t_minishell	*g_minishell;
+
+int wait_last(void);
 
 // Function that handle the left side of a pipe.
 void				pipe_left(t_node *node, int *pfd, bool mode);

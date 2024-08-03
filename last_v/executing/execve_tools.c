@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:09:20 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/30 17:37:48 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:18:10 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	fd_duper(int *pfd, int mode)
 	}
 }
 
-char	*get_command(char *argv)
+char	*get_command(char *argv, t_minishell *minishell)
 {
 	char	*cmd;
 	int		i;
@@ -57,7 +57,7 @@ char	*get_command(char *argv)
 	while (!ft_isspace(argv[i]) && argv[i] != '\0')
 		i++;
 	cmd = malloc(i + 1);
-	gc_add(g_minishell, cmd);
+	gc_add(minishell, cmd);
 	if (!cmd)
 	{
 		perror("malloc");

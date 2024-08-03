@@ -6,14 +6,14 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 13:40:29 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 17:42:18 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/minishell.h"
 #include "libft/libft.h"
 
-t_minishell	*g_minishell;
+int	g_sig;
 
 /* Terminal Color */
 
@@ -113,127 +113,119 @@ void	print_tokens(t_token *tokens)
 	}
 }
 
-void	increment_shlvl(void)
+void	increment_shlvl(t_minishell *minishell)
 {
 	char	*shlvl;
 	char	*new_shlvl;
 	int		tmp;
 
-	shlvl = get_env_var(g_minishell->our_env, "SHLVL");
+	shlvl = get_env_var(minishell->our_env, "SHLVL");
 	if (!shlvl)
 		return ;
 	tmp = ft_atoi(shlvl) + 1;
 	new_shlvl = ft_itoa(tmp);
-	gc_add(g_minishell, new_shlvl);
-	set_env_var(g_minishell->our_env, "SHLVL", new_shlvl);
+	gc_add(minishell, new_shlvl);
+	set_env_var(minishell->our_env, "SHLVL", new_shlvl);
 }
 
-int	init_minishell(char **env)
+int	init_minishell(char **env , t_minishell **minishell)
 {
-	g_minishell = malloc(sizeof(t_minishell));
-	if (!g_minishell)
+	*minishell = malloc(sizeof(t_minishell));
+	if (!*minishell)
 		return (0);
-	ft_bzero(g_minishell, sizeof(t_minishell));
-	g_minishell->stdin = dup(0);
-	g_minishell->stdout = dup(1);
+	ft_bzero(*minishell, sizeof(t_minishell));
+	(*minishell)->stdin = dup(0);
+	(*minishell)->stdout = dup(1);
 	if (env && *env)
 	{
-		g_minishell->our_env = dup_env(env);
-		increment_shlvl();
+		(*minishell)->our_env = dup_env(env);
+		increment_shlvl(*minishell);
 	}
 	else
-	{
-		g_minishell->our_env = special_dup_env();
-	}
-	add_env_var(g_minishell->our_env, "?", "0");
-	set_as_invisible(g_minishell->our_env, "?");
-	set_as_unexported(g_minishell->our_env, "?");
-	set_env_var(g_minishell->our_env, "_", "]") ;
-	set_as_unexported(g_minishell->our_env, "_");
+		(*minishell)->our_env = special_dup_env(*minishell);
+	add_env_var((*minishell)->our_env, "?", "0");
+	set_as_invisible((*minishell)->our_env, "?");
+	set_as_unexported((*minishell)->our_env, "?");
+	set_env_var((*minishell)->our_env, "_", "]") ;
+	set_as_unexported((*minishell)->our_env, "_");
 	signals();
 	return (1);
 }
 
-void	ft_readline(void)
+void	ft_readline(t_minishell *minishell)
 {
-	int	exit_status;
-
-	exit_status = 0;
-	g_minishell->lines++;
-	g_minishell->docs = 0;
-	g_minishell->exit_s = 0;
-	g_minishell->line = readline(PROMPT);
-	gc_add(g_minishell, g_minishell->line);
-	if (!g_minishell->line)
+	minishell->lines++;
+	minishell->docs = 0;
+	// minishell->exit_s = 0;
+	minishell->line = readline(PROMPT);
+	gc_add(minishell, minishell->line);
+	if (!minishell->line)
 	{
-		g_minishell->exit_s = 0;
-		exit_status = 0;
 		ft_putstr_fd("exit\n", 1);
-		clear_env(g_minishell->our_env);
-		gc_free_all(g_minishell);
-		free(g_minishell);
-		exit(exit_status);
+		cleanup_minishell(minishell);
+		exit(0);
 	}
-	if (g_minishell->line[0])
-		add_history(g_minishell->line);
+	if (minishell->line[0])
+		add_history(minishell->line);
 }	
 
-void	clean_and_set(void)
+void	clean_and_set(t_minishell *minishell)
 {
 	char	*exit_stat;
 
-	dup2(g_minishell->stdout, 1);
-	dup2(g_minishell->stdin, 0);
-	gc_free_all(g_minishell);
-	unlink_docs(g_minishell->docs);
-	exit_stat = ft_itoa(g_minishell->exit_s);
-	set_env_var(g_minishell->our_env, "?", exit_stat);
+	dup2(minishell->stdout, 1);
+	dup2(minishell->stdin, 0);
+	gc_free_all(minishell);
+	unlink_docs(minishell->docs);
+	exit_stat = ft_itoa(minishell->exit_s);
+	set_env_var(minishell->our_env, "?", exit_stat);
 	free(exit_stat);
 }
-int wait_last(void)
+int wait_last(t_minishell *minishell)
 {
 	int		fail;
 	int		x;
 	char	*exit;
 
 	fail = -1;
-	fail = waitpid(g_minishell->last_child, &x, 0);
+	fail = waitpid(minishell->last_child, &x, 0);
 	if (WIFEXITED(x))
-		g_minishell->exit_s = WEXITSTATUS(x);
-	exit = ft_itoa(g_minishell->exit_s);
-	set_env_var(g_minishell->our_env, "?", exit);
+		minishell->exit_s = WEXITSTATUS(x);
+	exit = ft_itoa(minishell->exit_s);
+	set_env_var(minishell->our_env, "?", exit);
 	return (free(exit), fail);
 }
 
 int	main(int argc, char **argv, char **env)
 {
+	t_minishell	*minishell;
 	(void)argc, (void)argv;
 	
-	if (!init_minishell(env))
+	if (!init_minishell(env, &minishell))
 		return (1);
 	while (1)
 	{
 		signals();
-		ft_readline();
-		g_minishell->tokens = tokenizer();
-		if (!g_minishell->tokens || syntax() == -1)
+		ft_readline(minishell);
+		minishell->tokens = tokenizer(minishell);
+		if (!minishell->tokens || syntax(minishell) == -1)
 			continue ;
-		g_minishell->ast = parsing();
-		if (!g_minishell->ast)
+		minishell->ast = parsing(minishell);
+		if (!minishell->ast)
 			continue ;
-		print_ast("", g_minishell->ast, false);
+		print_ast("", minishell->ast, false);
 		signal(SIGQUIT, ft_sigquit);
 		signal(SIGINT, ft_sigint);
-		if(scan_and_set(g_minishell->ast))
-			executer(g_minishell->ast);
+		if(scan_and_set(minishell->ast, minishell))
+			executer(minishell->ast, minishell);
 			
-		dup2(g_minishell->stdout, 1);
-		dup2(g_minishell->stdin, 0);
-		wait_last();
+		dup2(minishell->stdout, 1);
+		dup2(minishell->stdin, 0);
+		wait_last(minishell);
 		while(waitpid(-1, NULL, 0) != -1)
 			;
-		clean_and_set();
+		clean_and_set(minishell);
 	}
-	cleanup_minishell();
+	cleanup_minishell(minishell);
 	return (0);
 }

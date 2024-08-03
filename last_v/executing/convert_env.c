@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:17:38 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/19 18:51:54 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:13:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	env_size(t_env *env)
 	return (size);
 }
 
-char	**env_to_envp(t_env *env)
+char	**env_to_envp(t_env *env, t_minishell *minishell)
 {
 	char	**argv;
 	char	*tmp;
@@ -38,14 +38,14 @@ char	**env_to_envp(t_env *env)
 	argv = malloc(sizeof(char *) * (size + 1));
 	if (!argv)
 		return (NULL);
-	gc_add(g_minishell, argv);
+	gc_add(minishell, argv);
 	while (i < size)
 	{
 		tmp = ft_strjoin(env->key, "=");
 		argv[i] = ft_strjoin(tmp, env->value);
 		if (!argv[i])
-			return (gc_free_all(g_minishell), NULL);
-		gc_add(g_minishell, argv[i]);
+			return (gc_free_all(minishell), NULL);
+		gc_add(minishell, argv[i]);
 		free(tmp);
 		env = env->next;
 		i++;
@@ -54,7 +54,7 @@ char	**env_to_envp(t_env *env)
 	return (argv);
 }
 
-char	**list_to_argv(t_list *list)
+char	**list_to_argv(t_list *list, t_minishell *minishell)
 {
 	char	**argv;
 	int		size;
@@ -67,15 +67,15 @@ char	**list_to_argv(t_list *list)
 	size = ft_lstsize(list);
 	argv = malloc(sizeof(char *) * (size + 1));
 	if (!argv)
-		return (gc_free_all(g_minishell), NULL);
-	gc_add(g_minishell, argv);
+		return (gc_free_all(minishell), NULL);
+	gc_add(minishell, argv);
 	while (i < size)
 	{
 		len = ft_strlen(list->content) + 1;
 		argv[i] = malloc(sizeof(char) * len);
 		if (!argv[i])
-			return (gc_free_all(g_minishell), NULL);
-		gc_add(g_minishell, argv[i]);
+			return (gc_free_all(minishell), NULL);
+		gc_add(minishell, argv[i]);
 		ft_memmove(argv[i++], list->content, len);
 		list = list->next;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage_collector.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/14 09:22:45 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/12 19:18:18 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/03 15:35:15 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	small_add_back(t_gc **gc, t_gc *new_node)
 		*gc = new_node;
 }
 
-void	gc_add(t_minishell *mini, void *ptr)
+void	gc_add(t_minishell *minishell, void *ptr)
 {
 	t_gc	*new_node;
 
@@ -39,15 +39,15 @@ void	gc_add(t_minishell *mini, void *ptr)
 	}
 	new_node->ptr = ptr;
 	new_node->next = NULL;
-	small_add_back(&mini->gc, new_node);
+	small_add_back(&minishell->gc, new_node);
 }
 
-void	gc_free_all(t_minishell *mini)
+void	gc_free_all(t_minishell *minishell)
 {
 	t_gc	*current;
 	t_gc	*next;
 
-	current = mini->gc;
+	current = minishell->gc;
 	while (current)
 	{
 		next = current->next;
@@ -55,5 +55,5 @@ void	gc_free_all(t_minishell *mini)
 		free(current);
 		current = next;
 	}
-	mini->gc = NULL;
+	minishell->gc = NULL;
 }

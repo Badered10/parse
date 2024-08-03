@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 19:18:18 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/29 10:54:41 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/03 15:43:56 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,11 @@ int	is_out_of_range(const char *str)
 	return (0);
 }
 
-void	ft_exit(char *args, int print)
+void	ft_exit(char *args, int print, t_minishell *minishell)
 {
 	int	exit_status;
 
-	exit_status = g_minishell->exit_s;
+	exit_status = minishell->exit_s;
 	if (args)
 	{
 		exit_status = ft_atoi(args);
@@ -57,6 +57,6 @@ void	ft_exit(char *args, int print)
 		print_exit_error(args);
 		exit(2);
 	}
-	cleanup_minishell();
+	cleanup_minishell(minishell);
 	exit(exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/03 13:27:04 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 17:57:06 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,20 +63,83 @@ typedef struct s_minishell
 	int				lines;
 	int				stdin;
 	int				stdout;
+	bool			mode;
 }					t_minishell;
 
-extern t_minishell	*g_minishell;
+extern int	g_sig;
 
-int wait_last(void);
+int	open_hidden_file(int doc_num);
+
+int wait_last(t_minishell *minishell);
+
+
+/* Tokenizer_utils */
+
+// Function that checks if the character is a quote.
+int					is_special(char c);
+
+// Function that checks if the character is a separator.
+int					is_separator(char *s);
+
+// Function that check for a special case.
+int					special_case(t_token *prev, t_token *curr, t_token *next);
+
+/* Tokenizer_helpers */
+
+// Function that create and return a new token node.
+t_token				*new_token(char *value, t_type type, t_minishell *minishell);
+
+// Function that add a new token to the list of tokens.
+void				add_token_back(t_token **tokens, t_token *new_token, t_minishell *minishell);
+
+// Function that append the separator to the list of tokens.
+int					append_separator(t_token **tokens, char **line,
+						t_type type, t_minishell *minishell);
+
+// Function that append other tokens to the list of tokens.
+int					append_identifier(t_token **tokens, char **line, t_minishell *minishell);
+
+// Function that append the space to the list of tokens.
+int					append_space(t_token **tokens, char **line, t_minishell *minishell);
+
+/* Tokens_helpers */
+
+// Function that removes a token from the list of tokens.
+void				remove_token(t_token **head, t_token *token);
+
+// Function that removes all whitespaces from the list of tokens.
+void				remove_whitespaces(t_token **tokens);
+
+/* Tokenizer_free */
+
+// Function that clear list of tokens.
+void				clear_token(t_token **tokens);
+
+// Function that specifie the the type of the token.
+t_token				*choose_token(char *value, char c, t_minishell *minishell);
+
+// Function that append quote token to the list of token.
+int					add_quote(t_token **tokens, char **line, t_minishell *minishell);
+
+// Function that return if the character is a quote or not.
+int					is_quote(char c);
+
+// Function that add a token in the midlle of a list.
+void				add_token_middle(t_token **tokens, t_token *new_token,
+						t_token *prev_token);
+
+
+// Function that removes all quotes from the list of tokens.
+void				remove_quotes(t_minishell *minishell, t_token **tokens);
 
 // Function that handle the left side of a pipe.
-void				pipe_left(t_node *node, int *pfd, bool mode);
+void				pipe_left(t_node *node, int *pfd, t_minishell *minishell);
 
 // Function that handle the right side of a pipe.
-void				pipe_right(t_node *node, int *pfd, bool mode);
+void				pipe_right(t_node *node, int *pfd, t_minishell *minishell);
 
 // Function that remove null nodes.
-void				remove_null(t_node **res);
+void				remove_null(t_node **res, t_minishell *minishell);
 
 // Function for debugging.
 void				print_ast(const char *prefix, t_node *root, bool isLeft);
@@ -91,13 +154,13 @@ char				*build_file_name(char *join);
 int					ft_isnum(int c);
 
 // Function that process and run exit builtin.
-int					process_exit(char **args);
+int					process_exit(char **args, t_minishell *minishell);
 
 // Function that return number of argument.
 int					nb_args(char **args);
 
 // Funcion that handle space case in expanded tokens.
-void				handle_space(t_token *tokens, char *new_value);
+void				handle_space(t_token *tokens, char *new_value, t_minishell *minishell);
 
 // Function that count how many word is in a string.
 size_t				count_words(char *s);
@@ -106,34 +169,34 @@ size_t				count_words(char *s);
 void				check_hd_expand(t_token *tokens);
 
 // Function that fill return the new_value after expand.
-void				fill_dollar(char *s, int *i, char *new, int *j);
+void				fill_dollar(char *s, char *new, int *j, t_minishell *minishell);
 /* Builtins */
 
 // Function that change current working directory "cd".
-void				ft_cd(t_minishell *mini, char *path);
+void				ft_cd(char *path, t_minishell *minishell);
 
 // Function that prints the input with/without newline "echo".
-void				ft_echo(char **args);
+void				ft_echo(char **args, t_minishell *minishell);
 
 // Function that prints the env "env".
-void				ft_env(t_env *env);
+void				ft_env(t_env *env, t_minishell *minishell);
 
 // Function that exit shell "exit".
-void				ft_exit(char *args, int print);
+void				ft_exit(char *args, int print, t_minishell *minishell);
 
 // Function that export variable to the environment "export".
-void				ft_export(char **args, int nb_args);
+void				ft_export(char **args, int nb_args, t_minishell *minishell);
 
 // Function that prints current working directory "pwd".
-void				ft_pwd(t_env *env);
+void				ft_pwd(t_env *env, t_minishell *minishell);
 
 // Function that unset environment variable "unset".
-void				ft_unset(char *key);
+void				ft_unset(char *key, t_minishell *minishell);
 
 /* Builtins utils */
 
 // Function that execute the builtins.
-void				execute_builtins(t_minishell *mini, char **args);
+void				execute_builtins(t_minishell *minishell, char **args);
 
 // Function that checks if the command is a builtin or not.
 bool				ft_is_builtin(char *arg);
@@ -148,7 +211,7 @@ void				print_env(t_env *env);
 t_env				*sort_env(t_env *env);
 
 // Function that expand tild "~".
-char				*custome_path(char *path);
+char				*custome_path(char *path, t_minishell *minishell);
 
 // Function that find the first occurence of the delimiter.
 int					find_delimiter(const char *str, char delimiter);
@@ -157,7 +220,7 @@ int					find_delimiter(const char *str, char delimiter);
 char				**split_string(char *str, char delimiter);
 
 // Function used while processing the export builtin.
-int					process_equal(char **args, int i);
+int					process_equal(char **args, int i, t_minishell *minishell);
 
 // Function that print the exit error case.
 void				print_exit_error(char *msg);
@@ -177,6 +240,12 @@ void				set_as_visible(t_env *env, char *var);
 // Set the env variable as invisible.
 void				set_as_invisible(t_env *env, char *var);
 
+// Function that print export identifier error.
+void	error_identifier(char **s, t_minishell *minishell);
+
+// Function that check the export identifier.
+int		check_identifier(char **s, int join_flag, t_minishell *minishell);
+
 /* Environments */
 
 // Function that set environment variable.
@@ -195,31 +264,30 @@ void				add_env_var(t_env *env, char *key, char *value);
 void				clear_env(t_env *env);
 
 // Function that remove an element from the env.
-void				delete_env_var(t_env **env, char *key);
+void				delete_env_var(t_env **env, char *key, t_minishell *minishell);
 
 // In case env is unset, this function set the env.
-t_env				*special_dup_env(void);
+t_env				*special_dup_env(t_minishell *minishell);
 
 /* Executing */
 
 // Main function that execute the user input.
-void				executer(t_node *node);
+void				executer(t_node *node, t_minishell *minishell);
 
 // Main function that handle here_doc.
-int					here_doc(char *limiter, int doc_num, int expand_flag);
+int					here_doc(char *limiter, int expand_flag, t_minishell *minishell);
 
 // Helper function for handling here_doc.
-void				do_here_doc(char *limiter, int fd, int *pipe,
-						int expand_flag);
+void				do_here_doc(char *limiter, int *pipe, int expand_flag, t_minishell *minishell);
 
 // Function that return the size of the env.
 int					env_size(t_env *env);
 
 // Function that return the env to a double pointer char.
-char				**env_to_envp(t_env *env);
+char				**env_to_envp(t_env *env, t_minishell *minishell);
 
 // Function that return the list of command to a double pointer char.
-char				**list_to_argv(t_list *list);
+char				**list_to_argv(t_list *list, t_minishell *minishell);
 
 // Function that open pipes fds.
 void				open_pipe(int *pfd);
@@ -231,13 +299,13 @@ int					dup_2(int old_fd, int new_fd);
 void				fd_duper(int *pfd, int mode);
 
 // Function that get the command.
-char				*get_command(char *argv);
+char				*get_command(char *argv, t_minishell *minishell);
 
 // Function that join the command with it's path.
 char				*add_slash_cmd(char *path, char *cmd);
 
 // Function that IDK XD.
-int					do_here_docs(t_list *red_list);
+int					do_here_docs(t_list *red_list, t_minishell *minishell);
 
 // Function that IDK XD.
 int					input_to_dup(t_list *red_list);
@@ -246,13 +314,13 @@ int					input_to_dup(t_list *red_list);
 int					output_to_dup(t_list *red_list);
 
 // Function that IDK XD.
-void				run_doc_cmd(t_list *red_list);
+void				run_doc_cmd(t_list *red_list, t_minishell *minishell);
 
 // Function that IDK XD.
-int					open_redir(t_redir *redir);
+int					open_redir(t_redir *redir, t_minishell *minishell);
 
 // Function that IDK XD.
-int					open_and_set(t_list *red_list);
+int					open_and_set(t_list *red_list, t_minishell *minishell);
 
 // Function that print errors with an argument.
 int					print_err(char *message, char *word);
@@ -264,46 +332,46 @@ int					strings_count(char **str);
 void				free_double(char **ptr);
 
 // Function that check split returned value.
-char				*founded_cmd(char *argv, char **paths, char **cmd);
+char				*founded_cmd(char *argv, char **paths, char **cmd, t_minishell *minishell);
 
 // Function that get the path from the environment.
-char				**get_env_paths(void);
+char				**get_env_paths(t_minishell *minishell);
 
 // Function that check split returned value.
-char				*get_fullpath(char *argv);
+char				*get_fullpath(char *argv, t_minishell *minishell);
 
 // Function that check for the cmd.
-int					check_cmd(char *argv);
+int					check_cmd(char *argv, t_minishell *minishell);
 
 // Function that call and execute execve.
-void				call_execev(char **env, char *argv, char **cmd);
+void				call_execev(char **env, char *argv, char **cmd, t_minishell *minishell);
 
 // Function that is called when maslloc failed.
 int					ft_malloc_error(char **tab, size_t i);
 
 // Function that IDK XD.
-int					wait_and_get(void);
+int					wait_and_get(t_minishell *minishell);
 
 // Function that IDK XD.
-void				do_cmd(t_node *ast);
+void				do_cmd(t_node *ast, t_minishell *minishell);
 
 // Function that do pipe process.
-void				do_pipe(t_node *cmd, int mode, int *pfd);
+void				do_pipe(t_node *cmd, int mode, int *pfd, t_minishell *minishell);
 
 // Function that execute a command.
-void				execute_cmd(t_node *node);
+void				execute_cmd(t_node *node, t_minishell *minishell);
 
 // Function that IDK XD.
-int					scan_and_set(t_node *node);
+int					scan_and_set(t_node *node, t_minishell *minishell);
 
 // Function that IDK XD.
-int					execute_docs(t_list *red_list);
+int					execute_docs(t_list *red_list, t_minishell *minishell);
 
 // Function that unlink here documents.
 void				unlink_docs(int docs);
 
 // Function that read and fill here_doc buffer.
-void				read_buf(char **buf, int expand_flag);
+void				read_buf(char **buf, int expand_flag, t_minishell *minishell);
 
 // Function that IDK XD.
 int					write_or_break(int fd, char *limiter, char *buf, int count);
@@ -311,34 +379,34 @@ int					write_or_break(int fd, char *limiter, char *buf, int count);
 /* Expanding */
 
 // Main function to do expand.
-void				expanding(void);
+void				expanding(t_minishell *minishell);
 
 // Function that expand inside the expanding.
-void				here_doc_expanding(char **s);
+void				here_doc_expanding(char **s, t_minishell *minishell);
 
 // Function that return a list of nodes containing dollar expanding.
-t_list				*dollar_functionality(char **s);
+t_list				*dollar_functionality(char **s, t_minishell *minishell);
 
 // Function that return a list of nodes containing asterisk expanding.
-t_list				*asterisk_functionality(char *s);
+t_list				*asterisk_functionality(char *s, t_minishell *minishell);
 
 // Function that help expanding words.
-char				*helper_expander(char *s);
+char				*helper_expander(char *s, t_minishell *minishell);
 
 // Function that checks if the string contain spaces.
 int					contains_space(char *s);
 
 // Function that return the new value after expand.
-char				*new_value(char *s, int size);
+char				*new_value(char *s, int size, t_minishell *minishell);
 
 // Function that get the variable and search for it in the environment.
 char				*get_var(char *s, int *i);
 
 // Function that return the length of the variable after expanding.
-int					check_env(char *var);
+int					check_env(char *var, t_minishell *minishell);
 
 // Function that count the length of the whole command after expanding.
-void				handle_dollar(char *s, int *i, int *len);
+void				handle_dollar(char *s, int *i, int *len, t_minishell *minishell);
 
 // Function that match the pattern.
 int					match_pattern(const char *pattern, const char *filename);
@@ -346,16 +414,17 @@ int					match_pattern(const char *pattern, const char *filename);
 /* Memory */
 
 // Function to allocate and put the address on a garbage collector.
-char				*ft_malloc(t_minishell *mini, size_t size);
+char				*ft_malloc(t_minishell *minishell, size_t size);
 
 // Function that add an adress to the garbage collector.
-void				gc_add(t_minishell *mini, void *ptr);
+void				gc_add(t_minishell *minishell, void *ptr);
 
 // Function that free all addresses in the garbage collector.
-void				gc_free_all(t_minishell *mini);
+void				gc_free_all(t_minishell *minishell);
 
 // Function that cleanup minishell.
-void				cleanup_minishell(void);
+void				cleanup_minishell(t_minishell *minishell);
+
 
 // Function that clear the AST.
 void				clear_ast(t_node *tree);
@@ -365,27 +434,27 @@ void				clear_ast(t_node *tree);
 /* Nodes functions */
 
 // Function that create a new character node.
-t_node				*char_node_new(char c);
+t_node				*char_node_new(char c, t_minishell *minishell);
 
 // Function that create a pair of nodes.
-t_node				*pair_node_new(t_node *left, t_node *right, t_type type);
+t_node				*pair_node_new(t_node *left, t_node *right, t_type type, t_minishell *minishell);
 
 // Function that create a new string node.
-t_node				*string_node_new(t_list *list);
+t_node				*string_node_new(t_list *list, t_minishell *minishell);
 
 // Function that create a new redirection node.
-t_node				*redir_node_new(t_list *red_list);
+t_node				*redir_node_new(t_list *red_list, t_minishell *minishell);
 
 /* Parsing */
 
 // The main function for parsing the input and return our AST structure.
-t_node				*parsing(void);
+t_node				*parsing(t_minishell *minishell);
 
 // Function that parse a block or a sequence.
-t_node				*parse_block(t_token **tokens);
+t_node				*parse_block(t_token **tokens, t_minishell *minishell);
 
 // Function that parse a command.
-t_node				*parse_cmd(t_token **tokens);
+t_node				*parse_cmd(t_token **tokens, t_minishell *minishell);
 
 /* Signals */
 
@@ -407,7 +476,7 @@ void				ft_sigint(int sig);
 /* Syntax */
 
 // The main  function that checks syntax errors.
-int					syntax(void);
+int					syntax(t_minishell *minishell);
 
 // The function is the second phase of the detection of syntax error.
 int					syntax_second_phase(t_token *token);
@@ -422,10 +491,10 @@ int					first_checker_left(t_token *token);
 int					first_checker_right(t_token *token);
 
 // Function that get the number of parenthesis.
-int					nb_paren(void);
+int					nb_paren(t_minishell *minishell);
 
 // Function that get the number of the quotes.
-int					nb_quotes(void);
+int					nb_quotes(t_minishell *minishell);
 
 // Function that checks if the current expression is a (PIPE || OR || AND).
 int					is_pipe_or_and(t_type type);
@@ -444,5 +513,14 @@ void				print_errors(char *message);
 
 /* Debugging ones */
 void				print_tokens(t_token *token);
+
+
+/* Tokenizer */
+
+// The main function that tokenizes the input string.
+t_token				*tokenizer(t_minishell *minishell);
+
+// Function that join two words to the env var.
+void	joining_words(char **split, t_minishell *minishell);
 
 #endif /* MINISHELL_H */

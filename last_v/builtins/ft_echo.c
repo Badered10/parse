@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:25:01 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/02 17:41:21 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 15:40:32 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_check_option(char *s)
 	return (0);
 }
 
-void	ft_echo(char **args)
+void	ft_echo(char **args, t_minishell *minishell)
 {
 	int	i;
 	int	new_line;
@@ -49,5 +49,5 @@ void	ft_echo(char **args)
 	}
 	if (new_line == 0)
 		ft_putstr_fd("\n", 1);
-	g_minishell->exit_s = 0;
+	minishell->exit_s = 0;
 }

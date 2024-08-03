@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/07 16:15:09 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/31 20:13:02 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:47:42 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,55 +114,52 @@ int	write_or_break(int fd, char *limiter, char *buf, int count)
 	return (1);
 }
 
-void	read_buf(char **buf, int expand_flag)
+void	read_buf(char **buf, int expand_flag, t_minishell *minishell)
 {
-	g_minishell->lines++;
+	minishell->lines++;
 	*buf = readline("> ");
-	gc_add(g_minishell, *buf);
+	gc_add(minishell, *buf);
 	if (*buf)
 	{
 		if (ft_strchr(*buf, '$') && expand_flag)
-			*buf = helper_expander(*buf);
-		gc_add(g_minishell, *buf);
+			*buf = helper_expander(*buf, minishell);
+		gc_add(minishell, *buf);
 	}
 }
 
-void	get_lines_count(int *pipe)
+void	get_lines_count(int *pipe, t_minishell *minishell)
 {
 	char	buf[2048];
 
 	close(pipe[1]);
 	read(pipe[0], &buf, 2048);
-	g_minishell->lines = ft_atoi(buf);
+	minishell->lines = ft_atoi(buf);
 }
 
-int	here_doc(char *limiter, int doc_num, int expand_flag)
+int	here_doc(char *limiter, int expand_flag, t_minishell *minishell)
 {
 	// int		id;
-	int		fd;
 	int		pipe[2];
 	int		fd_hidden;
 
 	open_pipe(pipe);
 	fd_hidden = -1;
-	fd = open_hidden_file(doc_num);
-	g_minishell->last_child = fork();
-	if (!g_minishell->last_child)
+	minishell->last_child = fork();
+	if (!minishell->last_child)
 	{
-		do_here_doc(limiter, fd, pipe, expand_flag);
+		do_here_doc(limiter, pipe, expand_flag, minishell);
 		exit(0);
 	}
 	else
 	{
-		wait_and_get();
-		if (g_minishell->exit_s != 130)
-			get_lines_count(pipe);
-		if (!g_minishell->exit_s)
+		wait_and_get(minishell);
+		if (minishell->exit_s != 130)
+			get_lines_count(pipe, minishell);
+		if (!minishell->exit_s)
 		{
-			fd_hidden = re_open_hidden_file(doc_num);
-			close(fd);
+			fd_hidden = re_open_hidden_file(minishell->docs);
 			return (fd_hidden);
 		}
 	}
-	return (close(fd), -1);
+	return (-1);
 }

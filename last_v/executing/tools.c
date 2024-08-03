@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:10:33 by baouragh          #+#    #+#             */
-/*   Updated: 2024/07/29 15:59:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:19:20 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@ void	free_double(char **ptr)
 	free(ptr);
 }
 
-char	*founded_cmd(char *argv, char **paths, char **cmd)
+char	*founded_cmd(char *argv, char **paths, char **cmd, t_minishell *minishell)
 {
 	char	*fullpath;
 
-	fullpath = get_command(argv);
+	fullpath = get_command(argv, minishell);
 	if (!fullpath)
 	{
 		free_double(paths);

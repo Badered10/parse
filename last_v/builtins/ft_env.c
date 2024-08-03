@@ -6,13 +6,13 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/05 14:26:57 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/02 17:42:03 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/03 15:41:49 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	ft_env(t_env *env)
+void	ft_env(t_env *env, t_minishell *minishell)
 {
 	set_env_var(env, "_", "/usr/bin/env");
 	while (env)
@@ -21,5 +21,5 @@ void	ft_env(t_env *env)
 			printf("%s=%s\n", env->key, env->value);
 		env = env->next;
 	}
-	g_minishell->exit_s = 0;
+	minishell->exit_s = 0;
 }

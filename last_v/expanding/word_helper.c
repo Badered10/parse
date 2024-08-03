@@ -3,56 +3,56 @@
 /*                                                        :::      ::::::::   */
 /*   word_helper.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/04 22:12:44 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/26 09:53:05 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/03 17:21:04 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-char	*get_var(char *s, int *i)
-{
-	char	*expand;
-	char	*value;
-	char	*var;
-	int		j;
+// char	*get_var(char *s, int *i)
+// {
+// 	char	*expand;
+// 	char	*value;
+// 	char	*var;
+// 	int		j;
 
-	j = 0;
-	expand = s + *i + 1;
-	if (!ft_strncmp(expand, "\0", 1) || ft_isspace(*expand))
-		return (NULL);
-	if (!ft_strncmp(expand, "$", 1))
-		return (*i += 2, ft_strdup("$$"));
-	if (!ft_strncmp(&expand[j], "?", 1) || !ft_strncmp(&expand[j], "_", 1))
-		j = 1;
-	else
-		while (expand[j] && (!is_quote(expand[j]) || ft_isalnum(expand[j])
-				|| !ft_strncmp(&expand[j], "_", 1)))
-			j++;
-	var = ft_substr(expand, 0, j);
-	*i += j + 1;
-	value = get_env_var(g_minishell->our_env, var);
-	if (value)
-		return (free(var), value);
-	else
-		return (free(var), NULL);
-}
+// 	j = 0;
+// 	expand = s + *i + 1;
+// 	if (!ft_strncmp(expand, "\0", 1) || ft_isspace(*expand))
+// 		return (NULL);
+// 	if (!ft_strncmp(expand, "$", 1))
+// 		return (*i += 2, ft_strdup("$$"));
+// 	if (!ft_strncmp(&expand[j], "?", 1) || !ft_strncmp(&expand[j], "_", 1))
+// 		j = 1;
+// 	else
+// 		while (expand[j] && (!is_quote(expand[j]) || ft_isalnum(expand[j])
+// 				|| !ft_strncmp(&expand[j], "_", 1)))
+// 			j++;
+// 	var = ft_substr(expand, 0, j);
+// 	*i += j + 1;
+// 	value = get_env_var(minishell->our_env, var);
+// 	if (value)
+// 		return (free(var), value);
+// 	else
+// 		return (free(var), NULL);
+// }
 
-int	check_env(char *var)
+int	check_env(char *var, t_minishell *minishell)
 {
 	if (!var)
 		return (-1);
-	if (!get_env_var(g_minishell->our_env, var))
+	if (!get_env_var(minishell->our_env, var))
 	{
 		return (-1);
 	}
 	else
-		return (ft_strlen(get_env_var(g_minishell->our_env, var)));
+		return (ft_strlen(get_env_var(minishell->our_env, var)));
 }
 
-void	fill_tokens(t_token *current, char *new_value)
+void	fill_tokens(t_token *current, char *new_value, t_minishell *minishell)
 {
 	t_token	*new_tok;
 	char	*chunk;
@@ -69,7 +69,7 @@ void	fill_tokens(t_token *current, char *new_value)
 				i++;
 			chunk = ft_substr(new_value, j, (i - j));
 			new_tok = new_token(chunk, WORD);
-			add_token_middle(&g_minishell->tokens, new_tok, current->prev);
+			add_token_middle(&minishell->tokens, new_tok, current->prev);
 			current = new_tok->next;
 		}
 		else
@@ -77,7 +77,7 @@ void	fill_tokens(t_token *current, char *new_value)
 	}
 }
 
-void	handle_space(t_token *tokens, char *new_value)
+void	handle_space(t_token *tokens, char *new_value, t_minishell *minishell)
 {
 	t_token	*current;
 
@@ -87,6 +87,6 @@ void	handle_space(t_token *tokens, char *new_value)
 		tokens->value = new_value;
 		return ;
 	}
-	remove_token(&g_minishell->tokens, current);
-	fill_tokens(current, new_value);
+	remove_token(&minishell->tokens, current);
+	fill_tokens(current, new_value, minishell);
 }

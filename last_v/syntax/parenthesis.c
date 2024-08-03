@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   parenthesis.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/17 21:27:44 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/08 19:06:10 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/03 17:45:06 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	nb_quotes(void)
+int	nb_quotes(t_minishell *minishell)
 {
 	t_token	*token;
 	int		s_count;
 	int		d_count;
 
-	token = g_minishell->tokens;
+	token = minishell->tokens;
 	s_count = 0;
 	d_count = 0;
 	while (token)
@@ -38,13 +38,13 @@ int	nb_quotes(void)
 	return (0);
 }
 
-int	nb_paren(void)
+int	nb_paren(t_minishell *minishell)
 {
 	t_token	*token;
 	int		l_count;
 	int		r_count;
 
-	token = g_minishell->tokens;
+	token = minishell->tokens;
 	l_count = 0;
 	r_count = 0;
 	while (token)

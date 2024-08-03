@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wildcard_expand.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 12:54:58 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/25 17:50:54 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/03 17:16:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,19 +62,19 @@ int	check_ambiguous(char *s)
 	return (match_count);
 }
 
-void	add_name_to_list(t_list **lst, char *dir_name)
+void	add_name_to_list(t_list **lst, char *dir_name, t_minishell *minishell)
 {
 	t_list	*new_node;
 	char	*name;	
 
 	name = ft_strdup(dir_name);
-	gc_add(g_minishell, name);
+	gc_add(minishell, name);
 	new_node = ft_lstnew(name);
-	gc_add(g_minishell, new_node);
+	gc_add(minishell, new_node);
 	ft_lstadd_back(lst, new_node);
 }
 
-t_list	*asterisk_functionality(char *s)
+t_list	*asterisk_functionality(char *s, t_minishell *minishell)
 {
 	DIR				*dir;
 	struct dirent	*entry;
@@ -89,7 +89,7 @@ t_list	*asterisk_functionality(char *s)
 	{
 		if (entry->d_name[0] != '.' && match_pattern(s,
 				entry->d_name))
-			add_name_to_list(&lst, entry->d_name);
+			add_name_to_list(&lst, entry->d_name, minishell);
 		entry = readdir(dir);
 	}
 	closedir(dir);

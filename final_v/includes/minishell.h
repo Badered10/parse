@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/04 10:43:48 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 11:03:50 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,6 +256,24 @@ bool 				output_redirs(t_redir *new);
 
 // Function that check file name of all types : > >> <, exclude << one, and return true or flase
 bool				check_name(t_redir *new);
+
+// Function that IDK , HAVE A ISSUE MUST FIX !
+char				*build_file_name(char *join);
+
+// Function that open a file discriptor for a doc.
+int					open_hidden_file(int doc_num);
+
+// Function that excute redirections nodes .
+void				execute_redires(t_list *red_list);
+
+// Function that go trough a way of exe based on its node's type.
+void 				selcet_and_excute(t_node *node, int type);
+
+// Function that execute a pair node | , || , &&.
+void				execute_pair(t_node *node);
+
+// Function that execute a pair nodes under types || , &&.
+void				execute_and_or(t_node *node);
 
 ///////////////////////////////////////
 // 

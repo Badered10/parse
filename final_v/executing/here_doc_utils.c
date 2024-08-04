@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 09:08:11 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/04 10:41:28 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:47:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	do_here_doc(char *limiter, int fd, int *pipe, int expand_flag)
 	free(lines);
 	close(pipe[0]);
 }
+
 bool output_redirs(t_redir *new)
 {
 	if (!access(new->file, F_OK))
@@ -63,4 +64,55 @@ bool	check_name(t_redir *new)
 	}
 	else
 		return (print_err("No such file or directory", new->file), 1);
+}
+
+char	*build_file_name(char *join)
+{
+	char	**split;
+	char	*name;
+	char	*tmp;
+	int		i;
+
+	split = ft_split(ttyname(0), '/');
+	i = 0;
+	while (split[i])
+	{
+		tmp = name;
+		name = ft_strjoin(name, split[i++]);
+		free(tmp);
+	}
+	tmp = name;
+	name = ft_strjoin(name, join);
+	free(tmp);
+	if (access(name, F_OK) != 0)
+		return (free_double(split), name);
+	else
+	{
+		tmp = name;
+		name = ft_strjoin(name, join);
+		return (free_double(split), free(tmp), name);
+	}
+	return (NULL);
+}
+
+int	open_hidden_file(int doc_num)
+{
+	char	*join;
+	char	*path;
+	char	*name;
+	int		fd;
+
+	join = ft_itoa(doc_num);
+	path = build_file_name(join);
+	name = ft_strjoin(PATH, path);
+	fd = open(name, O_CREAT | O_RDWR, 0777);
+	free(name);
+	free(path);
+	free(join);
+	if (fd < 0)
+	{
+		perror("here_doc failed to get input");
+		return (-1);
+	}
+	return (fd);
 }

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:17:38 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 12:34:41 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 16:12:05 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,7 @@ void	selcet_and_excute(t_node *node, int type)
 	else
 	{
 		wait_last();
+		while (waitpid(-1, NULL, 0) != -1)
+			;
 	}
 }

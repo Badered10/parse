@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 12:11:25 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 15:37:14 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	do_cmd(t_node *ast)
 
 	if (!ast)
 		exit(0);
-	g_minishell->last_child = 0;
 	if (ft_is_builtin(ast->data.cmd->content))
 		execute_builtins(g_minishell, list_to_argv(ast->data.cmd));
 	else

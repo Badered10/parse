@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 12:11:07 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 15:36:54 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ void	execute_cmd(t_node *node)
 {
 	if (!node)
 		return ;
-	g_minishell->last_child = 0;
 	expand_list(node->data.cmd);
 	remove_null(&node);
 	if (!node->data.cmd)
@@ -108,7 +107,11 @@ void	execute_redires(t_list *red_list)
 {
 	int	fd_input;
 	int	fd_output;
+	int	old_stdin;
+	int	old_stdout;
 
+	old_stdin = dup(0);
+	old_stdout = dup(1);
 	if (!open_and_set(red_list))
 		return ;
 	fd_input = input_to_dup(red_list);
@@ -118,4 +121,6 @@ void	execute_redires(t_list *red_list)
 	if (fd_output > 0)
 		dup_2(fd_output, 1);
 	run_doc_cmd(red_list);
+	dup_2(old_stdin, 0);
+	dup_2(old_stdout, 1);
 }

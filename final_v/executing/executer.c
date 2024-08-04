@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 12:11:50 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 16:10:25 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,18 @@ void	execute_and_or(t_node *node)
 	if (node->data.pair.type == OR)
 	{
 		executer(node->data.pair.left);
-		wait_and_get();
+		wait_last();
+		while (waitpid(-1, NULL, 0) != -1)
+			;
 		if (g_minishell->exit_s && g_minishell->exit_s != 130)
 			executer(node->data.pair.right);
 	}
 	else if (node->data.pair.type == AND)
 	{
 		executer(node->data.pair.left);
-		wait_and_get();
+		wait_last();
+		while (waitpid(-1, NULL, 0) != -1)
+			;
 		if (!g_minishell->exit_s)
 			executer(node->data.pair.right);
 	}
@@ -38,10 +42,20 @@ void	pipe_left(t_node *node, int *pfd, bool mode)
 		return ;
 	if (node->type != STRING_NODE && node->type != PIPE)
 	{
-		if (node->data.pair.type == AND)
-			executer(node);
-		else if (node->data.pair.type == OR)
-			executer(node);
+		if (node->type == PAIR_NODE)
+		{
+			g_minishell->last_child = fork();
+			if (!g_minishell->last_child)
+			{
+				close(pfd[0]);
+				close(pfd[1]);
+				execute_pair(node);
+				wait_last();
+				while (waitpid(-1, NULL, 0) != -1)
+					;
+				exit(g_minishell->exit_s);
+			}
+		}
 		else if (node->type == REDIR_NODE)
 			execute_redires(node->data.redir);
 		else

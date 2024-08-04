@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 11:02:52 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:11:07 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	add_list_into_list(t_list **lst, t_list *new)
 	(*lst)->next = new->next;
 	ft_lstlast(*lst)->next = save_next;
 }
+
 t_list	*dollar_functionality(char **s)
 {
 	t_list	*lst;
@@ -77,6 +78,7 @@ void	expand_list(t_list *cmd_lst)
 		cmd_lst = cmd_lst->next;
 	}
 }
+
 void	execute_cmd(t_node *node)
 {
 	if (!node)
@@ -101,6 +103,7 @@ void	execute_cmd(t_node *node)
 		}
 	}
 }
+
 void	execute_redires(t_list *red_list)
 {
 	int	fd_input;
@@ -116,6 +119,3 @@ void	execute_redires(t_list *red_list)
 		dup_2(fd_output, 1);
 	run_doc_cmd(red_list);
 }
-
-
-

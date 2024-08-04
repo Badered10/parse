@@ -85,17 +85,16 @@ void	get_lines_count(int *pipe)
 
 int	here_doc(char *limiter, int doc_num, int expand_flag)
 {
-	int		fd;
-	int		pipe[2];
-	int		fd_hidden;
+	int	fd;
+	int	pipe[2];
+	int	fd_hidden;
 
 	open_pipe(pipe);
 	fd_hidden = -1;
 	fd = open_hidden_file(doc_num);
 	g_minishell->last_child = fork();
 	if (!g_minishell->last_child)
-		return (do_here_doc(limiter, fd, pipe, expand_flag),
-			exit(0), 0);
+		return (do_here_doc(limiter, fd, pipe, expand_flag), exit(0), 0);
 	else
 	{
 		wait_and_get();

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 10:56:56 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:11:50 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,19 +73,19 @@ void	pipe_right(t_node *node, int *pfd, bool mode)
 void	execute_pair(t_node *node)
 {
 	int	pfd[2];
-	int fd_in;
-	int fd_out;
+	int	fd_in;
+	int	fd_out;
 
-	if (node->data.pair.type == PIPE) // (ls | cat -e) | cat -n | cat
+	if (node->data.pair.type == PIPE)
 	{
 		fd_in = dup(0);
 		fd_out = dup(1);
 		open_pipe(pfd);
 		dup_2(pfd[1], 1);
-		pipe_left(node->data.pair.left, pfd, 0); //  (ls | cat -e)
+		pipe_left(node->data.pair.left, pfd, 0);
 		dup2(fd_out, 1);
 		dup_2(pfd[0], 0);
-		pipe_right(node->data.pair.right, pfd, 1); // cat -n | cat  
+		pipe_right(node->data.pair.right, pfd, 1);
 		dup_2(fd_in, 0);
 		dup_2(fd_out, 1);
 	}
@@ -99,22 +99,22 @@ void	executer(t_node *node)
 		return ;
 	if (node->type == STRING_NODE)
 	{
-		if(node->data.cmd->is_block 
-				&& ft_is_builtin((char *)node->data.cmd->content))
+		if (node->data.cmd && node->data.cmd->is_block
+			&& ft_is_builtin((char *)node->data.cmd->content))
 			selcet_and_excute(node, STRING_NODE);
 		else
 			execute_cmd(node);
 	}
 	else if (node->type == PAIR_NODE)
 	{
-		if(node->data.pair.is_block)
+		if (node->data.pair.is_block)
 			selcet_and_excute(node, PAIR_NODE);
 		else
 			execute_pair(node);
 	}
 	else if (node->type == REDIR_NODE)
 	{
-		if(node->data.redir->is_block)
+		if (node->data.redir->is_block)
 			selcet_and_excute(node, REDIR_NODE);
 		else
 			execute_redires(node->data.redir);

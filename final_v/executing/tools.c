@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:10:33 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 10:39:31 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 11:07:44 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ char	*founded_cmd(char *argv, char **paths, char **cmd)
 	}
 	return (free_double(paths), free_double(cmd), fullpath);
 }
+
 int	ft_malloc_error(char **tab, size_t i)
 {
 	size_t	j;

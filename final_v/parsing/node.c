@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 14:02:16 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/02 18:03:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 11:45:03 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ t_node	*redir_node_new(t_list *red_list)
 	gc_add(g_minishell, new);
 	new->type = REDIR_NODE;
 	new->data.redir = red_list;
-	new->data.redir->is_block = 0;
+	if (new->data.redir)
+		new->data.redir->is_block = 0;
 	return (new);
 }
 
@@ -49,7 +50,8 @@ t_node	*string_node_new(t_list *list)
 	gc_add(g_minishell, new);
 	new->type = STRING_NODE;
 	new->data.cmd = list;
-	new->data.cmd->is_block = 0;
+	if (new->data.cmd)
+		new->data.cmd->is_block = 0;
 	return (new);
 }
 

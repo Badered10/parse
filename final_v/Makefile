@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/08/04 11:06:33 by baouragh         ###   ########.fr        #
+#    Updated: 2024/08/04 12:03:21 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,9 @@ MEMORY			:=	memory/garbage_collector.c			\
 					memory/memory.c
 
 PARSING			:=	parsing/parse.c						\
-					parsing/node.c
+					parsing/node.c						\
+					parsing/parse_tools.c						\
+					parsing/parse_tools2.c
 
 SIGNALS			:=	signals/handle_signals.c
 

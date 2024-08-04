@@ -33,7 +33,7 @@ void	do_here_doc(char *limiter, int fd, int *pipe, int expand_flag)
 	close(pipe[0]);
 }
 
-bool output_redirs(t_redir *new)
+bool	output_redirs(t_redir *new)
 {
 	if (!access(new->file, F_OK))
 	{

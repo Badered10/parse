@@ -34,10 +34,10 @@ size_t	count_words(char *s)
 	return (words);
 }
 
-bool check_expand(t_redir *new)
+bool	check_expand(t_redir *new)
 {
 	char	*val;
-	int 	size;
+	int		size;
 
 	val = helper_expander(new->file);
 	size = count_words(val);

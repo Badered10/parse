@@ -83,12 +83,12 @@ char	**list_to_argv(t_list *list)
 	return (argv);
 }
 
-void selcet_and_excute(t_node *node, int type)
+void	selcet_and_excute(t_node *node, int type)
 {
-	int id;
+	int	id;
 
 	id = fork();
-	if(!id)
+	if (!id)
 	{
 		if (type == STRING_NODE)
 			execute_cmd(node);
@@ -97,7 +97,8 @@ void selcet_and_excute(t_node *node, int type)
 		else
 			execute_redires(node->data.redir);
 		wait_last();
-		while(waitpid(-1, NULL, 0) != -1);
+		while (waitpid(-1, NULL, 0) != -1)
+			;
 		exit(g_minishell->exit_s);
 	}
 	else

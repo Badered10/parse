@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 10:35:23 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:11:25 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	wait_and_get(void)
 
 void	do_cmd(t_node *ast)
 {
-	// int		id;
 	char	**cmd;
 	char	**env;
 

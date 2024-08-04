@@ -6,7 +6,7 @@
 #    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/04 12:15:39 by baouragh          #+#    #+#              #
-#    Updated: 2024/08/04 12:21:26 by baouragh         ###   ########.fr        #
+#    Updated: 2024/08/04 12:41:02 by baouragh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -80,13 +80,13 @@ badashell$> ./minishell
 badashell$> ./minishell
 └──list is BLOCK : 0  --> './minishell' 
 badashell$> grep fd
-└──list is BLOCK : 0  --> 'grep' list is BLOCK : 0  --> 'fd' 
+└──list is BLOCK : 0  --> 'grep' list is BLOCK : 0  --> 'fd'      ---------------------------> FIXED
 ^C
 
 
 
 badashell$> exit
-└──list is BLOCK : 0  --> 'exit' 
+└──list is BLOCK : 0  --> 'exit'   ------------------> NOTYET
 exit
 AddressSanitizer:DEADLYSIGNAL
 =================================================================
@@ -99,7 +99,7 @@ AddressSanitizer:DEADLYSIGNAL
 badashell$> exporta=ls && << $a cat -e && unset a 
 └── && ,is BLOCK : 0
     ├──list is BLOCK : 0  --> 'exporta=ls' 
-    └── && ,is BLOCK : 0
+    └── && ,is BLOCK : 0                                                                        ------------------> NOTYET
         ├──REDIR_LIST is BLOCK : 0 REDIR NODE , name: '$a' REDIR is BLOCK : 0
 'cat' '-e'  
         └──list is BLOCK : 0  --> 'unset' list is BLOCK : 0  --> 'a' 

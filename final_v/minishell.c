@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 20:58:27 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/04 09:15:44 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:30:29 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,7 @@ int	main(int argc, char **argv, char **env)
 	{
 		signals();
 		ft_readline();
+		signal(SIGINT, ft_sigint);
 		g_minishell->tokens = tokenizer();
 		if (!g_minishell->tokens || syntax() == -1)
 			continue ;
@@ -193,7 +194,6 @@ int	main(int argc, char **argv, char **env)
 		if (!g_minishell->ast)
 			continue ;
 		print_ast("", g_minishell->ast, false);
-		signal(SIGINT, ft_sigint);
 		if(scan_and_set(g_minishell->ast))
 			executer(g_minishell->ast);
 		dup2(g_minishell->stdout, 1);

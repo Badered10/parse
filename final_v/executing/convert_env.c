@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:17:38 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 10:57:11 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:34:41 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,5 +102,7 @@ void	selcet_and_excute(t_node *node, int type)
 		exit(g_minishell->exit_s);
 	}
 	else
+	{
 		wait_last();
+	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tools_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:11:26 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 02:26:35 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:39:21 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,18 +105,4 @@ void	call_execev(char **env, char *argv, char **cmd)
 	execve(founded_path, cmd, env);
 	printf(RESET);
 	print_err("EXEVE FAILED ", NULL);
-}
-
-int	ft_malloc_error(char **tab, size_t i)
-{
-	size_t	j;
-
-	j = 0;
-	while (j <= i)
-	{
-		free(tab[j]);
-		j++;
-	}
-	free(tab);
-	return (1);
 }

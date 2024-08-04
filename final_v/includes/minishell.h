@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/04 10:36:44 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:43:48 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -250,6 +250,13 @@ int					write_or_break(int fd, char *limiter, char *buf, int count);
 
 // Function that search for $ if exist expand to its value
 void				expand_list(t_list *cmd_lst);
+
+// Function that check file name of redirs under type : > >> and return true or flase
+bool 				output_redirs(t_redir *new);
+
+// Function that check file name of all types : > >> <, exclude << one, and return true or flase
+bool				check_name(t_redir *new);
+
 ///////////////////////////////////////
 // 
 
@@ -285,6 +292,8 @@ void				check_hd_expand(t_token *tokens);
 
 // Function that fill return the new_value after expand.
 void				fill_dollar(char *s, int *i, char *new, int *j);
+
+
 
 /* Expanding */
 

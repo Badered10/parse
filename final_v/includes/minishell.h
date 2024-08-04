@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/04 02:13:37 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:36:44 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,6 +248,8 @@ void				read_buf(char **buf, int expand_flag);
 // Function that IDK XD.
 int					write_or_break(int fd, char *limiter, char *buf, int count);
 
+// Function that search for $ if exist expand to its value
+void				expand_list(t_list *cmd_lst);
 ///////////////////////////////////////
 // 
 

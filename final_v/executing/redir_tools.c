@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 01:01:41 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/04 10:32:32 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,17 @@ size_t	count_words(char *s)
 	return (words);
 }
 
+bool output_redirs(t_redir *new)
+{
+	if (!access(new->file, F_OK))
+	{
+		if (!access(new->file, W_OK))
+			return (0);
+		return (print_err("Permission denied", new->file), 1);
+	}
+	return (0);
+}
+
 bool	check_name(t_redir *new)
 {
 	struct stat	statbuf;
@@ -44,16 +55,8 @@ bool	check_name(t_redir *new)
 		return (print_err("Is a directory", new->file), 1);
 	if (new->fd == -1)
 		return (print_err("ambiguous redirect", new->file), 1);
-	if (new->type != L_REDIR) // > >>
-	{
-		if (!access(new->file, F_OK))
-		{
-			if (!access(new->file, W_OK))
-				return (0);
-			return (print_err("Permission denied", new->file), 1);
-		}
-		return (0);
-	}
+	if (new->type != L_REDIR)
+		return (output_redirs(new));
 	else if (!access(new->file, F_OK))
 	{
 		if (!access(new->file, R_OK))
@@ -64,30 +67,34 @@ bool	check_name(t_redir *new)
 		return (print_err("No such file or directory", new->file), 1);
 }
 
-int	is_ambiguous(t_redir *new, int flag)
+bool check_expand(t_redir *new)
+{
+	char	*val;
+	int 	size;
+
+	val = helper_expander(new->file);
+	size = count_words(val);
+	if (size == 1 || !size)
+	{
+		if (size)
+			new->file = val;
+		else
+			new->fd = -1;
+		return (check_name(new));
+	}
+	else
+		return (print_err("ambiguous redirect", new->file), 1);
+}
+
+int	is_ambiguous(t_redir *new)
 {
 	t_list	*asterisk;
-	char	*val;
 	int		size;
 
-	(void)flag;
 	size = 0;
 	asterisk = NULL;
 	if (ft_strchr(new->file, '$'))
-	{
-		val = helper_expander(new->file);
-		size = count_words(val);
-		if (size == 1 || !size)
-		{
-			if (size)
-				new->file = (char *)asterisk->content;
-			else
-				new->fd = -1;
-			return (check_name(new));
-		}
-		else
-			return (print_err("ambiguous redirect", new->file), 1);
-	}
+		return (check_expand(new));
 	else if (ft_strchr(new->file, '*'))
 	{
 		asterisk = asterisk_functionality(new->file);
@@ -108,7 +115,7 @@ int	is_ambiguous(t_redir *new, int flag)
 
 int	open_redir(t_redir *redir)
 {
-	if (!is_ambiguous(redir, redir->hd_expand))
+	if (!is_ambiguous(redir))
 	{
 		redir->fd = open(redir->file, redir->mode, 0644);
 		return (1);
@@ -133,40 +140,3 @@ int	open_and_set(t_list *red_list)
 	}
 	return (1);
 }
-
-// if(new->type != L_REDIR) // > >>
-// {
-// 	if(!access(new->file, F_OK))
-// 	{
-// 		if(!access(new->file, W_OK))
-// 			return(0);
-// 		return (print_err("permission denied", new->file), 1);
-// 	}
-// 	return(0);
-// }
-// else if(!access(new->file, F_OK))
-// {
-// 	if(!access(new->file, R_OK)) // <
-// 		return(0);
-// 	return (print_err("permission denied", new->file), 1);
-// }
-// else
-// 	return (print_err("no such file or directory", new->file), 1);
-
-// if(size == 1 || !size)
-// {
-// 	if (access(new->file, F_OK) == -1)
-// 		print_err("A- no such file or directory", new->file);
-// 	else if (access(new->file, W_OK) == -1)
-// 		print_err("A- permission denied", new->file);
-// 	else
-// 	{
-// 		if(size)
-// 			new->file = (char *)asterisk->content;
-// 		return (0);
-// 	}
-// }
-// else if (size > 1)
-// 	print_err("A- ambiguous redirect", new->file);
-// g_minishell->exit_s = 1;
-// return (1);

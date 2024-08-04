@@ -1,3 +1,15 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    unit_test.txt                                      :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2024/08/04 12:15:39 by baouragh          #+#    #+#              #
+#    Updated: 2024/08/04 12:21:26 by baouragh         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
 ** This a unit test for minishell project ** 
 
 // THIS IS THE PART OF EACH ONE OF US :
@@ -6,6 +18,7 @@
 
 1 : fix number of lines in here_doc DONE!
 2 : check out ambigeous errors      DONE!
+3 : a lot of things i doesn't count :/ . 
 
 // alassiqu :
 
@@ -25,7 +38,7 @@
 : 13 :	exit arg >> LONG_MIN < arg < LONG_MAX								>>>>> DONE
 
 
-alassiqu@c4r7p8:~/newone/last_v$ bash
+alassiqu@c4r7p8:~/newone/last_v$ bashbadashell$>exp
 alassiqu@c4r7p8:~/newone/last_v$ bash
 alassiqu@c4r7p8:~/newone/last_v$ bash
 alassiqu@c4r7p8:~/newone/last_v$ grep fd
@@ -55,4 +68,43 @@ badashell$>exporta=ls && << $a cat -e && unset a
 > $a
 warning: here-document at line 88 delimited by end-of-file (wanted `$a')
 
+
+
+
+------------------------------------------------------------------------------------------------------------------
+
+bbadashell$> ./minishell
+└──list is BLOCK : 0  --> './minishell' 
+badashell$> ./minishell
+└──list is BLOCK : 0  --> './minishell' 
+badashell$> ./minishell
+└──list is BLOCK : 0  --> './minishell' 
+badashell$> grep fd
+└──list is BLOCK : 0  --> 'grep' list is BLOCK : 0  --> 'fd' 
+^C
+
+
+
+badashell$> exit
+└──list is BLOCK : 0  --> 'exit' 
+exit
+AddressSanitizer:DEADLYSIGNAL
+=================================================================
+==521697==ERROR: AddressSanitizer: SEGV on unknown address 0x000000000000 (pc 0x0000004ccad7 bp 0x7ffc0a6baa70 sp 0x7ffc0a6baa00 T0)
+
+--------------------------
+
+╭─baouragh@c4r8p3 ~/Desktop/MINISHELL/final_v ‹main●› 
+╰─$ ./minishell 
+badashell$> exporta=ls && << $a cat -e && unset a 
+└── && ,is BLOCK : 0
+    ├──list is BLOCK : 0  --> 'exporta=ls' 
+    └── && ,is BLOCK : 0
+        ├──REDIR_LIST is BLOCK : 0 REDIR NODE , name: '$a' REDIR is BLOCK : 0
+'cat' '-e'  
+        └──list is BLOCK : 0  --> 'unset' list is BLOCK : 0  --> 'a' 
+=================================================================
+==522794==ERROR: AddressSanitizer: attempting double-free on 0x6020000039b0 in thread T0:
+    #0 0x49a032 in free (/nfs/homes/baouragh/Desktop/MINISHELL/final_v/minishell+0x49a032)
+    #1 0x4d5abd in open_hidden_file /nfs/
 

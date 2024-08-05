@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 09:08:11 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/04 19:40:39 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/04 20:03:48 by alassiqu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	do_here_doc(char *limiter, int fd, int *pipe, int expand_flag)
 	while (1)
 	{
 		signal(SIGINT, here_doc_sig);
-		read_buf(&buf, expand_flag);
+		read_buf(&buf, limiter, expand_flag);
 		if (!write_or_break(fd, limiter, buf, old_count))
 			break ;
 	}
@@ -74,6 +74,7 @@ char	*build_file_name(char *join)
 	int		i;
 
 	split = ft_split(ttyname(0), '/');
+	name = NULL;
 	i = 0;
 	while (split[i])
 	{
@@ -89,8 +90,7 @@ char	*build_file_name(char *join)
 	else
 	{
 		tmp = name;
-		name = ft_strjoin(name, join);
-		return (free_double(split), free(tmp), name);
+		return (free_double(split), free(tmp), ft_strjoin(name, join));
 	}
 	return (NULL);
 }

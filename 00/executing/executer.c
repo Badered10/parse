@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/04 19:49:20 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/05 20:16:57 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,21 +113,21 @@ void	executer(t_node *node)
 	{
 		if (node->data.cmd && node->data.cmd->is_block
 			&& ft_is_builtin((char *)node->data.cmd->content))
-			selcet_and_excute(node, STRING_NODE);
+			select_and_excute(node, STRING_NODE);
 		else
 			execute_cmd(node);
 	}
 	else if (node->type == PAIR_NODE)
 	{
 		if (node->data.pair.is_block)
-			selcet_and_excute(node, PAIR_NODE);
+			select_and_excute(node, PAIR_NODE);
 		else
 			execute_pair(node);
 	}
 	else if (node->type == REDIR_NODE)
 	{
 		if (node->data.redir->is_block)
-			selcet_and_excute(node, REDIR_NODE);
+			select_and_excute(node, REDIR_NODE);
 		else
 			execute_redires(node->data.redir);
 	}

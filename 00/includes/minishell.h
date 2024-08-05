@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/05 16:15:35 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/05 21:07:15 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@ int					open_hidden_file(int doc_num);
 void				execute_redires(t_list *red_list);
 
 // Function that go trough a way of exe based on its node's type.
-void				selcet_and_excute(t_node *node, int type);
+void				select_and_excute(t_node *node, int type);
 
 // Function that execute a pair node | , || , &&.
 void				execute_pair(t_node *node);
@@ -311,7 +311,7 @@ void				fill_dollar(char *s, int *i, char *new, int *j);
 void				expanding(void);
 
 // Function that expand in here-doc.
-void				here_doc_expanding(char **s);
+void				avoid_expanding(char **s, bool avoid);
 
 // Function that expand words containing dollar.
 void				expand_dollar(void);
@@ -320,7 +320,7 @@ void				expand_dollar(void);
 int					ft_isnum(int c);
 
 // Function that return a list of nodes containing dollar expanding.
-t_list				*dollar_functionality(char **s);
+t_list				*dollar_functionality(char **s, bool avoid);
 
 // Function that return a list of nodes containing asterisk expanding.
 t_list				*asterisk_functionality(char *s);

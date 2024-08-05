@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/05 16:10:38 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/05 21:30:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,15 @@ void	add_list_into_list(t_list **lst, t_list *new)
 	ft_lstlast(*lst)->next = save_next;
 }
 
-t_list	*dollar_functionality(char **s)
+t_list *creat_list(char **split, bool avoid)
 {
 	t_list	*lst;
-	t_list	*temp;
-	char	**split;
 	char	*tmp;
+	t_list	*temp;
 	int		i;
 
 	i = 0;
 	lst = NULL;
-	here_doc_expanding(s);
-	if (!*s)
-		return (*s = NULL, NULL);
-	split = ft_split(*s, ' ');
-	if (!split)
-		return (*s = NULL, NULL);
 	while (split[i])
 	{
 		tmp = ft_strdup(split[i]);
@@ -49,13 +42,36 @@ t_list	*dollar_functionality(char **s)
 		ft_lstadd_back(&lst, temp);
 		i++;
 	}
-	free_double(split);
-	return (lst);
+	if (!avoid)
+		free_double(split);
+	return(lst);
+}
+
+t_list	*dollar_functionality(char **s, bool avoid)
+{
+	char	**split;
+
+	split = NULL;
+	s[1] = NULL;
+	avoid_expanding(s, avoid);
+	if (!*s)
+		return (*s = NULL, NULL);
+	if(!avoid)
+	{
+		if(!avoid)
+			split = ft_split(*s, ' ');
+		if (!split)
+			return (*s = NULL, NULL);
+	}
+	else
+		split = s;
+	return (creat_list(split, avoid));
 }
 
 void	expand_list(t_list *cmd_lst)
 {
 	t_list	*list;
+	bool	avoid;
 
 	list = NULL;
 	if (!cmd_lst)
@@ -64,9 +80,19 @@ void	expand_list(t_list *cmd_lst)
 	{
 		if (cmd_lst->content)
 		{
+			avoid = 1;
+			if(!strcmp((char*)cmd_lst->content, "export"))
+			{
+				printf("[CMD] |%s|\n",(char*)cmd_lst->content);
+				avoid = 0;
+			}
+		}
+		if (cmd_lst->content)
+		{
 			if (ft_strchr((char *)cmd_lst->content, '$') && cmd_lst->wd_expand)
 			{
-				list = dollar_functionality((char **)&cmd_lst->content);
+				printf("---------------------------> %d\n",avoid);
+				list = dollar_functionality((char **)&cmd_lst->content, avoid);
 				add_list_into_list(&cmd_lst, list);
 			}
 			else if (ft_strchr((char *)cmd_lst->content, '*'))

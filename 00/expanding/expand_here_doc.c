@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_here_doc.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 08:21:56 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/07/25 17:51:20 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/05 21:25:59 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,16 @@ char	*avoid_spaces(char *s)
 	return (expand_without_space(s, len));
 }
 
-void	here_doc_expanding(char **s)
+void	avoid_expanding(char **s, bool avoid)
 {
-	*s = avoid_spaces(helper_expander(*s));
+	if (!avoid)
+	{
+		*s = avoid_spaces(helper_expander(*s));
+		printf("----> AVOID [OUTPUT]:|%s|\n",*s);
+	}
+	else
+	{
+		*s = helper_expander(*s);
+		printf("----> NOT AVOID [OUTPUT]:|%s|\n",*s);
+	}
 }

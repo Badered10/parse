@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:17:38 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/05 16:17:05 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/05 20:16:57 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@ char	**list_to_argv(t_list *list)
 	return (argv);
 }
 
-void	selcet_and_excute(t_node *node, int type)
+void	select_and_excute(t_node *node, int type)
 {
 	int	id;
 

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 08:21:56 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/05 21:25:59 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/06 00:34:13 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ char	*avoid_spaces(char *s)
 
 void	avoid_expanding(char **s, bool avoid)
 {
-	if (!avoid)
+	if (avoid)
 	{
 		*s = avoid_spaces(helper_expander(*s));
 		printf("----> AVOID [OUTPUT]:|%s|\n",*s);

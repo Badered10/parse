@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/05 21:30:58 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:51:01 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_list *creat_list(char **split, bool avoid)
 		ft_lstadd_back(&lst, temp);
 		i++;
 	}
-	if (!avoid)
+	if (avoid)
 		free_double(split);
 	return(lst);
 }
@@ -56,10 +56,9 @@ t_list	*dollar_functionality(char **s, bool avoid)
 	avoid_expanding(s, avoid);
 	if (!*s)
 		return (*s = NULL, NULL);
-	if(!avoid)
+	if(avoid)
 	{
-		if(!avoid)
-			split = ft_split(*s, ' ');
+		split = ft_split(*s, ' ');
 		if (!split)
 			return (*s = NULL, NULL);
 	}
@@ -74,24 +73,25 @@ void	expand_list(t_list *cmd_lst)
 	bool	avoid;
 
 	list = NULL;
+	avoid = 1;
 	if (!cmd_lst)
 		return ;
 	while (cmd_lst)
 	{
 		if (cmd_lst->content)
 		{
-			avoid = 1;
 			if(!strcmp((char*)cmd_lst->content, "export"))
 			{
 				printf("[CMD] |%s|\n",(char*)cmd_lst->content);
 				avoid = 0;
+				printf("---------------------------> avoid : %d\n",avoid);
 			}
 		}
 		if (cmd_lst->content)
 		{
 			if (ft_strchr((char *)cmd_lst->content, '$') && cmd_lst->wd_expand)
 			{
-				printf("---------------------------> %d\n",avoid);
+				printf("---------------------------> avoid : %d, and str='%s'\n",avoid, (char *)cmd_lst->content);
 				list = dollar_functionality((char **)&cmd_lst->content, avoid);
 				add_list_into_list(&cmd_lst, list);
 			}
@@ -101,6 +101,7 @@ void	expand_list(t_list *cmd_lst)
 				add_list_into_list(&cmd_lst, list);
 			}
 		}
+		printf("---------------------------> GO NEXT and avoid ---> : %d\n",avoid);
 		cmd_lst = cmd_lst->next;
 	}
 }
@@ -116,14 +117,14 @@ void	execute_cmd(t_node *node)
 	set_env_var(g_minishell->our_env, "_",
 		(char *)ft_lstlast(node->data.cmd)->content);
 	if (ft_is_builtin(node->data.cmd->content))
-		execute_builtins(g_minishell, list_to_argv(node->data.cmd));
+		execute_builtins(g_minishell, list_to_argv(node->data.cmd), 1);
 	else
 	{
 		g_minishell->last_child = fork();
 		if (!g_minishell->last_child)
 		{
 			signal(SIGQUIT, SIG_DFL);
-			do_cmd(node);
+			do_cmd(node, 1);
 			exit(0);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/05 20:16:57 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:44:14 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,6 @@ void	pipe_right(t_node *node, int *pfd, bool mode)
 			executer(node);
 		else if (node->type == REDIR_NODE)
 			execute_redires(node->data.redir);
-		else
-			executer(node);
 	}
 	else
 		do_pipe(node, mode, pfd);

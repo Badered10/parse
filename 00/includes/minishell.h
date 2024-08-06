@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/05 21:07:15 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/06 17:52:24 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void				ft_unset(char *key);
 t_env				*new_dup(t_env *env);
 
 // Function that execute the builtins.
-void				execute_builtins(t_minishell *mini, char **args);
+void				execute_builtins(t_minishell *mini, char **args, bool print);
 
 // Function that print the export.
 void				print_env(t_env *env);
@@ -225,7 +225,7 @@ int					ft_malloc_error(char **tab, size_t i);
 int					wait_and_get(void);
 
 // Function that execute a command.
-void				do_cmd(t_node *ast);
+void				do_cmd(t_node *ast, bool print);
 
 // Function that do pipe process.
 void				do_pipe(t_node *cmd, int mode, int *pfd);
@@ -291,7 +291,7 @@ void				add_list_into_list(t_list **lst, t_list *new);
 char				*build_file_name(char *join);
 
 // Function that process and run exit builtin.
-int					process_exit(char **args);
+int					process_exit(char **args, bool print);
 
 // Funcion that handle space case in expanded tokens.
 void				handle_space(t_token *tokens, char *new_value);

@@ -3,20 +3,21 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+         #
+#    By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/04 14:32:39 by alassiqu          #+#    #+#              #
-#    Updated: 2024/08/06 19:06:04 by baouragh         ###   ########.fr        #
+#    Updated: 2024/08/29 15:34:50 by alassiqu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			:=	minishell
+BONUS			:=	minishell_bonus
 
 LIBFT_PATH		:=	libft/
 LIBFT			:=	libft/libft.a
-# -Werror
+
 CC				:=	cc
-CFLAGS			:=	-Wall -Wextra -Werror
+CFLAGS			:=	-Wall -Wextra -Werror -fsanitize=address -g3
 RM				:=	rm -f
 
 BUILTINS		:=	builtins/builtins_helpers.c			\
@@ -37,6 +38,7 @@ ENVIRONMENT		:=	environment/env_helpers.c			\
 					environment/env_utils.c
 
 EXECUTING		:=	executing/convert_env.c				\
+					executing/executer_tools.c			\
 					executing/executer.c				\
 					executing/execve_tools.c			\
 					executing/here_doc_tools.c			\
@@ -45,8 +47,8 @@ EXECUTING		:=	executing/convert_env.c				\
 					executing/redir_tools.c				\
 					executing/tools_1.c					\
 					executing/tools_2.c					\
-					executing/tools.c					\
-					executing/excuter_tools.c
+					executing/tools_3.c					\
+					executing/tools.c
 
 EXPANDING		:=	expanding/dollar_expand.c			\
 					expanding/expand_here_doc.c			\
@@ -105,14 +107,19 @@ $(LIBFT):
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft -lreadline -o $(NAME)
 
+$(BONUS): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -L$(LIBFT_PATH) -lft -lreadline -o $(BONUS)
+
 clean:
 	@make clean -C $(LIBFT_PATH)
 	@rm -f $(OBJS)
 
 fclean: clean
 	@make fclean -C $(LIBFT_PATH)
-	@rm -f $(NAME)
+	@rm -f $(NAME) $(BONUS)
 
 re: fclean all
+
+bonus:	$(BONUS)
 
 .PHONY: clean

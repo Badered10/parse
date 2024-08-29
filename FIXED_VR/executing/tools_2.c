@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:20:22 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/06 19:14:25 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/29 19:31:43 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	wait_and_get(void)
 	return (free(exit), fail);
 }
 
-void	do_cmd(t_node *ast, bool print) // 0
+void	do_cmd(t_node *ast, bool print)
 {
 	char	**cmd;
 	char	**env;
@@ -52,7 +52,7 @@ void	do_cmd(t_node *ast, bool print) // 0
 	exit(g_minishell->last_child);
 }
 
-void	do_pipe(t_node *cmd, int mode, int *pfd)
+void	do_pipe(t_node *cmd, int *pfd)
 {
 	g_minishell->last_child = fork();
 	if (g_minishell->last_child < 0)
@@ -63,17 +63,11 @@ void	do_pipe(t_node *cmd, int mode, int *pfd)
 	if (g_minishell->last_child == 0)
 	{
 		signal(SIGQUIT, SIG_DFL);
-		fd_duper(pfd, mode);
-		print_err("IN CHILD ", NULL);
+		fd_closer(pfd);
 		expand_list(cmd->data.cmd);
 		remove_null(&cmd);
 		if (!cmd->data.cmd)
-		{
-			print_err("CMD LIST NULL ", NULL);
 			exit(0);
-		}
-		else
-			print_err("CMD LIST GOOD ", NULL);
 		do_cmd(cmd, 0);
 		exit(0);
 	}
@@ -94,12 +88,13 @@ void	unlink_docs(int docs)
 
 	if (!docs)
 		return ;
-	while (docs >= 0)
+	while (docs > 0)
 	{
 		join = ft_itoa(docs);
 		path = build_file_name(join);
 		name = ft_strjoin(PATH, path);
-		unlink(name);
+		if (unlink(name) == -1)
+			perror("unlink failed");
 		free(join);
 		free(path);
 		free(name);

@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:11:26 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/06 21:51:20 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/29 19:08:58 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,11 @@ char	**get_env_paths(void)
 bool	get_path_data(char *argv, char ***paths, char ***cmd, int *paths_num)
 {
 	(*paths) = get_env_paths();
-	if (!(*paths) && *argv != '/' && *argv != '.')
+	if (!(*paths))
 		return (0);
-	if(*paths)
-	{
-		*paths_num = strings_count((*paths));
-		if (*paths_num == -1 || !*paths_num)
+	*paths_num = strings_count((*paths));
+	if (*paths_num == -1 || !*paths_num)
 		return (free_double((*paths)), 0);
-	}
 	*cmd = ft_split(argv, ' ');
 	if (!*cmd)
 		return (free_double((*paths)), 0);
@@ -51,7 +48,7 @@ char	*get_fullpath(char *argv)
 	char	*fullpath;
 	int		i;
 
-	if (!argv || !*argv || ft_isspace(*argv))
+	if (!argv || !*argv || check_for_whitespaces(argv))
 		return (NULL);
 	fullpath = NULL;
 	i = 0;
@@ -78,7 +75,6 @@ int	check_cmd(char *argv)
 	if (S_ISDIR(statbuf.st_mode) == true && ft_strchr(argv, '/'))
 		return (print_err("Is a directory", argv), 126);
 	cmd = get_fullpath(argv);
-	printf("%s\n",cmd);
 	gc_add(g_minishell, cmd);
 	if (!cmd && *argv == '.')
 		cmd = get_command(argv);
@@ -87,8 +83,8 @@ int	check_cmd(char *argv)
 		return (print_err("No such file or directory", argv), 127);
 	else if (ft_strlen(argv) == 1 && argv[0] == '.')
 	{
-		ft_putstr_fd("filename argument required\n", 2);
-		ft_putstr_fd(".: usage: . filename [arguments]\n", 2);
+		ft_putstr_fd(RED"badashell$ : filename argument required\n", 2);
+		ft_putstr_fd(". : usage: . filename [arguments]\n"RESET, 2);
 		return (2);
 	}
 	else if (access(cmd, F_OK) || (argv[0] == '.' && argv[1] == '.'))
@@ -103,8 +99,9 @@ void	call_execev(char **env, char *argv, char **cmd)
 	char	*founded_path;
 
 	founded_path = get_fullpath(argv);
-	printf(RED);
-	execve(founded_path, cmd, env);
-	printf(RESET);
-	print_err("EXEVE FAILED ", NULL);
+	if (execve(founded_path, cmd, env) == -1)
+	{
+		print_err("EXEVE FAILED ", NULL);
+		cleanup_minishell();
+	}
 }

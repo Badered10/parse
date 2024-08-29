@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:17:38 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/29 19:43:14 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/29 21:19:52 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,17 +83,17 @@ char	**list_to_argv(t_list *list)
 	return (argv);
 }
 
-void	select_and_excute(t_node *node, int type)
+void	select_and_excute(t_node *node, int type, int *pfd)
 {
 	g_minishell->last_child = fork();
 	if (!g_minishell->last_child)
 	{
 		if (type == STRING_NODE)
-			execute_cmd(node);
+			execute_cmd(node, pfd);
 		else if (type == PAIR_NODE)
-			execute_pair(node);
+			execute_pair(node, pfd);
 		else
-			execute_redires(node->data.redir);
+			execute_redires(node->data.redir, pfd);
 		wait_last();
 		wait_all();
 		exit(g_minishell->exit_s);

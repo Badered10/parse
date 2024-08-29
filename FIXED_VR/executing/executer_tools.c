@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/29 19:43:33 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/29 21:19:09 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ void	expand_list(t_list *cmds)
 	}
 }
 
-void	execute_cmd(t_node *node)
+void	execute_cmd(t_node *node, int *pfd)
 {
 	if (!node)
 		return ;
@@ -90,6 +90,8 @@ void	execute_cmd(t_node *node)
 		g_minishell->last_child = fork();
 		if (!g_minishell->last_child)
 		{
+			if(pfd)
+				fd_closer(pfd);
 			signal(SIGQUIT, SIG_DFL);
 			do_cmd(node, 1);
 			exit(0);
@@ -97,7 +99,7 @@ void	execute_cmd(t_node *node)
 	}
 }
 
-void	execute_redires(t_list *red_list)
+void	execute_redires(t_list *red_list, int *pfd)
 {
 	int	old_stdin;
 	int	old_stdout;
@@ -112,7 +114,7 @@ void	execute_redires(t_list *red_list)
 	}
 	input_to_dup(red_list);
 	output_to_dup(red_list);
-	run_doc_cmd(red_list);
+	run_doc_cmd(red_list, pfd);
 	dup_2(old_stdin, 0);
 	dup_2(old_stdout, 1);
 }

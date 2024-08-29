@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/29 19:44:03 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/29 21:23:01 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ t_env				*special_dup_env(void);
 /* Executing */
 
 // Main function that execute the user input.
-void				executer(t_node *node);
+void				executer(t_node *node, int *pfd);
 
 // Main function that handle here_doc.
 int					here_doc(char *limiter, int doc_num, int expand_flag);
@@ -196,7 +196,7 @@ void				input_to_dup(t_list *red_list);
 void				output_to_dup(t_list *red_list);
 
 // Function that execute here-doc command.
-void				run_doc_cmd(t_list *red_list);
+void				run_doc_cmd(t_list *red_list, int *pfd);
 
 // Function that open redirection after checking the ambiguous.
 int					open_redir(t_redir *redir);
@@ -241,7 +241,7 @@ void				do_cmd(t_node *ast, bool print);
 void				do_pipe(t_node *cmd, int *pfd);
 
 // Function that execute a command.
-void				execute_cmd(t_node *node);
+void				execute_cmd(t_node *node, int *pfd);
 
 // Function that scan for here-doc and open them.
 int					scan_and_set(t_node *node);
@@ -271,13 +271,13 @@ bool				check_name(t_redir *new);
 int					open_hidden_file(int doc_num);
 
 // Function that excute redirections nodes .
-void				execute_redires(t_list *red_list);
+void				execute_redires(t_list *red_list, int *pfd);
 
 // Function that go trough a way of exe based on its node's type.
-void				select_and_excute(t_node *node, int type);
+void				select_and_excute(t_node *node, int type, int *pfd);
 
 // Function that execute a pair node | , || , &&.
-void				execute_pair(t_node *node);
+void				execute_pair(t_node *node, int *pfd);
 
 // Function that execute a pair nodes under types || , &&.
 void				execute_and_or(t_node *node);

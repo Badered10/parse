@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alassiqu <alassiqu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/10 19:22:45 by alassiqu         ###   ########.fr       */
+/*   Updated: 2024/08/29 21:34:44 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,8 @@ int	open_redir(t_redir *redir)
 		redir->fd = open(redir->file, redir->mode, 0644);
 		if (redir->fd < 0)
 		{
-			perror("Open faild redir");
+			ft_putstr_fd("badashell$: ",2);
+			perror(redir->file);
 			g_minishell->exit_s = 1;
 			return (0);
 		}

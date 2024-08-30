@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/30 08:14:02 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 19:37:48 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,6 @@ typedef struct s_minishell
 }					t_minishell;
 
 extern t_minishell	*g_minishell;
-
-void				print_tokens(t_token *tokens);
-void				join_for_asterisk(t_token **tokens);
 
 /* Builtins */
 
@@ -359,6 +356,9 @@ int					dollar_functionality(t_list **cmds, char **s, bool avoid);
 
 // Function that return a list of nodes containing asterisk expanding.
 t_list				*asterisk_functionality(char *s);
+
+// Function that join 2 tokens.
+void				join_for_asterisk(t_token **tokens);
 
 // Function that help expanding words.
 char				*helper_expander(char *s);

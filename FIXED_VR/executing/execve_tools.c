@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:09:20 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/29 18:48:19 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 08:34:20 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	dup_2(int old_fd, int new_fd)
 {
 	if (dup2(old_fd, new_fd) < 0)
 	{
+		close(old_fd);
 		perror("dup2: ");
 		return (-1);
 	}

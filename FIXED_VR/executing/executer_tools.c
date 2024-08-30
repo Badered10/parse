@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/30 08:20:01 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 08:22:16 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,14 @@ void	execute_redires(t_list *red_list, int *pfd)
 	int	old_stdout;
 
 	old_stdin = dup(0);
+	if (old_stdin < 0)
+		return ;
 	old_stdout = dup(1);
+	if (old_stdout < 0)
+	{
+		close(old_stdin);
+		return ;
+	}
 	if (!open_and_set(red_list))
 	{
 		close(old_stdin);

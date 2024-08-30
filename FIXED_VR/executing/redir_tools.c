@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 18:14:45 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/30 08:15:21 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 08:58:06 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,13 @@ int	open_redir(t_redir *redir)
 			ft_putstr_fd("badashell$: ", 2);
 			perror(redir->file);
 			g_minishell->exit_s = 1;
+			set_env_var(g_minishell->our_env, "?", "1");
 			return (0);
 		}
 		return (1);
 	}
 	g_minishell->exit_s = 1;
+	set_env_var(g_minishell->our_env, "?", "1");
 	return (0);
 }
 

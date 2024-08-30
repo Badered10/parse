@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/04 14:09:59 by alassiqu          #+#    #+#             */
-/*   Updated: 2024/08/29 21:23:01 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 08:14:02 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,6 +317,16 @@ void				check_for_export(void *s, bool *avoid);
 
 //
 t_list				*creat_list(char **split, bool avoid);
+
+// Function that execute a pipe and close an old pfds of pipe
+void				exe_old_pfd(t_node *node, int *pfd_2,
+						int fd_in, int fd_out);
+
+// Function that run left of exe of pipe
+void				left_pipe(t_node *node, int *pfd, int fd_in, int fd_out);
+
+// // Function that execute a pipe
+void				exe_non_opfd(t_node *node, int fd_in, int fd_out);
 
 /* Expanding */
 

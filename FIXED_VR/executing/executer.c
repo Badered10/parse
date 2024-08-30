@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/25 15:33:43 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/29 21:52:40 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 08:16:06 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,78 +80,17 @@ void	pipe_right(t_node *node, int *pfd)
 		do_pipe(node, pfd);
 }
 
-void	exe_non_opfd(t_node *node, int fd_in, int fd_out)
-{
-	int	pfd[2];
-
-	if (node->data.pair.type == PIPE)
-		{
-			if (open_pipe(pfd) == -1)
-				return ;
-			fd_in = dup(0);
-			fd_out = dup(1);
-			dup_2(pfd[1], 1);
-			pipe_left(node->data.pair.left, pfd);
-			if (dup2(fd_out, 1) == -1)
-				perror("dup2 fd_out");
-			dup_2(pfd[0], 0);
-			pipe_right(node->data.pair.right, pfd);
-			dup_2(fd_in, 0);
-			dup_2(fd_out, 1);
-			wait_last();
-		}
-		else
-			execute_and_or(node);
-}
-
-void	exe_old_pfd(t_node *node, int *pfd_2, int fd_in, int fd_out)
-{
-	int	pfd[2];
-
-	g_minishell->last_child = fork();
-	if(!g_minishell->last_child)
-	{
-		fd_closer(pfd_2);
-		if (node->data.pair.type == PIPE)
-		{
-			if (open_pipe(pfd) == -1)
-				return ;
-			fd_in = dup(0);
-			fd_out = dup(1);
-			dup_2(pfd[1], 1);
-			pipe_left(node->data.pair.left, pfd);
-			if (dup2(fd_out, 1) == -1)
-			{
-				perror("dup2 fd_out");
-				fd_closer(pfd);
-				dup_2(fd_in, 0);
-				dup_2(fd_out, 1);
-				return;
-			}
-			dup_2(pfd[0], 0);
-			pipe_right(node->data.pair.right, pfd);
-			dup_2(fd_in, 0);
-			dup_2(fd_out, 1);
-			wait_last();
-		}
-		else
-			execute_and_or(node);
-		exit(g_minishell->exit_s);
-	}
-}
-
 void	execute_pair(t_node *node, int *pfd_2)
 {
 	int	pfd[2];
 	int	fd_in;
 	int	fd_out;
 
-	fd_in =  -1;
+	fd_in = -1;
 	fd_out = -1;
 	pfd[0] = -1;
 	pfd[1] = -1;
-
-	if(pfd_2)
+	if (pfd_2)
 		exe_old_pfd(node, pfd_2, fd_in, fd_out);
 	else
 		exe_non_opfd(node, fd_in, fd_out);

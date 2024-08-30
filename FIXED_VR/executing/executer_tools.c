@@ -6,7 +6,7 @@
 /*   By: baouragh <baouragh@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 10:48:03 by baouragh          #+#    #+#             */
-/*   Updated: 2024/08/29 21:19:09 by baouragh         ###   ########.fr       */
+/*   Updated: 2024/08/30 08:20:01 by baouragh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	execute_cmd(t_node *node, int *pfd)
 		g_minishell->last_child = fork();
 		if (!g_minishell->last_child)
 		{
-			if(pfd)
+			if (pfd)
 				fd_closer(pfd);
 			signal(SIGQUIT, SIG_DFL);
 			do_cmd(node, 1);
@@ -110,7 +110,7 @@ void	execute_redires(t_list *red_list, int *pfd)
 	{
 		close(old_stdin);
 		close(old_stdout);
-		return;
+		return ;
 	}
 	input_to_dup(red_list);
 	output_to_dup(red_list);
